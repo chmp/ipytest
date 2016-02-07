@@ -7,58 +7,58 @@ notebook environment. It is also designed to make the transfer of the tests into
 proper python modules easy.
 
 ## Example
+
+```python
+
+# coding: utf-8
+# In[1]:
+from __future__ import print_function, division, absolute_import
+import ipytest
+
+# In[2]:
+def fibonacci(i):
+    """Compute the fibonacci sequence.
     
-    ::python
+    >>> [fibonacci(n) for n in range(7)]
+    [1, 1, 2, 3, 5, 8, 13]
     
-    # coding: utf-8
-    # In[1]:
-    from __future__ import print_function, division, absolute_import
-    import ipytest
+    """
+    if i == 0 or i == 1:
+        return 1
+    return fibonacci(i - 1) + fibonacci(i - 2)
 
-    # In[2]:
-    def fibonacci(i):
-        """Compute the fibonacci sequence.
-        
-        >>> [fibonacci(n) for n in range(7)]
-        [1, 1, 2, 3, 5, 8, 13]
-        
-        """
-        if i == 0 or i == 1:
-            return 1
-        return fibonacci(i - 1) + fibonacci(i - 2)
+# In[3]:
+ipytest.clean_tests("test_fibonacci*")
 
-    # In[3]:
-    ipytest.clean_tests("test_fibonacci*")
+def test_fibonacci_0():
+    assert fibonacci(0) == 1
 
-    def test_fibonacci_0():
-        assert fibonacci(0) == 1
+def test_fibonacci_1():
+    assert fibonacci(1) == 1
 
-    def test_fibonacci_1():
-        assert fibonacci(1) == 1
+def test_fibonacci_2():
+    assert fibonacci(2) == 2
+    
+def test_fibonacci_3():
+    assert fibonacci(3) == 3
+    
+def test_fibonacci_4():
+    assert fibonacci(4) == 5
 
-    def test_fibonacci_2():
-        assert fibonacci(2) == 2
-        
-    def test_fibonacci_3():
-        assert fibonacci(3) == 3
-        
-    def test_fibonacci_4():
-        assert fibonacci(4) == 5
-
-    def test_fibonacci_5():
-        assert fibonacci(5) == 8
-        
-    def test_fibonacci_6():
-        assert fibonacci(6) == 13
-        
-    ipytest.run_tests(doctest=True)     
-
+def test_fibonacci_5():
+    assert fibonacci(5) == 8
+    
+def test_fibonacci_6():
+    assert fibonacci(6) == 13
+    
+ipytest.run_tests(doctest=True)     
+```
 
 ## Installation
 
-    ::bash
-    pip install ipytest
-
+```bash
+pip install ipytest
+```
 
 ## Features
 
