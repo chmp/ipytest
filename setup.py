@@ -16,7 +16,7 @@ setup(
     license='MIT',
     packages=["ipytest"],
     tests_require=['nose'],
-    test_suite='nose.collector'
+    test_suite='nose.collector',
     classifiers=[
         'Development Status :: 4 - Beta',
 

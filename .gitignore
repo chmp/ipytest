@@ -1,5 +1,7 @@
 /.eggs/
 /.cache/
+/build/
+/dist/
 
 __pycache__/
 *.pyc
