@@ -9,13 +9,7 @@ proper python modules easy.
 ## Example
 
 ```python
-
-# coding: utf-8
 # In[1]:
-from __future__ import print_function, division, absolute_import
-import ipytest
-
-# In[2]:
 def fibonacci(i):
     """Compute the fibonacci sequence.
     
@@ -27,7 +21,8 @@ def fibonacci(i):
         return 1
     return fibonacci(i - 1) + fibonacci(i - 2)
 
-# In[3]:
+# In[2]:
+import ipytest
 ipytest.clean_tests("test_fibonacci*")
 
 def test_fibonacci_0():
