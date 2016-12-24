@@ -22,11 +22,23 @@ except ImportError:
     _has_pandas = False
     
 
-__all__ = [
-    "run_tests", 
+
+try:
+    import pytest as _pytest  # noqa: F401
+
+except ImportError:
+    _has_pytest = False
+
+else:
+    from ._pytest_support import run_pytest  # noqa: F401
+    _has_pytest = True
+
+
+__all__ = (['run_pytest'] if _has_pytest else []) + [
+    "run_tests",
     "clean_tests",
     "collect_tests",
-    "assert_equals", 
+    "assert_equals",
     "get_assert_function",
     "unittest_assert_equals",
 ]
