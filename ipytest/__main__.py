@@ -5,7 +5,7 @@ from __future__ import print_function, absolute_import, division
 import inspect
 import textwrap
 
-import ipytest 
+import ipytest
 
 
 def gen_reference():
@@ -18,6 +18,7 @@ def format_object(name, obj):
     print("### {}".format(get_function_def(obj)))
     print()
     print(dedent(obj.__doc__))
+
 
 def get_function_def(obj):
     lines = inspect.getsource(obj).strip().splitlines()
@@ -34,4 +35,3 @@ def dedent(s):
 
 if __name__ == "__main__":
     gen_reference()
-

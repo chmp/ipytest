@@ -2,6 +2,7 @@
 /.cache/
 /build/
 /dist/
+/tmp/
 
 __pycache__/
 *.pyc
