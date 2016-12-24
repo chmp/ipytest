@@ -6,6 +6,12 @@ its core, it offers a test runner that execute all tests defined inside the
 notebook environment. It is also designed to make the transfer of the tests into
 proper python modules easy.
 
+## Changes
+
+- `0.2.0`: support for using pytest inside notebooks 
+- `0.1.0`: support for running `unittest.FunctionTestCase`, 
+  `unittest.TestCases`, and `doctests`.
+
 ## Example
 
 ```python
