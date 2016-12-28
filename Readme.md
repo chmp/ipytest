@@ -11,6 +11,7 @@ Installation: `pip install ipytest`
 
 ## Changes
 
+- `0.2.1`: add ipython magics to simplify test execution
 - `0.2.0`: support for using pytest inside notebooks
 - `0.1.0`: support for running `unittest.FunctionTestCase`,
   `unittest.TestCases`, and `doctests`.
