@@ -23,53 +23,15 @@ Installation: `pip install ipytest`
 - builds on standard unittest
 - support for doctests
 - support for pandas and numpy.
-- support for [pytest][pytest.org] (with all bells and whistles)
+- support for [pytest](pytest.org) (with all bells and whistles)
 - magics for easy execution
 
 
-## Example
+## Examples
 
-```python
-# In[1]:
-import ipytest.magics
-
-def fibonacci(i):
-    """Compute the fibonacci sequence.
-
-    >>> [fibonacci(n) for n in range(7)]
-    [1, 1, 2, 3, 5, 8, 13]
-
-    """
-    if i == 0 or i == 1:
-        return 1
-    return fibonacci(i - 1) + fibonacci(i - 2)
-
-# In[2]:
-%%run_pytest[clean] -qq
-
-def test_fibonacci_0():
-    assert fibonacci(0) == 1
-
-def test_fibonacci_1():
-    assert fibonacci(1) == 1
-
-def test_fibonacci_2():
-    assert fibonacci(2) == 2
-
-def test_fibonacci_3():
-    assert fibonacci(3) == 3
-
-def test_fibonacci_4():
-    assert fibonacci(4) == 5
-
-def test_fibonacci_5():
-    assert fibonacci(5) == 8
-
-def test_fibonacci_6():
-    assert fibonacci(6) == 13
-
-ipytest.run_tests(doctest=True)     
-```
+- [unittest runner](./example/Example.ipynb)
+- [pytest runner ](./example/Magics.ipynb)
+- [pytest runner (no magics)](./example/PyTest.ipynb)
 
 ## Reference
 
