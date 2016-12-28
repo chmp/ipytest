@@ -6,16 +6,32 @@ its core, it offers a test runner that execute all tests defined inside the
 notebook environment. It is also designed to make the transfer of the tests into
 proper python modules easy.
 
+Installation: `pip install ipytest`
+
+
 ## Changes
 
-- `0.2.0`: support for using pytest inside notebooks 
-- `0.1.0`: support for running `unittest.FunctionTestCase`, 
+- `0.2.0`: support for using pytest inside notebooks
+- `0.1.0`: support for running `unittest.FunctionTestCase`,
   `unittest.TestCases`, and `doctests`.
+
+
+## Features
+
+- simple interface
+- builds on standard unittest
+- support for doctests
+- support for pandas and numpy.
+- support for [pytest][pytest.org] (with all bells and whistles)
+- magics for easy execution
+
 
 ## Example
 
 ```python
 # In[1]:
+import ipytest.magics
+
 def fibonacci(i):
     """Compute the fibonacci sequence.
 
@@ -28,8 +44,7 @@ def fibonacci(i):
     return fibonacci(i - 1) + fibonacci(i - 2)
 
 # In[2]:
-import ipytest
-ipytest.clean_tests("test_fibonacci*")
+%%run_pytest[clean] -qq
 
 def test_fibonacci_0():
     assert fibonacci(0) == 1
@@ -55,20 +70,29 @@ def test_fibonacci_6():
 ipytest.run_tests(doctest=True)     
 ```
 
-## Installation
+## Reference
 
-```bash
-pip install ipytest
+### `%%run_pytest ...`
+
+IPython magic that first executes the cell, then executes `run_pytest`.
+Any arguments passed inside the cell will be passed on directly to pytest.
+To register use the magics, run `import ipytest.magics` first.
+
+For example:
+
+```python
+%%run_pytest -vvv
+
+
+def test_example():
+    ...
+
 ```
 
-## Features
+### `%%run_pytest[clean] ...`
 
-- simple interface
-- builds on standard unittest
-- support for doctests
-- support for pandas and numpy.
-
-## Reference
+Same as the `%%run_pytest`, but cleans any previously found tests, i.e., only tests defined in the
+current cell are executed.
 
 ### ipytest.run_pytest(module=None, filename=None, pytest_options=(), pytest_plugins=())
 
