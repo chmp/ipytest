@@ -38,8 +38,8 @@ Installation: `pip install ipytest`
 ### `%%run_pytest ...`
 
 IPython magic that first executes the cell, then executes `run_pytest`.
-Any arguments passed inside the cell will be passed on directly to pytest.
-To register use the magics, run `import ipytest.magics` first.
+Any arguments passed on the magic line be passed on to pytest.
+To register the magics, run `import ipytest.magics` first.
 
 For example:
 
