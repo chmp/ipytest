@@ -11,6 +11,7 @@ Installation: `pip install ipytest`
 
 ## Changes
 
+- `0.2.2`: add support for assert rewriting with current pytest versions
 - `0.2.1`: add ipython magics to simplify test execution
 - `0.2.0`: support for using pytest inside notebooks
 - `0.1.0`: support for running `unittest.FunctionTestCase`,
@@ -54,8 +55,22 @@ def test_example():
 
 ### `%%run_pytest[clean] ...`
 
-Same as the `%%run_pytest`, but cleans any previously found tests, i.e., only tests defined in the
-current cell are executed.
+Same as the `%%run_pytest`, but cleans any previously found tests, i.e., only
+tests defined in the current cell are executed.
+
+### `%%rewrite_asserts`
+
+Rewrite any asserts in the current cell using pytest without running the tests.
+To get best results run the tests with `run_pytest`.
+
+For example::
+
+```python
+%%rewrite_asserts
+
+def test_example():
+    ...
+```
 
 ### ipytest.run_pytest(module=None, filename=None, pytest_options=(), pytest_plugins=())
 
