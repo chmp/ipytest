@@ -35,18 +35,16 @@ class IPyTestMagics(Magics):
             from ipytest import run_pytest
             run_pytest()
         """
-        from _pytest.assertion.rewrite import rewrite_asserts
-        ipy = get_ipython()
-
         # follow InteractiveShell._run_cell
-        cell_name = ipy.compile.cache(cell, ipy.execution_count)
-        mod = ipy.compile.ast_parse(cell, filename=cell_name)
+        cell_name = self.shell.compile.cache(cell, self.shell.execution_count)
+        mod = self.shell.compile.ast_parse(cell, filename=cell_name)
 
         # rewrite assert statements
+        from _pytest.assertion.rewrite import rewrite_asserts
         rewrite_asserts(mod)
 
         # follow InteractiveShell.run_ast_nodes
-        code = ipy.compile(mod, cell_name, 'exec')
+        code = self.shell.compile(mod, cell_name, 'exec')
         self.shell.run_code(code)
 
 
