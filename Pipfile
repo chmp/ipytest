@@ -8,9 +8,13 @@ pytest = "*"
 ipytest = {editable = true, path = "."}
 
 [dev-packages]
+black = "==18.6b4"
+invoke = "*"
 
 [requires]
 python_version = "3.7"
 
 [scripts]
-test = "py.test tests"
+precommit = "invoke precommit"
+format = "invoke format"
+test = "invoke test"

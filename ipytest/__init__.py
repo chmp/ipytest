@@ -6,6 +6,7 @@ import unittest
 
 try:
     import numpy as _np
+
     _has_numpy = True
 
 except ImportError:
@@ -14,6 +15,7 @@ except ImportError:
 try:
     import pandas as _pd
     import pandas.util.testing as _pd_testing
+
     _has_pandas = True
 
 except ImportError:
@@ -28,10 +30,11 @@ except ImportError:
 
 else:
     from ._pytest_support import run_pytest  # noqa: F401
+
     _has_pytest = True
 
 
-__all__ = (['run_pytest'] if _has_pytest else []) + [
+__all__ = (["run_pytest"] if _has_pytest else []) + [
     "run_tests",
     "clean_tests",
     "collect_tests",
@@ -78,8 +81,7 @@ def clean_tests(pattern="test*", items=None):
     if items is None:
         items = _get_globals_of_caller(distance=1)
 
-    to_delete = [key for key in items.keys()
-                 if fnmatch.fnmatchcase(key, pattern)]
+    to_delete = [key for key in items.keys() if fnmatch.fnmatchcase(key, pattern)]
 
     for key in to_delete:
         del items[key]
@@ -113,10 +115,7 @@ def collect_tests(doctest=False, items=None):
         candidates = [
             (key, obj)
             for (key, obj) in items.items()
-            if (
-                not key.startswith("_") and
-                (callable(obj) or inspect.isclass(obj))
-            )
+            if (not key.startswith("_") and (callable(obj) or inspect.isclass(obj)))
         ]
 
         tests = it.chain.from_iterable(
@@ -185,18 +184,11 @@ def _is_test_function(key, value):
 
 
 def _is_test_class(key, value):
-    return (
-        isinstance(value, type) and
-        issubclass(value, unittest.TestCase)
-    )
+    return isinstance(value, type) and issubclass(value, unittest.TestCase)
 
 
 def _get_test_functions(test_class):
-    return (
-        key
-        for key in test_class.__dict__.keys()
-        if key.startswith("test")
-    )
+    return (key for key in test_class.__dict__.keys() if key.startswith("test"))
 
 
 class _DummyTestCase(unittest.TestCase):

@@ -26,13 +26,15 @@ def run_pytest(module=None, filename=None, pytest_options=(), pytest_plugins=())
             filename = module.__file__
 
         except AttributeError:
-            raise ValueError('module {} has no __file__ attribute, please pass filename instead.')
+            raise ValueError(
+                "module {} has no __file__ attribute, please pass filename instead."
+            )
 
     return pytest.main(
         list(pytest_options) + [filename],
         plugins=(
-            list(pytest_plugins) +
-            [ModuleCollectorPlugin(module=module, filename=filename)]
+            list(pytest_plugins)
+            + [ModuleCollectorPlugin(module=module, filename=filename)]
         ),
     )
 
@@ -40,6 +42,7 @@ def run_pytest(module=None, filename=None, pytest_options=(), pytest_plugins=())
 class ModuleCollectorPlugin(object):
     """Small pytest plugin collect an already imported module.
     """
+
     def __init__(self, module, filename):
         self.module = module
         self.filename = filename
@@ -55,9 +58,10 @@ class ModuleCollectorPlugin(object):
 class Module(pytest.Module):
     """Wrapper to expose an already imported module.
     """
+
     def __init__(self, path, parent, module):
         # NOTE: the path has to have a .py suffix, it is only used for printing
-        super(Module, self).__init__(path.new(ext='.py'), parent)
+        super(Module, self).__init__(path.new(ext=".py"), parent)
         self._module = module
 
     def _getobj(self):

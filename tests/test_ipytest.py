@@ -14,17 +14,16 @@ class TestDiscovery(unittest.TestCase):
             unittest.FunctionTestCase(test_get_assert_function_pandas_panel),
             TestDiscovery("test_self"),
             TestDiscovery("test_doctest"),
-            TestAssertEquals('test_nonequal_fails'),
+            TestAssertEquals("test_nonequal_fails"),
         }
 
         assert actual == expected
 
     def test_doctest(self):
         actual = set(ipytest.collect_tests(doctest=True))
-        num_doctests = len({
-            obj for obj in actual
-            if isinstance(obj, ipytest._DocTestCase)
-        })
+        num_doctests = len(
+            {obj for obj in actual if isinstance(obj, ipytest._DocTestCase)}
+        )
 
         self.assertEqual(num_doctests, 1)
 
@@ -32,6 +31,7 @@ class TestDiscovery(unittest.TestCase):
 class TestAssertEquals(unittest.TestCase):
     """Canary test to make sure assert_equals actuals checks for equality.
     """
+
     def test_nonequal_fails(self):
         with self.assertRaises(AssertionError):
             ipytest.assert_equals(1, 2)
