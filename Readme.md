@@ -34,6 +34,13 @@ Installation: `pip install ipytest`
 - [pytest runner ](./example/Magics.ipynb)
 - [pytest runner (no magics)](./example/PyTest.ipynb)
 
+## Development
+
+To execute the unit tests of `ipytest` run
+
+    pipenv sync --dev
+    pipenv run test
+
 ## Reference
 
 ### `%%run_pytest ...`
