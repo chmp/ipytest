@@ -12,6 +12,8 @@ black = "==18.6b4"
 invoke = "*"
 wheel = "*"
 twine = "*"
+chmp = "*"
+docutils = "*"
 
 [requires]
 python_version = "3.7"

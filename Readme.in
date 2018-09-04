@@ -1,0 +1,98 @@
+# ipytest - unit tests in IPython notbeooks
+
+Sometimes quick experiments in IPython grow large and you find yourself wanting
+unit tests. This module aims to make testing code in IPython notebooks easy. At
+its core, it offers a test runner that execute all tests defined inside the
+notebook environment. It is also designed to make the transfer of the tests into
+proper python modules easy.
+
+Installation: `pip install ipytest`
+
+## Changes
+
+- `0.3.0`: change default pattern for `clean_tests` to match pytest discovery
+- `0.2.2`: add support for assert rewriting with current pytest versions
+- `0.2.1`: add ipython magics to simplify test execution
+- `0.2.0`: support for using pytest inside notebooks
+- `0.1.0`: support for running `unittest.FunctionTestCase`,
+  `unittest.TestCases`, and `doctests`.
+
+## Features
+
+- simple interface
+- builds on standard unittest
+- support for doctests
+- support for pandas and numpy.
+- support for [pytest](pytest.org) (with all bells and whistles)
+- magics for easy execution
+
+
+## Examples
+
+- [unittest runner](./example/Example.ipynb)
+- [pytest runner ](./example/Magics.ipynb)
+- [pytest runner (no magics)](./example/PyTest.ipynb)
+
+## Development
+
+To execute the unit tests of `ipytest` run
+
+    pipenv sync --dev
+    pipenv run test
+
+## Reference
+
+### `%%run_pytest ...`
+
+IPython magic that first executes the cell, then executes `run_pytest`.
+Any arguments passed on the magic line be passed on to pytest.
+To register the magics, run `import ipytest.magics` first.
+
+For example:
+
+```python
+%%run_pytest -vvv
+
+
+def test_example():
+    ...
+
+```
+
+### `%%run_pytest[clean] ...`
+
+Same as the `%%run_pytest`, but cleans any previously found tests, i.e., only
+tests defined in the current cell are executed.
+
+### `%%rewrite_asserts`
+
+Rewrite any asserts in the current cell using pytest without running the tests.
+To get best results run the tests with `run_pytest`.
+
+For example::
+
+```python
+%%rewrite_asserts
+
+def test_example():
+    ...
+```
+
+.. autofunction:: ipytest.run_pytest
+
+.. autofunction:: ipytest.run_tests
+
+.. autofunction:: ipytest.clean_tests
+
+.. autofunction:: ipytest.collect_tests
+
+.. autofunction:: ipytest.assert_equals
+
+.. autofunction:: ipytest.get_assert_function
+
+.. autofunction:: ipytest.unittest_assert_equals
+
+
+## License
+
+.. literalinclude:: License.md
