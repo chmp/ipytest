@@ -3,12 +3,12 @@ from invoke import task
 
 @task()
 def format(c):
-    c.run('black ipytest tests')
+    c.run("black ipytest tests setup.py tasks.py")
 
 
 @task()
 def test(c):
-    c.run('py.test tests')
+    c.run("py.test tests")
 
 
 @task()
