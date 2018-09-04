@@ -60,7 +60,7 @@ def run_tests(doctest=False, items=None):
     unittest.TextTestRunner(verbosity=2).run(suite)
 
 
-def clean_tests(pattern="test*", items=None):
+def clean_tests(pattern="[Tt]est*", items=None):
     """Delete tests with names matching the given pattern.
 
     In IPython the results of all evaluations are kept in global variables
