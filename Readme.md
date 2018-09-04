@@ -11,6 +11,7 @@ Installation: `pip install ipytest`
 
 ## Changes
 
+- `0.3.0`: change default pattern for `clean_tests` to match pytest discovery
 - `0.2.2`: add support for assert rewriting with current pytest versions
 - `0.2.1`: add ipython magics to simplify test execution
 - `0.2.0`: support for using pytest inside notebooks

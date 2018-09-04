@@ -10,11 +10,14 @@ ipytest = {editable = true, path = "."}
 [dev-packages]
 black = "==18.6b4"
 invoke = "*"
+wheel = "*"
+twine = "*"
 
 [requires]
 python_version = "3.7"
 
 [scripts]
+package = "python setup.py bdist_wheel"
 precommit = "invoke precommit"
 format = "invoke format"
 test = "invoke test"
