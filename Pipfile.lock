@@ -61,11 +61,11 @@
         },
         "pytest": {
             "hashes": [
-                "sha256:2d7c49e931316cc7d1638a3e5f54f5d7b4e5225972b3c9838f3584788d27f349",
-                "sha256:ad0c7db7b5d4081631e0155f5c61b80ad76ce148551aaafe3a718d65a7508b18"
+                "sha256:453cbbbe5ce6db38717d282b758b917de84802af4288910c12442984bde7b823",
+                "sha256:a8a07f84e680482eb51e244370aaf2caa6301ef265f37c2bdefb3dd3b663f99d"
             ],
             "index": "pypi",
-            "version": "==3.7.4"
+            "version": "==3.8.0"
         },
         "six": {
             "hashes": [
@@ -114,10 +114,10 @@
         },
         "chmp": {
             "hashes": [
-                "sha256:c12918dda938843c90fa40b427b4e459ff3ac5cf744639e9e1fdb225c07ef047"
+                "sha256:d8b1f4e21e1c4d72e67a0e2ae9d3c62f5cfd5ebadf8c44ceaac19f76bd7a338e"
             ],
             "index": "pypi",
-            "version": "==2018.9.1"
+            "version": "==2018.9.2"
         },
         "click": {
             "hashes": [

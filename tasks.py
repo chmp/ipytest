@@ -15,22 +15,16 @@ def test(c):
 @task()
 def docs(c):
     try:
-        from chmp.tools.mddocs import transform
+        from chmp.tools.mddocs import transform_file
 
     except ImportError:
         raise RuntimeError("Need chmp installed to create docs")
 
     self_path = os.path.dirname(__file__)
-    source_path = os.path.join(self_path, "Readme.in")
-    target_path = os.path.join(self_path, "Readme.md")
 
-    with open(source_path, "rt") as fobj:
-        content = fobj.read()
-
-    content = transform(content, source_path)
-
-    with open(target_path, "wt") as fobj:
-        fobj.write(content)
+    transform_file(
+        os.path.join(self_path, "Readme.in"), os.path.join(self_path, "Readme.md")
+    )
 
 
 @task()
