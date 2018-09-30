@@ -2,7 +2,7 @@
 
 Sometimes quick experiments in IPython grow large and you find yourself wanting
 unit tests. This module aims to make testing code in IPython notebooks easy. At
-its core, it offers a test runner that execute all tests defined inside the
+its core, it offers a way to run [`pytest`](https://pytest.org) tests inside the
 notebook environment. It is also designed to make the transfer of the tests into
 proper python modules easy.
 
@@ -19,19 +19,15 @@ Installation: `pip install ipytest`
 
 ## Features
 
-- simple interface
-- builds on standard unittest
-- support for doctests
-- support for pandas and numpy.
 - support for [pytest](pytest.org) (with all bells and whistles)
 - magics for easy execution
-
+- support for standard unittest and doctests
 
 ## Examples
 
-- [unittest runner](./example/Example.ipynb)
 - [pytest runner ](./example/Magics.ipynb)
 - [pytest runner (no magics)](./example/PyTest.ipynb)
+- [unittest runner](./example/Example.ipynb)
 
 ## Development
 
