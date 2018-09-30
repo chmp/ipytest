@@ -6,6 +6,8 @@ name = "pypi"
 [packages]
 pytest = "*"
 ipytest = {editable = true, path = "."}
+notebook = "*"
+ipykernel = "*"
 
 [dev-packages]
 black = "==18.6b4"

@@ -96,19 +96,6 @@ Execute tests in the passed module (defaults to __main__) with pytest.
 
 
 
-### `ipytest.run_tests`
-`ipytest.run_tests(doctest=False, items=None)`
-
-Run all tests in the given items dictionary.
-
-**Arguments:**
-
-- doctest: if True search for doctests.
-- * **items: the globals object containing the tests. If None is given, the**:
-  globals object is determined from the call stack.
-
-
-
 ### `ipytest.clean_tests`
 `ipytest.clean_tests(pattern='[Tt]est*', items=None)`
 
@@ -126,6 +113,35 @@ This way renaming tests works as expected.
 **Arguments:**
 
 - pattern: a glob pattern used to match the tests to delete.
+- * **items: the globals object containing the tests. If None is given, the**:
+  globals object is determined from the call stack.
+
+
+
+### `ipytest.reload`
+`ipytest.reload(*mods)`
+
+Reload all modules passed as strings.
+
+This function may be useful, when mixing code in external modules and
+notebooks.
+
+Usage:
+
+```
+reload("ipytest._util", "ipytest")
+```
+
+
+
+### `ipytest.run_tests`
+`ipytest.run_tests(doctest=False, items=None)`
+
+Run all tests in the given items dictionary.
+
+**Arguments:**
+
+- doctest: if True search for doctests.
 - * **items: the globals object containing the tests. If None is given, the**:
   globals object is determined from the call stack.
 

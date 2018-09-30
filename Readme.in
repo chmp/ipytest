@@ -80,9 +80,11 @@ def test_example():
 
 .. autofunction:: ipytest.run_pytest
 
-.. autofunction:: ipytest.run_tests
-
 .. autofunction:: ipytest.clean_tests
+
+.. autofunction:: ipytest.reload
+
+.. autofunction:: ipytest.run_tests
 
 .. autofunction:: ipytest.collect_tests
 

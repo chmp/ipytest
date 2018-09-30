@@ -22,10 +22,11 @@ class TestDiscovery(unittest.TestCase):
         assert actual == expected
 
     def test_doctest(self):
+        # NOTE: do not import globally, otherwise it will be collected by pytest
+        from ipytest._unittest_support import _DocTestCase
+
         actual = set(ipytest.collect_tests(doctest=True))
-        num_doctests = len(
-            {obj for obj in actual if isinstance(obj, ipytest._DocTestCase)}
-        )
+        num_doctests = len({obj for obj in actual if isinstance(obj, _DocTestCase)})
 
         self.assertEqual(num_doctests, 1)
 

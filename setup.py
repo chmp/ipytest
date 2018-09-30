@@ -17,8 +17,7 @@ setup(
     author_email="mail@cprohm.de",
     license="MIT",
     packages=["ipytest"],
-    tests_require=["nose"],
-    test_suite="nose.collector",
+    tests_require=["pytest"],
     classifiers=[
         "Development Status :: 4 - Beta",
         "Intended Audience :: Developers",
