@@ -16,7 +16,8 @@ Features:
 
 ## Changes
 
-- `0.4.0`: add support for automatic AST transforms, deprecated non pytest API
+- `0.4.0`: add support for automatic AST transforms, deprecated non pytest API.
+  Currently in beta, use `ipytest==0.4.0b1`.
 - `0.3.0`: change default pattern for `clean_tests` to match pytest discovery
 - `0.2.2`: add support for assert rewriting with current pytest versions
 - `0.2.1`: add ipython magics to simplify test execution
@@ -65,6 +66,22 @@ To register the magics, run `import ipytest.magics` first.
 
 ### `ipytest.run`
 `ipytest.run(*args)`
+
+Execute all tests in the passed module (defaults to __main__) with pytest.
+
+#### Parameters
+
+* **args** (*any*):
+  additional commandline options passed to pytest
+* **module** (*any*):
+  the module containing the tests. If not given, __main__ will be used.
+* **filename** (*any*):
+  the filename of the file containing the tests. It has to be a real
+  file, e.g., a notebook name, since itts existence will be checked by
+  pytest. If not given, the __file__ attribute of the passed module
+  will be used.
+* **plugins** (*any*):
+  additional plugins passed to pytest.
 
 
 
