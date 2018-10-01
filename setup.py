@@ -10,7 +10,7 @@ def _read(fname):
 
 setup(
     name="ipytest",
-    version="0.3.0",
+    version="0.4.0b1",
     description="Unit tests in IPython notebooks.",
     long_description=_read("Readme.md"),
     author="Christopher Prohm",
