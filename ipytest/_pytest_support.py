@@ -1,9 +1,15 @@
 from __future__ import print_function, division, absolute_import
 
+import ast
+import sys
+
 import py.path
 import pytest
 
+from ._util import deprecated
 
+
+@deprecated("ipytest.run_pytest is deprecated, prefer ipytest.run.")
 def run_pytest(module=None, filename=None, pytest_options=(), pytest_plugins=()):
     """Execute tests in the passed module (defaults to __main__) with pytest.
 
@@ -18,6 +24,16 @@ def run_pytest(module=None, filename=None, pytest_options=(), pytest_plugins=())
     - `pytest_options`: additional options passed to pytest
     - `pytest_plugins`: additional plugins passed to pytest.
     """
+    return run(
+        *pytest_options,
+        filename=filename,
+        module=module,
+        pytest_plugins=pytest_plugins,
+        return_exit_code=True,
+    )
+
+
+def run(*args, module=None, filename=None, pytest_plugins=(), return_exit_code=False):
     if module is None:  # pragma: no cover
         import __main__ as module
 
@@ -30,13 +46,16 @@ def run_pytest(module=None, filename=None, pytest_options=(), pytest_plugins=())
                 "module {} has no __file__ attribute, please pass filename instead."
             )
 
-    return pytest.main(
-        list(pytest_options) + [filename],
+    exit_code = pytest.main(
+        list(args) + [filename],
         plugins=(
             list(pytest_plugins)
             + [ModuleCollectorPlugin(module=module, filename=filename)]
         ),
     )
+
+    if return_exit_code:
+        return exit_code
 
 
 class ModuleCollectorPlugin(object):
@@ -66,3 +85,24 @@ class Module(pytest.Module):
 
     def _getobj(self):
         return self._module
+
+
+class RewriteAssertTransformer(ast.NodeTransformer):
+    @classmethod
+    def register(cls, shell):
+        cls.unregister(shell)
+        shell.ast_transformers.append(cls())
+
+    @classmethod
+    def unregister(cls, shell):
+        shell.ast_transformers[:] = [
+            transformer
+            for transformer in shell.ast_transformers
+            if not isinstance(transformer, cls)
+        ]
+
+    def visit(self, node):
+        from _pytest.assertion.rewrite import rewrite_asserts
+
+        rewrite_asserts(node)
+        return node

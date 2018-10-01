@@ -8,8 +8,15 @@ proper python modules easy.
 
 Installation: `pip install ipytest`
 
+Features:
+
+- support for [pytest](pytest.org) inside notebooks (with all bells and
+  whistles)
+- tight integration with IPython via magics and automatic code transforms
+
 ## Changes
 
+- `0.4.0`: add support for automatic AST transforms, deprecated non pytest API
 - `0.3.0`: change default pattern for `clean_tests` to match pytest discovery
 - `0.2.2`: add support for assert rewriting with current pytest versions
 - `0.2.1`: add ipython magics to simplify test execution
@@ -17,24 +24,19 @@ Installation: `pip install ipytest`
 - `0.1.0`: support for running `unittest.FunctionTestCase`,
   `unittest.TestCases`, and `doctests`.
 
-## Features
+## Usage
 
-- support for [pytest](pytest.org) (with all bells and whistles)
-- magics for easy execution
-- support for standard unittest and doctests
+For usage see the [example notebook](./Example.ipynb) or the documentation for
+the core API below.
 
-## Examples
+The suggested way to import `ipytest` is:
 
-- [pytest runner ](./example/Magics.ipynb)
-- [pytest runner (no magics)](./example/PyTest.ipynb)
-- [unittest runner](./example/Example.ipynb)
+```python
+import ipytest
+import ipytest.magics
 
-## Development
-
-To execute the unit tests of `ipytest` run
-
-    pipenv sync --dev
-    pipenv run test
+ipytest.config.rewrite_asserts = True
+```
 
 ## Reference
 
@@ -47,7 +49,7 @@ To register the magics, run `import ipytest.magics` first.
 For example:
 
 ```python
-%%run_pytest -vvv
+%%run_pytest -qq
 
 
 def test_example():
@@ -59,41 +61,15 @@ def test_example():
 
 Same as the `%%run_pytest`, but cleans any previously found tests, i.e., only
 tests defined in the current cell are executed.
+To register the magics, run `import ipytest.magics` first.
 
-### `%%rewrite_asserts`
-
-Rewrite any asserts in the current cell using pytest without running the tests.
-To get best results run the tests with `run_pytest`.
-
-For example::
-
-```python
-%%rewrite_asserts
-
-def test_example():
-    ...
-```
-
-### `ipytest.run_pytest`
-`ipytest.run_pytest(module=None, filename=None, pytest_options=(), pytest_plugins=())`
-
-Execute tests in the passed module (defaults to __main__) with pytest.
-
-**Arguments:**
-
-- module: the module containing the tests.
-  If not given, __main__ will be used.
-- filename: the filename of the file containing the tests.
-  It has to be a real file, e.g., a notebook name, since itts existence will
-  be checked by pytest.
-  If not given, the __file__ attribute of the passed module will be used.
-- pytest_options: additional options passed to pytest
-- pytest_plugins: additional plugins passed to pytest.
+### `ipytest.run`
+`ipytest.run(*args)`
 
 
 
 ### `ipytest.clean_tests`
-`ipytest.clean_tests(pattern='[Tt]est*', items=None)`
+`ipytest.clean_tests(pattern=None, items=None)`
 
 Delete tests with names matching the given pattern.
 
@@ -130,8 +106,63 @@ reload("ipytest._util", "ipytest")
 
 
 
+
+### `ipytest.config`
+
+Configure `ipytest`. The following settings are suported:
+
+- `ipytest.config.rewrite_asserts`: enable ipython AST transforms to rewrite
+  asserts, defaults to `False`.
+- `ipytest.config.clean`: the patter used to clean variables, defaults to
+  `[Tt]est*`.
+
+## Development
+
+To execute the unit tests of `ipytest` run
+
+    pipenv sync --dev
+    pipenv run test
+
+Before commit execute `pipenv run precommit` to update the documentation,
+format the code, and run tests.
+
+## Legacy functionality
+
+### `%%rewrite_asserts`
+
+Rewrite any asserts in the current cell using pytest without running the tests.
+To get best results run the tests with `run_pytest`.
+To register the magics, run `import ipytest.magics` first.
+
+For example::
+
+```python
+%%rewrite_asserts
+
+def test_example():
+    ...
+```
+
+### `ipytest.run_pytest`
+`ipytest.run_pytest(*args, **kwargs)`
+
+Execute tests in the passed module (defaults to __main__) with pytest.
+
+**Arguments:**
+
+- module: the module containing the tests.
+  If not given, __main__ will be used.
+- filename: the filename of the file containing the tests.
+  It has to be a real file, e.g., a notebook name, since itts existence will
+  be checked by pytest.
+  If not given, the __file__ attribute of the passed module will be used.
+- pytest_options: additional options passed to pytest
+- pytest_plugins: additional plugins passed to pytest.
+
+
+
 ### `ipytest.run_tests`
-`ipytest.run_tests(doctest=False, items=None)`
+`ipytest.run_tests(*args, **kwargs)`
 
 Run all tests in the given items dictionary.
 
@@ -144,7 +175,7 @@ Run all tests in the given items dictionary.
 
 
 ### `ipytest.collect_tests`
-`ipytest.collect_tests(doctest=False, items=None)`
+`ipytest.collect_tests(*args, **kwargs)`
 
 Collect all test cases and return a unittest.TestSuite.
 
@@ -153,7 +184,7 @@ The arguments are the same as for ipytest.run_tests.
 
 
 ### `ipytest.assert_equals`
-`ipytest.assert_equals(a, b, *args, **kwargs)`
+`ipytest.assert_equals(*args, **kwargs)`
 
 Compare two objects and throw and exception if they are not equal.
 
@@ -170,7 +201,7 @@ implementation to use depending on the argument type.
 
 
 ### `ipytest.get_assert_function`
-`ipytest.get_assert_function(a, b)`
+`ipytest.get_assert_function(*args, **kwargs)`
 
 Determine the assert function to use depending on the arguments.
 
@@ -181,10 +212,9 @@ supplied by numpy and pandas.
 
 
 ### `ipytest.unittest_assert_equals`
-`ipytest.unittest_assert_equals(a, b)`
+`ipytest.unittest_assert_equals(*args, **kwargs)`
 
 Compare two objects with the assertEqual method of unittest.TestCase.
-
 
 
 

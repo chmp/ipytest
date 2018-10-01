@@ -1,8 +1,11 @@
 import shlex
 
+from IPython import get_ipython
 from IPython.core.magic import Magics, magics_class, cell_magic
 
-from ipytest import clean_tests, run_pytest
+from ipytest._config import config
+from ipytest._pytest_support import run
+from ipytest._util import clean_tests, emit_deprecation_warning
 
 
 @magics_class
@@ -16,8 +19,15 @@ class IPyTestMagics(Magics):
 
     @cell_magic
     def run_pytest(self, line, cell):
-        self.rewrite_asserts(line, cell)
-        run_pytest(pytest_options=shlex.split(line))
+        # If config.rewrite_asserts is True assertions are being
+        # rewritten by default, do not re-rewrite them.
+        if not config.rewrite_asserts:
+            self.rewrite_asserts(line, cell)
+
+        else:
+            self.shell.run_cell(cell)
+
+        run(*shlex.split(line))
 
     @cell_magic
     def rewrite_asserts(self, line, cell):
@@ -33,6 +43,11 @@ class IPyTestMagics(Magics):
             from ipytest import run_pytest
             run_pytest()
         """
+        emit_deprecation_warning(
+            "Assertion rewriting via magics is deprecated. "
+            "Use iyptest.config.rewrite_asserts = True instead."
+        )
+
         # follow InteractiveShell._run_cell
         cell_name = self.shell.compile.cache(cell, self.shell.execution_count)
         mod = self.shell.compile.ast_parse(cell, filename=cell_name)

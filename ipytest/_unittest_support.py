@@ -3,7 +3,7 @@ import inspect
 import itertools as it
 import unittest
 
-from ._util import _get_globals_of_caller
+from ._util import _get_globals_of_caller, deprecated
 
 try:
     import numpy as _np
@@ -23,6 +23,7 @@ except ImportError:
     _has_pandas = False
 
 
+@deprecated("unittest support for ipytest is deprecated, use pytest")
 def run_tests(doctest=False, items=None):
     """Run all tests in the given items dictionary.
 
@@ -33,19 +34,22 @@ def run_tests(doctest=False, items=None):
         globals object is determined from the call stack.
     """
     if items is None:
-        items = _get_globals_of_caller(distance=1)
+        # NOTE: distance=2 accounts for the deprecated decorator
+        items = _get_globals_of_caller(distance=2)
 
     suite = unittest.TestSuite(collect_tests(items=items, doctest=doctest))
     unittest.TextTestRunner(verbosity=2).run(suite)
 
 
+@deprecated("unittest support for ipytest is deprecated, use pytest")
 def collect_tests(doctest=False, items=None):
     """Collect all test cases and return a `unittest.TestSuite`.
 
     The arguments are the same as for `ipytest.run_tests`.
     """
     if items is None:
-        items = _get_globals_of_caller(distance=1)
+        # NOTE: distance=2 accounts for the deprecated decorator
+        items = _get_globals_of_caller(distance=2)
 
     def _impl():
         for (key, value) in sorted(items.items()):
@@ -83,6 +87,7 @@ def collect_tests(doctest=False, items=None):
     return list(_impl())
 
 
+@deprecated("unittest support for ipytest is deprecated, use pytest")
 def assert_equals(a, b, *args, **kwargs):
     """Compare two objects and throw and exception if they are not equal.
 
@@ -100,6 +105,7 @@ def assert_equals(a, b, *args, **kwargs):
     test_func(a, b, *args, **kwargs)
 
 
+@deprecated("unittest support for ipytest is deprecated, use pytest")
 def get_assert_function(a, b):
     """Determine the assert function to use depending on the arguments.
 
@@ -124,6 +130,7 @@ def get_assert_function(a, b):
     return unittest_assert_equals
 
 
+@deprecated("unittest support for ipytest is deprecated, use pytest")
 def unittest_assert_equals(a, b):
     """Compare two objects with the `assertEqual` method of `unittest.TestCase`.
     """
