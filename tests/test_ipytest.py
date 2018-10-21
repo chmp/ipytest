@@ -111,7 +111,7 @@ def test_get_assert_function_pandas_panel():
     except ImportError:
         return
 
-    expected = pdt.assert_panelnd_equal
+    expected = pdt.assert_panel_equal
 
     actual = ipytest.get_assert_function(pd.Panel(), None)
     ipytest.assert_equals(actual, expected)

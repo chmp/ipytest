@@ -16,7 +16,7 @@ Features:
 
 ## Changes
 
-- `0.4.0`: add support for automatic AST transforms, deprecated non pytest API.
+- `0.4.0`: add support for automatic AST transforms, deprecate non pytest API.
   Currently in beta, use `ipytest==0.4.0b1`.
 - `0.3.0`: change default pattern for `clean_tests` to match pytest discovery
 - `0.2.2`: add support for assert rewriting with current pytest versions
@@ -41,29 +41,6 @@ ipytest.config.rewrite_asserts = True
 
 ## Reference
 
-### `%%run_pytest ...`
-
-IPython magic that first executes the cell, then executes `run_pytest`.
-Any arguments passed on the magic line be passed on to pytest.
-To register the magics, run `import ipytest.magics` first.
-
-For example:
-
-```python
-%%run_pytest -qq
-
-
-def test_example():
-    ...
-
-```
-
-### `%%run_pytest[clean] ...`
-
-Same as the `%%run_pytest`, but cleans any previously found tests, i.e., only
-tests defined in the current cell are executed.
-To register the magics, run `import ipytest.magics` first.
-
 ### `ipytest.run`
 `ipytest.run(*args)`
 
@@ -84,6 +61,29 @@ Execute all tests in the passed module (defaults to __main__) with pytest.
   additional plugins passed to pytest.
 
 
+
+### `%%run_pytest ...`
+
+IPython magic that first executes the cell, then executes `ipytest.run()`.
+Any arguments passed on the magic line be passed on to pytest.
+To register the magics, run `import ipytest.magics` first.
+
+For example:
+
+```python
+%%run_pytest -qq
+
+
+def test_example():
+    ...
+
+```
+
+### `%%run_pytest[clean] ...`
+
+Same as the `%%run_pytest`, but cleans any previously found tests, i.e., only
+tests defined in the current cell are executed.
+To register the magics, run `import ipytest.magics` first.
 
 ### `ipytest.clean_tests`
 `ipytest.clean_tests(pattern=None, items=None)`

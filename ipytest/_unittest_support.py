@@ -121,7 +121,7 @@ def get_assert_function(a, b):
             return _pd_testing.assert_frame_equal
 
         if isinstance(a, _pd.Panel) or isinstance(b, _pd.Panel):
-            return _pd_testing.assert_panelnd_equal
+            return _pd_testing.assert_panel_equal
 
     if _has_numpy:
         if isinstance(a, _np.ndarray) or isinstance(b, _np.ndarray):
