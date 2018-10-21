@@ -130,7 +130,7 @@ Configure `ipytest`. The following settings are suported:
 
 - `ipytest.config.rewrite_asserts`: enable ipython AST transforms to rewrite
   asserts, defaults to `False`.
-- `ipytest.config.clean`: the patter used to clean variables, defaults to
+- `ipytest.config.clean`: the pattern used to clean variables, defaults to
   `[Tt]est*`.
 
 ## Development

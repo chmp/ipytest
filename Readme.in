@@ -16,7 +16,7 @@ Features:
 
 ## Changes
 
-- `0.4.0`: add support for automatic AST transforms, deprecated non pytest API.
+- `0.4.0`: add support for automatic AST transforms, deprecate non pytest API.
   Currently in beta, use `ipytest==0.4.0b1`.
 - `0.3.0`: change default pattern for `clean_tests` to match pytest discovery
 - `0.2.2`: add support for assert rewriting with current pytest versions
@@ -41,9 +41,11 @@ ipytest.config.rewrite_asserts = True
 
 ## Reference
 
+.. autofunction:: ipytest.run
+
 ### `%%run_pytest ...`
 
-IPython magic that first executes the cell, then executes `run_pytest`.
+IPython magic that first executes the cell, then executes `ipytest.run()`.
 Any arguments passed on the magic line be passed on to pytest.
 To register the magics, run `import ipytest.magics` first.
 
@@ -64,8 +66,6 @@ Same as the `%%run_pytest`, but cleans any previously found tests, i.e., only
 tests defined in the current cell are executed.
 To register the magics, run `import ipytest.magics` first.
 
-.. autofunction:: ipytest.run
-
 .. autofunction:: ipytest.clean_tests
 
 .. autofunction:: ipytest.reload
@@ -77,7 +77,7 @@ Configure `ipytest`. The following settings are suported:
 
 - `ipytest.config.rewrite_asserts`: enable ipython AST transforms to rewrite
   asserts, defaults to `False`.
-- `ipytest.config.clean`: the patter used to clean variables, defaults to
+- `ipytest.config.clean`: the pattern used to clean variables, defaults to
   `[Tt]est*`.
 
 ## Development
