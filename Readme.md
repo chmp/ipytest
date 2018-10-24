@@ -17,7 +17,6 @@ Features:
 ## Changes
 
 - `0.4.0`: add support for automatic AST transforms, deprecate non pytest API.
-  Currently in beta, use `ipytest==0.4.0b1`.
 - `0.3.0`: change default pattern for `clean_tests` to match pytest discovery
 - `0.2.2`: add support for assert rewriting with current pytest versions
 - `0.2.1`: add ipython magics to simplify test execution
