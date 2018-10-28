@@ -2,6 +2,7 @@ import fnmatch
 import functools as ft
 import importlib
 import inspect
+import os
 import sys
 
 from ._config import config
@@ -73,6 +74,20 @@ def emit_deprecation_warning(message):
 
 
 emit_deprecation_warning.warned = set()
+
+
+def running_as_test():
+    """Check whether the notebook is executed as a test.
+
+    This function may be useful, when running notebooks as integration tests to
+    ensure the runtime is not exceedingly long.
+
+    Usage::
+
+        model.fit(x, y, epochs=500 if not ipytest.running_as_test() else 1)
+
+    """
+    return os.environ.get("RUNNING_AS_TEST") is not None
 
 
 def _get_globals_of_caller(distance=0):

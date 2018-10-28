@@ -6,7 +6,7 @@ from ._unittest_support import (
     get_assert_function,
     unittest_assert_equals,
 )
-from ._util import clean_tests, reload, emit_deprecation_warning
+from ._util import clean_tests, reload, emit_deprecation_warning, running_as_test
 
 try:
     import pytest as _pytest  # noqa: F401
@@ -35,4 +35,5 @@ __all__ = (["run_pytest", "run"] if _has_pytest else []) + [
     "get_assert_function",
     "unittest_assert_equals",
     "reload",
+    "running_as_test",
 ]
