@@ -16,6 +16,7 @@ wheel = "*"
 twine = "*"
 chmp = "*"
 docutils = "*"
+nbval = "*"
 
 [requires]
 python_version = "3.7"
@@ -25,3 +26,4 @@ package = "python setup.py bdist_wheel"
 precommit = "invoke precommit"
 format = "invoke format"
 test = "invoke test"
+integration = "invoke integration"
