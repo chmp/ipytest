@@ -39,9 +39,7 @@ The suggested way to import `ipytest` is:
 
 ```python
 import ipytest
-import ipytest.magics
-
-ipytest.config.rewrite_asserts = True
+ipytest.config(rewrite_asserts=True, magics=True)
 
 __file__ = "INSERT YOUR NOTEBOOK FILENAME HERE"
 ```
