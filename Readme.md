@@ -14,13 +14,20 @@ Features:
   whistles)
 - tight integration with IPython via magics and automatic code transforms
 
+Contents: [Changes](#changes)
+| [Usage](#usage)
+| [Reference](#reference)
+| [Development](#development)
+| [Legacy functionality](#legacy-functionality)
+| [License](#license)
+
 ## Changes
 
 - `dev`: add helper to detect whether a notebook is executed as a test.
 - `0.5.0`: fix assertion rewriting via magics in `ipython>=7`. Add support to
   raise a `RuntimeError` on test errors. Add support to set base arguments.
   Allow to set multiple config values at the same time. Use config to control
-  magics. Currently in beta, use `ipytest==0.5.0b1`.
+  magics. Currently in beta, use `ipytest==0.5.0b2`.
 - `0.4.0`: add support for automatic AST transforms, deprecate non pytest API.
 - `0.3.0`: change default pattern for `clean_tests` to match pytest discovery
 - `0.2.2`: add support for assert rewriting with current pytest versions
@@ -40,6 +47,18 @@ The suggested way to import `ipytest` is:
 import ipytest
 ipytest.config(rewrite_asserts=True, magics=True)
 ```
+
+Afterwards test in the current cell can be executed as in:
+
+```python
+%%run_pytest[clean] -qq
+
+def test_example():
+    assert [1, 2, 3] == [1, 2, 3]
+```
+
+This command will first delete any previously defined tests, execute the cell
+and the run pytest. See below for a reference of available options.
 
 ## Reference
 
@@ -130,16 +149,6 @@ ipytest.config(rewrite_asserts=True, raise_on_error=True)
 
 The return code of the last pytest invocation.
 
-## Development
-
-To execute the unit tests of `ipytest` run
-
-    pipenv sync --dev
-    pipenv run test
-
-Before commit execute `pipenv run precommit` to update the documentation,
-format the code, and run tests.
-
 ### `ipytest.clean_tests`
 `ipytest.clean_tests(pattern=None, items=None)`
 
@@ -193,6 +202,16 @@ model.fit(x, y, epochs=500 if not ipytest.running_as_test() else 1)
 ```
 
 
+
+## Development
+
+To execute the unit tests of `ipytest` run
+
+    pipenv sync --dev
+    pipenv run test
+
+Before commit execute `pipenv run precommit` to update the documentation,
+format the code, and run tests.
 
 ## Legacy functionality
 
