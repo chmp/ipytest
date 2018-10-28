@@ -1,4 +1,5 @@
 """Add syntatic sugar for configuration"""
+import warnings
 
 
 class ConfigKey:
@@ -56,6 +57,18 @@ class Config:
             assert self._rewrite_context is not None
             self._rewrite_context.__exit__(None, None, None)
             self._rewrite_context = None
+
+    @config_key(default=False)
+    def magics(self, value):
+        from IPython import get_ipython
+        from ._pytest_support import IPyTestMagics
+
+        if value:
+            get_ipython().register_magics(IPyTestMagics)
+
+        else:
+            warnings.warn("IPython does not support de-registering magics.")
+            pass
 
     @config_key(default="[Tt]est*")
     def clean(self, value):
