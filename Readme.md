@@ -1,14 +1,13 @@
 # ipytest - unit tests in IPython notbeooks
 
-[Changes](#changes)
-| [Usage](#usage)
+[Usage](#usage)
+| [Changes](#changes)
 | [Related packages](#related-packages)
 | [Reference](#reference)
 | [Development](#development)
 | [Legacy functionality](#legacy-functionality)
 | [License](#license)
 
----
 
 Sometimes quick experiments in IPython grow large and you find yourself wanting
 unit tests. This module aims to make testing code in IPython notebooks easy. At
@@ -23,27 +22,6 @@ Features:
 - support for [pytest](pytest.org) inside notebooks (with all bells and
   whistles)
 - tight integration with IPython via magics and automatic code transforms
-
-## Changes
-
-- `0.5.0`:
-    - Currently in beta, use `ipytest==0.5.0b2`.
-    - Fix assertion rewriting via magics in `ipython>=7`
-    - Add support to raise a `RuntimeError` on test errors (set
-      `ipytest.config.raise_on_error = True`)
-    - Add support to set base arguments (set `ipytest.config.base_args = []`)
-    - Add config setting to enable magics (set `ipytest.config.magics = True`).
-    - Allow to set multiple config values at the same time by calling the
-      config object (`ipytest.config(...)``).
-    - Add `ipytest.running_as_test()` to detect whether a notebook is executed
-      as a test.
-- `0.4.0`: add support for automatic AST transforms, deprecate non pytest API.
-- `0.3.0`: change default pattern for `clean_tests` to match pytest discovery
-- `0.2.2`: add support for assert rewriting with current pytest versions
-- `0.2.1`: add ipython magics to simplify test execution
-- `0.2.0`: support for using pytest inside notebooks
-- `0.1.0`: support for running `unittest.FunctionTestCase`,
-  `unittest.TestCases`, and `doctests`.
 
 ## Usage
 
@@ -68,6 +46,27 @@ def test_example():
 
 This command will first delete any previously defined tests, execute the cell
 and the run pytest. See below for a reference of available options.
+
+## Changes
+
+- `0.5.0`:
+    - Currently in beta, use `ipytest==0.5.0b2`.
+    - Fix assertion rewriting via magics in `ipython>=7`
+    - Add support to raise a `RuntimeError` on test errors (set
+      `ipytest.config.raise_on_error = True`)
+    - Add support to set base arguments (set `ipytest.config.base_args = []`)
+    - Add config setting to enable magics (set `ipytest.config.magics = True`).
+    - Allow to set multiple config values at the same time by calling the
+      config object (`ipytest.config(...)``).
+    - Add `ipytest.running_as_test()` to detect whether a notebook is executed
+      as a test.
+- `0.4.0`: add support for automatic AST transforms, deprecate non pytest API.
+- `0.3.0`: change default pattern for `clean_tests` to match pytest discovery
+- `0.2.2`: add support for assert rewriting with current pytest versions
+- `0.2.1`: add ipython magics to simplify test execution
+- `0.2.0`: support for using pytest inside notebooks
+- `0.1.0`: support for running `unittest.FunctionTestCase`,
+  `unittest.TestCases`, and `doctests`.
 
 ## Related packages
 
