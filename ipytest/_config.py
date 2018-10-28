@@ -51,5 +51,9 @@ class Config:
     def base_args(self, value):
         pass
 
+    @config_key(default=False)
+    def raise_on_error(self, value):
+        pass
+
 
 config = Config()
