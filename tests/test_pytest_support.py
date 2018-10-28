@@ -5,7 +5,7 @@ import types
 
 import pytest
 
-from ipytest import run_pytest
+from ipytest import run
 
 
 def fake_module(__name__, **items):
@@ -25,13 +25,14 @@ def test_fixtures():
     def test_example(my_fixture):
         assert my_fixture == 42
 
-    assert 0 == run_pytest(
+    assert 0 == run(
         module=fake_module(
             __name__="empty_module",
             __file__=os.path.join(os.path.dirname(__file__), "empty_module.py"),
             my_fixture=my_fixture,
             test_example=test_example,
-        )
+        ),
+        return_exit_code=True,
     )
 
 
@@ -40,10 +41,11 @@ def test_parametrize():
     def test_example(val):
         assert val % 2 == 0
 
-    assert 0 == run_pytest(
+    assert 0 == run(
         module=fake_module(
             __name__="empty_module",
             __file__=os.path.join(os.path.dirname(__file__), "empty_module.py"),
             test_example=test_example,
-        )
+        ),
+        return_exit_code=True,
     )
