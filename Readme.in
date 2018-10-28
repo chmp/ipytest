@@ -18,6 +18,8 @@ Features:
 
 Note: development is tracked on the `develop` branch.
 
+- `dev`: fix assertion rewriting via magics in `ipython>=7`. Add support to
+  raise a `RuntimeError` on test errors. Add support to set base arguments.
 - `0.4.0`: add support for automatic AST transforms, deprecate non pytest API.
   Currently in beta, use `ipytest==0.4.0b1`.
 - `0.3.0`: change default pattern for `clean_tests` to match pytest discovery
