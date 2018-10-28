@@ -83,6 +83,13 @@ Configure `ipytest`. The following settings are suported:
   asserts, defaults to `False`.
 - `ipytest.config.clean`: the pattern used to clean variables, defaults to
   `[Tt]est*`.
+- `ipytest.config.base_args`: pytest command line arguments to prepend to every
+  pytest invocation. For example setting `ipytest.config.base_args = ['-qq']`
+  will execute pytest with the least verbosity.
+
+### `ipytest.exit_code`
+
+The return code of the last pytest invocation. 
 
 ## Development
 
