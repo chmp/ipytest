@@ -18,10 +18,11 @@ Features:
 
 Note: development is tracked on the `develop` branch.
 
-- `dev`: fix assertion rewriting via magics in `ipython>=7`. Add support to
+- `dev`: add helper to detect whether a notebook is executed as a test.
+- `0.5.0`: fix assertion rewriting via magics in `ipython>=7`. Add support to
   raise a `RuntimeError` on test errors. Add support to set base arguments.
   Allow to set multiple config values at the same time. Use config to control
-  magics.
+  magics. Currently in beta, use `ipytest==0.5.0b1`.
 - `0.4.0`: add support for automatic AST transforms, deprecate non pytest API.
 - `0.3.0`: change default pattern for `clean_tests` to match pytest discovery
 - `0.2.2`: add support for assert rewriting with current pytest versions
@@ -127,6 +128,8 @@ format the code, and run tests.
 .. autofunction:: ipytest.clean_tests
 
 .. autofunction:: ipytest.reload
+
+.. autofunction:: ipytest.running_as_test
 
 ## Legacy functionality
 

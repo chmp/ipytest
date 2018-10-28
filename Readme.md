@@ -18,6 +18,7 @@ Features:
 
 Note: development is tracked on the `develop` branch.
 
+- `dev`: add helper to detect whether a notebook is executed as a test.
 - `0.5.0`: fix assertion rewriting via magics in `ipython>=7`. Add support to
   raise a `RuntimeError` on test errors. Add support to set base arguments.
   Allow to set multiple config values at the same time. Use config to control
@@ -177,6 +178,22 @@ Usage:
 
 ```
 reload("ipytest._util", "ipytest")
+```
+
+
+
+### `ipytest.running_as_test`
+`ipytest.running_as_test()`
+
+Check whether the notebook is executed as a test.
+
+This function may be useful, when running notebooks as integration tests to
+ensure the runtime is not exceedingly long.
+
+Usage:
+
+```
+model.fit(x, y, epochs=500 if not ipytest.running_as_test() else 1)
 ```
 
 
