@@ -21,8 +21,13 @@ else:
     _has_pytest = True
 
 
-__all__ = (["run_pytest"] if _has_pytest else []) + [
+# the pytest exit code
+exit_code = None
+
+
+__all__ = (["run_pytest", "run"] if _has_pytest else []) + [
     "config",
+    "exit_code",
     "run_tests",
     "clean_tests",
     "collect_tests",
@@ -30,5 +35,4 @@ __all__ = (["run_pytest"] if _has_pytest else []) + [
     "get_assert_function",
     "unittest_assert_equals",
     "reload",
-    "run",
 ]
