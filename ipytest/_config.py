@@ -1,5 +1,4 @@
 """Add syntatic sugar for configuration"""
-import sys
 
 
 class ConfigKey:
@@ -15,7 +14,7 @@ class ConfigKey:
             return
 
         self.value = value
-        self.func(value)
+        self.func(instance, value)
 
 
 def config_key(**kwargs):
@@ -26,19 +25,26 @@ def config_key(**kwargs):
 
 
 class Config:
+    def __init__(self):
+        self._rewrite_context = None
+
     @config_key(default=False)
-    def rewrite_asserts(value):
+    def rewrite_asserts(self, value):
         from IPython import get_ipython
-        from ._pytest_support import RewriteAssertTransformer
+        from ._pytest_support import RewriteContext
 
         if value:
-            RewriteAssertTransformer.register(shell=get_ipython())
+            assert self._rewrite_context is None
+            self._rewrite_context = RewriteContext(shell=get_ipython())
+            self._rewrite_context.__enter__()
 
         else:
-            RewriteAssertTransformer.unregister(shell=get_ipython())
+            assert self._rewrite_context is not None
+            self._rewrite_context.__exit__(None, None, None)
+            self._rewrite_context = None
 
     @config_key(default="[Tt]est*")
-    def clean(value):
+    def clean(self, value):
         pass
 
 
