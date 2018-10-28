@@ -129,6 +129,20 @@ reload("ipytest._util", "ipytest")
 
 
 
+### `%%rewrite_asserts`
+
+Rewrite any asserts in the current cell using pytest without running the tests.
+To get best results run the tests with `run_pytest`.
+To register the magics, run `import ipytest.magics` first.
+
+For example::
+
+```python
+%%rewrite_asserts
+
+def test_example():
+    ...
+```
 
 ### `ipytest.config`
 
@@ -160,21 +174,6 @@ Before commit execute `pipenv run precommit` to update the documentation,
 format the code, and run tests.
 
 ## Legacy functionality
-
-### `%%rewrite_asserts`
-
-Rewrite any asserts in the current cell using pytest without running the tests.
-To get best results run the tests with `run_pytest`.
-To register the magics, run `import ipytest.magics` first.
-
-For example::
-
-```python
-%%rewrite_asserts
-
-def test_example():
-    ...
-```
 
 ### `ipytest.run_pytest`
 `ipytest.run_pytest(*args, **kwargs)`
