@@ -47,5 +47,9 @@ class Config:
     def clean(self, value):
         pass
 
+    @config_key(default=())
+    def base_args(self, value):
+        pass
+
 
 config = Config()
