@@ -28,7 +28,9 @@ class IPyTestMagics(Magics):
         else:
             self.shell.run_cell(cell)
 
-        run(*shlex.split(line))
+        import ipytest
+
+        ipytest.exit_code = run(*shlex.split(line), return_exit_code=True)
 
     @cell_magic
     def rewrite_asserts(self, line, cell):
