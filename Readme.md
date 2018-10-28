@@ -91,6 +91,57 @@ Same as the `%%run_pytest`, but cleans any previously found tests, i.e., only
 tests defined in the current cell are executed.
 To register the magics, run `import ipytest.magics` first.
 
+### `%%rewrite_asserts`
+
+Rewrite any asserts in the current cell using pytest without running the tests.
+To get best results run the tests with `run_pytest`.
+To register the magics, run `import ipytest.magics` first.
+
+For example::
+
+```python
+%%rewrite_asserts
+
+def test_example():
+    ...
+```
+
+### `ipytest.config`
+
+Configure `ipytest`. The following settings are suported:
+
+- `ipytest.config.rewrite_asserts` (default: `False`): enable ipython AST
+  transforms globally to rewrite asserts.
+- `ipytest.config.clean` (default: `[Tt]est*`): the pattern used to clean
+  variables.
+- `ipytest.config.base_args` (default: `()`): pytest command line arguments to
+  prepend to every pytest invocation. For example setting
+  `ipytest.config.base_args = ['-qq']` will execute pytest with the least
+  verbosity.
+- `ipytest.config.raise_on_error` (default: `False`): if `True`, unsuccessful
+  invocations will raise a `RuntimeError`.
+
+To set multiple arguments at once, the config object can also be called, as in:
+
+```python
+
+ipytest.config(rewrite_asserts=True, raise_on_error=True)
+```
+
+### `ipytest.exit_code`
+
+The return code of the last pytest invocation.
+
+## Development
+
+To execute the unit tests of `ipytest` run
+
+    pipenv sync --dev
+    pipenv run test
+
+Before commit execute `pipenv run precommit` to update the documentation,
+format the code, and run tests.
+
 ### `ipytest.clean_tests`
 `ipytest.clean_tests(pattern=None, items=None)`
 
@@ -128,50 +179,6 @@ reload("ipytest._util", "ipytest")
 ```
 
 
-
-### `%%rewrite_asserts`
-
-Rewrite any asserts in the current cell using pytest without running the tests.
-To get best results run the tests with `run_pytest`.
-To register the magics, run `import ipytest.magics` first.
-
-For example::
-
-```python
-%%rewrite_asserts
-
-def test_example():
-    ...
-```
-
-### `ipytest.config`
-
-Configure `ipytest`. The following settings are suported:
-
-- `ipytest.config.rewrite_asserts` (default: `False`): enable ipython AST
-  transforms globally to rewrite asserts.
-- `ipytest.config.clean` (default: `[Tt]est*`): the pattern used to clean
-  variables.
-- `ipytest.config.base_args` (default: `()`): pytest command line arguments to
-  prepend to every pytest invocation. For example setting
-  `ipytest.config.base_args = ['-qq']` will execute pytest with the least
-  verbosity.
-- `ipytest.config.raise_on_error` (default: `False`): if `True`, unsuccessful
-  invocations will raise a `RuntimeError`.
-
-### `ipytest.exit_code`
-
-The return code of the last pytest invocation.
-
-## Development
-
-To execute the unit tests of `ipytest` run
-
-    pipenv sync --dev
-    pipenv run test
-
-Before commit execute `pipenv run precommit` to update the documentation,
-format the code, and run tests.
 
 ## Legacy functionality
 

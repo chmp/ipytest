@@ -28,6 +28,20 @@ class Config:
     def __init__(self):
         self._rewrite_context = None
 
+    def __call__(self, **updates):
+        """Perform multiple context updates at the same time.
+
+        The return value can be used as a context manager to revert any changes
+        upon exit::
+
+            with ipytest.config(base_args=['-qq']):
+                ipytest.run()
+
+        """
+        context = ConfigContext(self, updates)
+        context.__enter__()
+        return context
+
     @config_key(default=False)
     def rewrite_asserts(self, value):
         from IPython import get_ipython
@@ -54,6 +68,34 @@ class Config:
     @config_key(default=False)
     def raise_on_error(self, value):
         pass
+
+
+class ConfigContext:
+    def __init__(self, config, updates):
+        self.config = config
+        self.updates = updates
+        self.old_values = None
+
+    def __enter__(self):
+        # re-entry, just do nothing
+        if self.old_values is not None:
+            return self
+
+        self.old_values = {k: getattr(self.config, k) for k in self.updates}
+
+        for k, v in self.updates.items():
+            setattr(self.config, k, v)
+
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        if self.old_values is None:
+            raise RuntimeError("Cannot exit, before entering.")
+
+        for k, v in self.old_values.items():
+            setattr(self.config, k, v)
+
+        self.old_values = None
 
 
 config = Config()
