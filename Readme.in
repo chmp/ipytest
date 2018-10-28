@@ -1,5 +1,15 @@
 # ipytest - unit tests in IPython notbeooks
 
+[Changes](#changes)
+| [Usage](#usage)
+| [Related packages](#related-packages)
+| [Reference](#reference)
+| [Development](#development)
+| [Legacy functionality](#legacy-functionality)
+| [License](#license)
+
+---
+
 Sometimes quick experiments in IPython grow large and you find yourself wanting
 unit tests. This module aims to make testing code in IPython notebooks easy. At
 its core, it offers a way to run [`pytest`](https://pytest.org) tests inside the
@@ -14,20 +24,19 @@ Features:
   whistles)
 - tight integration with IPython via magics and automatic code transforms
 
-Contents: [Changes](#changes)
-| [Usage](#usage)
-| [Reference](#reference)
-| [Development](#development)
-| [Legacy functionality](#legacy-functionality)
-| [License](#license)
-
 ## Changes
 
-- `dev`: add helper to detect whether a notebook is executed as a test.
-- `0.5.0`: fix assertion rewriting via magics in `ipython>=7`. Add support to
-  raise a `RuntimeError` on test errors. Add support to set base arguments.
-  Allow to set multiple config values at the same time. Use config to control
-  magics. Currently in beta, use `ipytest==0.5.0b2`.
+- `0.5.0`:
+    - Currently in beta, use `ipytest==0.5.0b2`.
+    - Fix assertion rewriting via magics in `ipython>=7`
+    - Add support to raise a `RuntimeError` on test errors (set
+      `ipytest.config.raise_on_error = True`)
+    - Add support to set base arguments (set `ipytest.config.base_args = []`)
+    - Add config setting to enable magics (set `ipytest.config.magics = True`).
+    - Allow to set multiple config values at the same time by calling the
+      config object (`ipytest.config(...)``).
+    - Add `ipytest.running_as_test()` to detect whether a notebook is executed
+      as a test.
 - `0.4.0`: add support for automatic AST transforms, deprecate non pytest API.
 - `0.3.0`: change default pattern for `clean_tests` to match pytest discovery
 - `0.2.2`: add support for assert rewriting with current pytest versions
@@ -59,6 +68,21 @@ def test_example():
 
 This command will first delete any previously defined tests, execute the cell
 and the run pytest. See below for a reference of available options.
+
+## Related packages
+
+`ipytest` is designed to enable running tests within an interactive notebook
+session. There are also other packages that aim to use notebooks as tests
+themselves, for example by comparing the output of running all cells to the
+output of previous runs. These packages include:
+
+- [nbval](https://github.com/computationalmodelling/nbval) is actively
+  maintained. It is also used in the integration tests of `ipytest`.
+- [pytest-ipynb](https://github.com/zonca/pytest-ipynb) seems to be no longer
+  maintained as the latest commit was on March 2016. .
+- ...
+
+Please create an issue, if I missed a packaged or mischaracterized any package.
 
 ## Reference
 
