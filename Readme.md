@@ -20,8 +20,9 @@ Note: development is tracked on the `develop` branch.
 
 - `dev`: fix assertion rewriting via magics in `ipython>=7`. Add support to
   raise a `RuntimeError` on test errors. Add support to set base arguments.
+  Allow to set multiple config values at the same time. Use config to control
+  magics.
 - `0.4.0`: add support for automatic AST transforms, deprecate non pytest API.
-  Currently in beta, use `ipytest==0.4.0b1`.
 - `0.3.0`: change default pattern for `clean_tests` to match pytest discovery
 - `0.2.2`: add support for assert rewriting with current pytest versions
 - `0.2.1`: add ipython magics to simplify test execution
@@ -72,7 +73,7 @@ Execute all tests in the passed module (defaults to __main__) with pytest.
 
 IPython magic that first executes the cell, then executes `ipytest.run()`.
 Any arguments passed on the magic line be passed on to pytest.
-To register the magics, run `import ipytest.magics` first.
+To register the magics, run `ipytest.config.magics = True` first.
 
 For example:
 
@@ -89,13 +90,13 @@ def test_example():
 
 Same as the `%%run_pytest`, but cleans any previously found tests, i.e., only
 tests defined in the current cell are executed.
-To register the magics, run `import ipytest.magics` first.
+To register the magics, run `ipytest.config.magics = True` first.
 
 ### `%%rewrite_asserts`
 
 Rewrite any asserts in the current cell using pytest without running the tests.
 To get best results run the tests with `run_pytest`.
-To register the magics, run `import ipytest.magics` first.
+To register the magics, run `ipytest.config.magics = True` first.
 
 For example::
 
@@ -112,6 +113,8 @@ Configure `ipytest`. The following settings are suported:
 
 - `ipytest.config.rewrite_asserts` (default: `False`): enable ipython AST
   transforms globally to rewrite asserts.
+- `ipytest.config.magics` (default: `False`): if set to `True` register the
+  ipytest magics.
 - `ipytest.config.clean` (default: `[Tt]est*`): the pattern used to clean
   variables.
 - `ipytest.config.base_args` (default: `()`): pytest command line arguments to
