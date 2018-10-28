@@ -79,13 +79,14 @@ To register the magics, run `import ipytest.magics` first.
 
 Configure `ipytest`. The following settings are suported:
 
-- `ipytest.config.rewrite_asserts`: enable ipython AST transforms to rewrite
-  asserts, defaults to `False`.
-- `ipytest.config.clean`: the pattern used to clean variables, defaults to
-  `[Tt]est*`.
-- `ipytest.config.base_args`: pytest command line arguments to prepend to every
-  pytest invocation. For example setting `ipytest.config.base_args = ['-qq']`
-  will execute pytest with the least verbosity.
+- `ipytest.config.rewrite_asserts` (default: `False`): enable ipython AST
+  transforms globally to rewrite asserts.
+- `ipytest.config.clean` (default: `[Tt]est*`): the pattern used to clean
+  variables.
+- `ipytest.config.base_args` (default: `()`): pytest command line arguments to
+  prepend to every pytest invocation. For example setting
+  `ipytest.config.base_args = ['-qq']` will execute pytest with the least
+  verbosity.
 - `ipytest.config.raise_on_error` (default: `False`): if `True`, unsuccessful
   invocations will raise a `RuntimeError`.
 
