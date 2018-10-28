@@ -1,7 +1,6 @@
 from __future__ import print_function, division, absolute_import
 
 import ast
-import sys
 
 import py.path
 import pytest
@@ -100,20 +99,34 @@ class Module(pytest.Module):
         return self._module
 
 
-class RewriteAssertTransformer(ast.NodeTransformer):
-    @classmethod
-    def register(cls, shell):
-        cls.unregister(shell)
-        shell.ast_transformers.append(cls())
+class RewriteContext:
+    def __init__(self, shell):
+        self.shell = shell
+        self.transformer = None
 
-    @classmethod
-    def unregister(cls, shell):
-        shell.ast_transformers[:] = [
+    def __enter__(self):
+        self.register()
+        return self
+
+    def __exit__(self, exc_type=None, exc_val=None, exc_tb=None):
+        self.unregister()
+
+    def register(self):
+        assert self.transformer is None
+
+        self.transformer = RewriteAssertTransformer()
+        self.shell.ast_transformers.append(self.transformer)
+
+    def unregister(self):
+        self.shell.ast_transformers[:] = [
             transformer
-            for transformer in shell.ast_transformers
-            if not isinstance(transformer, cls)
+            for transformer in self.shell.ast_transformers
+            if transformer is not self.transformer
         ]
+        self.transformer = None
 
+
+class RewriteAssertTransformer(ast.NodeTransformer):
     def visit(self, node):
         from _pytest.assertion.rewrite import rewrite_asserts
 

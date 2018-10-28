@@ -1,11 +1,12 @@
 import shlex
+import warnings
 
 from IPython import get_ipython
 from IPython.core.magic import Magics, magics_class, cell_magic
 
 from ipytest._config import config
-from ipytest._pytest_support import run
-from ipytest._util import clean_tests, emit_deprecation_warning
+from ipytest._pytest_support import run, RewriteContext
+from ipytest._util import clean_tests
 
 
 @magics_class
@@ -43,23 +44,12 @@ class IPyTestMagics(Magics):
             from ipytest import run_pytest
             run_pytest()
         """
-        emit_deprecation_warning(
-            "Assertion rewriting via magics is deprecated. "
-            "Use iyptest.config.rewrite_asserts = True instead."
-        )
+        if config.rewrite_asserts:
+            warnings.warn("skip rewriting as global rewriting is active")
+            return
 
-        # follow InteractiveShell._run_cell
-        cell_name = self.shell.compile.cache(cell, self.shell.execution_count)
-        mod = self.shell.compile.ast_parse(cell, filename=cell_name)
-
-        # rewrite assert statements
-        from _pytest.assertion.rewrite import rewrite_asserts
-
-        rewrite_asserts(mod)
-
-        # follow InteractiveShell.run_ast_nodes
-        code = self.shell.compile(mod, cell_name, "exec")
-        self.shell.run_code(code)
+        with RewriteContext(get_ipython()):
+            self.shell.run_cell(cell)
 
 
 get_ipython().register_magics(IPyTestMagics)
