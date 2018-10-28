@@ -135,6 +135,8 @@ Configure `ipytest`. The following settings are suported:
 - `ipytest.config.base_args`: pytest command line arguments to prepend to every
   pytest invocation. For example setting `ipytest.config.base_args = ['-qq']`
   will execute pytest with the least verbosity.
+- `ipytest.config.raise_on_error` (default: `False`): if `True`, unsuccessful
+  invocations will raise a `RuntimeError`.
 
 ### `ipytest.exit_code`
 

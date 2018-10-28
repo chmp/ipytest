@@ -67,6 +67,11 @@ def run(*args, module=None, filename=None, plugins=(), return_exit_code=False):
         ),
     )
 
+    if config.raise_on_error and exit_code != 0:
+        raise RuntimeError(
+            "Error in pytest invocation. Exit code: {}".format(exit_code)
+        )
+
     if return_exit_code:
         return exit_code
 
