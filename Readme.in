@@ -1,6 +1,7 @@
 # ipytest - unit tests in IPython notbeooks
 
 [Usage](#usage)
+| [Global state](#global-state)
 | [Changes](#changes)
 | [Related packages](#related-packages)
 | [Reference](#reference)
@@ -72,6 +73,23 @@ def test_example():
 This command will first delete any previously defined tests, execute the cell
 and then run pytest. See the [reference](#reference) for a detailed list of
 available functionality.
+
+## Global state
+
+There are two sources of global state when using pytest inside the notebook:
+
+1. pytest will find any test function ever defined. This behavior can lead to
+   unexpected results when test functions are renamed, as their previous
+   definition is still available inside the kernel. `ipytest` ships the
+   [`clean_test`](#ipytestclean_tests) function to delete such instances.
+   Also the [`%%run_pytest[clean]`](#run_pytestclean-) magic clears any
+   previously defined tests.
+2. Python's module system caches imports and therefore acts as a global state.
+   To test the most recent version of any module, the module needs to be
+   reloaded. `ipytest` offers the [`reload`](#ipytestreload) function. The
+   `autoreload` extension of IPython may also help here. To test local
+   packages, it is advisable to install them as development packages, e.g.,
+   `pip install -e .`.
 
 ## Changes
 
