@@ -45,12 +45,13 @@ def test_example():
 ```
 
 This command will first delete any previously defined tests, execute the cell
-and the run pytest. See below for a reference of available options.
+and then run pytest. See the [reference](#reference) for a detailed list of
+available functionality.
 
 ## Changes
 
 - `0.5.0`:
-    - Currently in beta, use `ipytest==0.5.0b2`.
+    - Currently in beta, use `ipytest==0.5.0b3`.
     - Fix assertion rewriting via magics in `ipython>=7`
     - Add support to raise a `RuntimeError` on test errors (set
       `ipytest.config.raise_on_error = True`)
