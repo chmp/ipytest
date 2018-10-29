@@ -87,7 +87,7 @@ def running_as_test():
         model.fit(x, y, epochs=500 if not ipytest.running_as_test() else 1)
 
     """
-    return os.environ.get("RUNNING_AS_TEST") is not None
+    return os.environ.get("PYTEST_CURRENT_TEST") is not None
 
 
 def _get_globals_of_caller(distance=0):
