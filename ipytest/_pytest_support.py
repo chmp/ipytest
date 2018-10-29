@@ -89,9 +89,6 @@ class ModuleCollectorPlugin(object):
         self.module = module
         self.filename = filename
 
-    def pytest_ignore_collect(self, path):
-        return path != py.path.local(self.filename)
-
     def pytest_collect_file(self, parent, path):
         if path == py.path.local(self.filename):
             return Module(path=path, parent=parent, module=self.module)
