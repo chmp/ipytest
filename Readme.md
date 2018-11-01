@@ -98,7 +98,7 @@ There are two sources of global state when using pytest inside the notebook:
     - Fix assertion rewriting via magics in `ipython>=7`
     - Add support to raise a `RuntimeError` on test errors (set
       `ipytest.config.raise_on_error = True`)
-    - Add support to set base arguments (set `ipytest.config.base_args = []`)
+    - Add support to set base arguments (set `ipytest.config.addopts = []`)
     - Add config setting to enable magics (set `ipytest.config.magics = True`).
     - Allow to set multiple config values at the same time by calling the
       config object (`ipytest.config(...)``).
@@ -198,9 +198,9 @@ Configure `ipytest`. The following settings are suported:
   ipytest magics.
 - `ipytest.config.clean` (default: `[Tt]est*`): the pattern used to clean
   variables.
-- `ipytest.config.base_args` (default: `()`): pytest command line arguments to
+- `ipytest.config.addopts` (default: `()`): pytest command line arguments to
   prepend to every pytest invocation. For example setting
-  `ipytest.config.base_args = ['-qq']` will execute pytest with the least
+  `ipytest.config.addopts= ['-qq']` will execute pytest with the least
   verbosity.
 - `ipytest.config.raise_on_error` (default: `False`): if `True`, unsuccessful
   invocations will raise a `RuntimeError`.

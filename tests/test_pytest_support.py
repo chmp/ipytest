@@ -52,9 +52,9 @@ def test_parametrize():
 
 
 def test_config():
-    with ipytest.config(raise_on_error=True, base_args=["a", "b"]):
+    with ipytest.config(raise_on_error=True, addopts=["a", "b"]):
         assert ipytest.config.raise_on_error is True
-        assert ipytest.config.base_args == ["a", "b"]
+        assert ipytest.config.addopts == ["a", "b"]
 
     assert ipytest.config.raise_on_error is False
-    assert ipytest.config.base_args == ()
+    assert ipytest.config.addopts == ()

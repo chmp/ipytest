@@ -35,8 +35,11 @@ class Config:
         The return value can be used as a context manager to revert any changes
         upon exit::
 
-            with ipytest.config(base_args=['-qq']):
+            with ipytest.config(addopts=['-qq']):
                 ipytest.run()
+
+            # this call is equivalent to
+            iptytest.run('-qq')
 
         """
         context = ConfigContext(self, updates)
@@ -75,7 +78,7 @@ class Config:
         pass
 
     @config_key(default=())
-    def base_args(self, value):
+    def addopts(self, value):
         pass
 
     @config_key(default=False)
