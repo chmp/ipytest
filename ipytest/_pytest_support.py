@@ -66,7 +66,7 @@ def run(*args, module=None, filename=None, plugins=(), return_exit_code=False):
             )
 
     exit_code = pytest.main(
-        list(config.base_args) + list(args) + [filename],
+        list(config.addopts) + list(args) + [filename],
         plugins=(
             list(plugins) + [ModuleCollectorPlugin(module=module, filename=filename)]
         ),
