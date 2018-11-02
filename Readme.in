@@ -24,29 +24,6 @@ Features:
   whistles)
 - tight integration with IPython via magics and automatic code transforms
 
-## Changes
-
-Note: development is tracked on the `develop` branch.
-
-- `0.5.0`:
-    - Currently in beta, use `ipytest==0.5.0b2`.
-    - Fix assertion rewriting via magics in `ipython>=7`
-    - Add support to raise a `RuntimeError` on test errors (set
-      `ipytest.config.raise_on_error = True`)
-    - Add support to set base arguments (set `ipytest.config.base_args = []`)
-    - Add config setting to enable magics (set `ipytest.config.magics = True`).
-    - Allow to set multiple config values at the same time by calling the
-      config object (`ipytest.config(...)``).
-    - Add `ipytest.running_as_test()` to detect whether a notebook is executed
-      as a test.
-- `0.4.0`: add support for automatic AST transforms, deprecate non pytest API.
-- `0.3.0`: change default pattern for `clean_tests` to match pytest discovery
-- `0.2.2`: add support for assert rewriting with current pytest versions
-- `0.2.1`: add ipython magics to simplify test execution
-- `0.2.0`: support for using pytest inside notebooks
-- `0.1.0`: support for running `unittest.FunctionTestCase`,
-  `unittest.TestCases`, and `doctests`.
-
 ## Usage
 
 For usage see the [example notebook](./Example.ipynb) or the documentation for
@@ -92,6 +69,8 @@ There are two sources of global state when using pytest inside the notebook:
    `pip install -e .`.
 
 ## Changes
+
+Note: development is tracked on the `develop` branch.
 
 - `0.5.0`:
     - Currently in beta, use `ipytest==0.5.0b3`.
