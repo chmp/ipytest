@@ -39,6 +39,8 @@ import ipytest
 import ipytest.magics
 
 ipytest.config.rewrite_asserts = True
+
+__file__ = "INSERT YOUR NOTEBOOK FILENAME HERE"
 ```
 
 ## Reference
