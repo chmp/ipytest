@@ -16,6 +16,8 @@ Features:
 
 ## Changes
 
+Note: development is tracked on the `develop` branch.
+
 - `0.4.0`: add support for automatic AST transforms, deprecate non pytest API.
 - `0.3.0`: change default pattern for `clean_tests` to match pytest discovery
 - `0.2.2`: add support for assert rewriting with current pytest versions
