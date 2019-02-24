@@ -73,6 +73,10 @@ class Config:
             warnings.warn("IPython does not support de-registering magics.")
             pass
 
+    @config_key(default=False)
+    def tempfile_fallback(self, value):
+        pass
+
     @config_key(default="[Tt]est*")
     def clean(self, value):
         pass

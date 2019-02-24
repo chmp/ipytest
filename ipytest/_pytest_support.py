@@ -1,8 +1,10 @@
 from __future__ import print_function, division, absolute_import
 
 import ast
+import contextlib
 import shlex
 import warnings
+import tempfile
 
 import py.path
 import pytest
@@ -56,21 +58,14 @@ def run(*args, module=None, filename=None, plugins=(), return_exit_code=False):
     if module is None:  # pragma: no cover
         import __main__ as module
 
-    if filename is None:
-        try:
-            filename = module.__file__
-
-        except AttributeError:
-            raise ValueError(
-                "module {} has no __file__ attribute, please pass filename instead."
-            )
-
-    exit_code = pytest.main(
-        list(config.addopts) + list(args) + [filename],
-        plugins=(
-            list(plugins) + [ModuleCollectorPlugin(module=module, filename=filename)]
-        ),
-    )
+    with _valid_filename(filename, module) as valid_filename:
+        exit_code = pytest.main(
+            list(config.addopts) + list(args) + [valid_filename],
+            plugins=(
+                list(plugins)
+                + [ModuleCollectorPlugin(module=module, filename=valid_filename)]
+            ),
+        )
 
     if config.raise_on_error and exit_code != 0:
         raise RuntimeError(
@@ -79,6 +74,27 @@ def run(*args, module=None, filename=None, plugins=(), return_exit_code=False):
 
     if return_exit_code:
         return exit_code
+
+
+@contextlib.contextmanager
+def _valid_filename(filename, module):
+    if filename is not None:
+        yield filename
+        return
+
+    filename = getattr(module, "__file__", None)
+    if filename is not None:
+        yield filename
+        return
+
+    if not config.tempfile_fallback:
+        raise ValueError(
+            "module {} has no valid __file__, please pass filename instead."
+        )
+
+    # generate an empty temporary file to use as a fallback
+    with tempfile.NamedTemporaryFile(dir=".", suffix=".ipynb") as f:
+        yield f.name
 
 
 class ModuleCollectorPlugin(object):
