@@ -4,16 +4,25 @@ from invoke import task
 
 @task()
 def format(c):
+    """Format the code."""
     c.run("black ipytest tests setup.py tasks.py")
 
 
 @task()
 def test(c):
+    """Execute unit tests."""
     c.run("py.test tests")
 
 
 @task()
+def integration(c):
+    """Test ipytest - ipython integration."""
+    c.run("pytest --nbval-lax tests/TestIntegration.ipynb Example.ipynb")
+
+
+@task()
 def docs(c):
+    """Render the documentation."""
     try:
         from chmp.tools.mddocs import transform_file
 
@@ -32,3 +41,4 @@ def precommit(c):
     format(c)
     docs(c)
     test(c)
+    integration(c)

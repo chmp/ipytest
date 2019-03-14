@@ -1,5 +1,15 @@
 # ipytest - unit tests in IPython notbeooks
 
+[Usage](#usage)
+| [Global state](#global-state)
+| [Changes](#changes)
+| [Related packages](#related-packages)
+| [Reference](#reference)
+| [Development](#development)
+| [Legacy functionality](#legacy-functionality)
+| [License](#license)
+
+
 Sometimes quick experiments in IPython grow large and you find yourself wanting
 unit tests. This module aims to make testing code in IPython notebooks easy. At
 its core, it offers a way to run [`pytest`](https://pytest.org) tests inside the
@@ -14,18 +24,6 @@ Features:
   whistles)
 - tight integration with IPython via magics and automatic code transforms
 
-## Changes
-
-Note: development is tracked on the `develop` branch.
-
-- `0.4.0`: add support for automatic AST transforms, deprecate non pytest API.
-- `0.3.0`: change default pattern for `clean_tests` to match pytest discovery
-- `0.2.2`: add support for assert rewriting with current pytest versions
-- `0.2.1`: add ipython magics to simplify test execution
-- `0.2.0`: support for using pytest inside notebooks
-- `0.1.0`: support for running `unittest.FunctionTestCase`,
-  `unittest.TestCases`, and `doctests`.
-
 ## Usage
 
 For usage see the [example notebook](./Example.ipynb) or the documentation for
@@ -35,12 +33,78 @@ The suggested way to import `ipytest` is:
 
 ```python
 import ipytest
-import ipytest.magics
-
-ipytest.config.rewrite_asserts = True
+ipytest.config(rewrite_asserts=True, magics=True)
 
 __file__ = "INSERT YOUR NOTEBOOK FILENAME HERE"
 ```
+
+Afterwards test in the current cell can be executed as in:
+
+```python
+%%run_pytest[clean] -qq
+
+def test_example():
+    assert [1, 2, 3] == [1, 2, 3]
+```
+
+This command will first delete any previously defined tests, execute the cell
+and then run pytest. See the [reference](#reference) for a detailed list of
+available functionality.
+
+## Global state
+
+There are two sources of global state when using pytest inside the notebook:
+
+1. pytest will find any test function ever defined. This behavior can lead to
+   unexpected results when test functions are renamed, as their previous
+   definition is still available inside the kernel. `ipytest` ships the
+   [`clean_test`](#ipytestclean_tests) function to delete such instances.
+   Also the [`%%run_pytest[clean]`](#run_pytestclean-) magic clears any
+   previously defined tests.
+2. Python's module system caches imports and therefore acts as a global state.
+   To test the most recent version of any module, the module needs to be
+   reloaded. `ipytest` offers the [`reload`](#ipytestreload) function. The
+   `autoreload` extension of IPython may also help here. To test local
+   packages, it is advisable to install them as development packages, e.g.,
+   `pip install -e .`.
+
+## Changes
+
+Note: development is tracked on the `develop` branch.
+
+- `0.5.0`:
+    - Currently in beta, use `ipytest==0.5.0b5`.
+    - Fix assertion rewriting via magics in `ipython>=7`
+    - Add support to raise a `RuntimeError` on test errors (set
+      `ipytest.config.raise_on_error = True`)
+    - Add support to set base arguments (set `ipytest.config.addopts = []`)
+    - Add config setting to enable magics (set `ipytest.config.magics = True`).
+    - Allow to set multiple config values at the same time by calling the
+      config object (`ipytest.config(...)``).
+    - Add `ipytest.running_as_test()` to detect whether a notebook is executed
+      as a test.
+- `0.4.0`: add support for automatic AST transforms, deprecate non pytest API.
+- `0.3.0`: change default pattern for `clean_tests` to match pytest discovery
+- `0.2.2`: add support for assert rewriting with current pytest versions
+- `0.2.1`: add ipython magics to simplify test execution
+- `0.2.0`: support for using pytest inside notebooks
+- `0.1.0`: support for running `unittest.FunctionTestCase`,
+  `unittest.TestCases`, and `doctests`.
+
+## Related packages
+
+`ipytest` is designed to enable running tests within an interactive notebook
+session. There are also other packages that aim to use notebooks as tests
+themselves, for example by comparing the output of running all cells to the
+output of previous runs. These packages include:
+
+- [nbval](https://github.com/computationalmodelling/nbval) is actively
+  maintained. It is also used in the integration tests of `ipytest`.
+- [pytest-ipynb](https://github.com/zonca/pytest-ipynb) seems to be no longer
+  maintained as the latest commit was on March 2016. .
+- ...
+
+Please create an issue, if I missed a packaged or mischaracterized any package.
 
 ## Reference
 
@@ -69,7 +133,7 @@ Execute all tests in the passed module (defaults to __main__) with pytest.
 
 IPython magic that first executes the cell, then executes `ipytest.run()`.
 Any arguments passed on the magic line be passed on to pytest.
-To register the magics, run `import ipytest.magics` first.
+To register the magics, run `ipytest.config.magics = True` first.
 
 For example:
 
@@ -86,7 +150,52 @@ def test_example():
 
 Same as the `%%run_pytest`, but cleans any previously found tests, i.e., only
 tests defined in the current cell are executed.
-To register the magics, run `import ipytest.magics` first.
+To register the magics, run `ipytest.config.magics = True` first.
+
+### `%%rewrite_asserts`
+
+Rewrite any asserts in the current cell using pytest without running the tests.
+To get best results run the tests with `run_pytest`.
+To register the magics, run `ipytest.config.magics = True` first.
+
+For example::
+
+```python
+%%rewrite_asserts
+
+def test_example():
+    ...
+```
+
+### `ipytest.config`
+
+Configure `ipytest`. The following settings are suported:
+
+- `ipytest.config.rewrite_asserts` (default: `False`): enable ipython AST
+  transforms globally to rewrite asserts.
+- `ipytest.config.magics` (default: `False`): if set to `True` register the
+  ipytest magics.
+- `ipytest.config.clean` (default: `[Tt]est*`): the pattern used to clean
+  variables.
+- `ipytest.config.addopts` (default: `()`): pytest command line arguments to
+  prepend to every pytest invocation. For example setting
+  `ipytest.config.addopts= ['-qq']` will execute pytest with the least
+  verbosity.
+- `ipytest.config.raise_on_error` (default: `False`): if `True`, unsuccessful
+  invocations will raise a `RuntimeError`.
+- `ipytest.config.tempfile_fallback` (default: `False`): if `True`, a temporary
+  file is created as a fallback when no valid filename can be determined.
+
+To set multiple arguments at once, the config object can also be called, as in:
+
+```python
+
+ipytest.config(rewrite_asserts=True, raise_on_error=True)
+```
+
+### `ipytest.exit_code`
+
+The return code of the last pytest invocation.
 
 ### `ipytest.clean_tests`
 `ipytest.clean_tests(pattern=None, items=None)`
@@ -126,15 +235,21 @@ reload("ipytest._util", "ipytest")
 
 
 
+### `ipytest.running_as_test`
+`ipytest.running_as_test()`
 
-### `ipytest.config`
+Check whether the notebook is executed as a test.
 
-Configure `ipytest`. The following settings are suported:
+This function may be useful, when running notebooks as integration tests to
+ensure the runtime is not exceedingly long.
 
-- `ipytest.config.rewrite_asserts`: enable ipython AST transforms to rewrite
-  asserts, defaults to `False`.
-- `ipytest.config.clean`: the pattern used to clean variables, defaults to
-  `[Tt]est*`.
+Usage:
+
+```
+model.fit(x, y, epochs=500 if not ipytest.running_as_test() else 1)
+```
+
+
 
 ## Development
 
@@ -147,21 +262,6 @@ Before commit execute `pipenv run precommit` to update the documentation,
 format the code, and run tests.
 
 ## Legacy functionality
-
-### `%%rewrite_asserts`
-
-Rewrite any asserts in the current cell using pytest without running the tests.
-To get best results run the tests with `run_pytest`.
-To register the magics, run `import ipytest.magics` first.
-
-For example::
-
-```python
-%%rewrite_asserts
-
-def test_example():
-    ...
-```
 
 ### `ipytest.run_pytest`
 `ipytest.run_pytest(*args, **kwargs)`
