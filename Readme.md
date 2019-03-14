@@ -73,7 +73,6 @@ There are two sources of global state when using pytest inside the notebook:
 Note: development is tracked on the `develop` branch.
 
 - `0.5.0`:
-    - Currently in beta, use `ipytest==0.5.0b5`.
     - Fix assertion rewriting via magics in `ipython>=7`
     - Add support to raise a `RuntimeError` on test errors (set
       `ipytest.config.raise_on_error = True`)
