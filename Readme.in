@@ -79,6 +79,8 @@ Note: development is tracked on the `develop` branch.
       `ipytest.config.raise_on_error = True`)
     - Add support to set base arguments (set `ipytest.config.addopts = []`)
     - Add config setting to enable magics (set `ipytest.config.magics = True`).
+    - Add config setting to create a temporary file to work without the
+      notebook filename (set `ipytest.config.tempfile_fallback = True`).
     - Allow to set multiple config values at the same time by calling the
       config object (`ipytest.config(...)``).
     - Add `ipytest.running_as_test()` to detect whether a notebook is executed

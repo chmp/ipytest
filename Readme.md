@@ -73,11 +73,14 @@ There are two sources of global state when using pytest inside the notebook:
 Note: development is tracked on the `develop` branch.
 
 - `0.5.0`:
+    - Currently in beta, use `ipytest==0.5.0b5`.
     - Fix assertion rewriting via magics in `ipython>=7`
     - Add support to raise a `RuntimeError` on test errors (set
       `ipytest.config.raise_on_error = True`)
     - Add support to set base arguments (set `ipytest.config.addopts = []`)
     - Add config setting to enable magics (set `ipytest.config.magics = True`).
+    - Add config setting to create a temporary file to work without the
+      notebook filename (set `ipytest.config.tempfile_fallback = True`).
     - Allow to set multiple config values at the same time by calling the
       config object (`ipytest.config(...)``).
     - Add `ipytest.running_as_test()` to detect whether a notebook is executed
@@ -108,7 +111,7 @@ Please create an issue, if I missed a packaged or mischaracterized any package.
 ## Reference
 
 ### `ipytest.run`
-`ipytest.run(*args)`
+`ipytest.run(*args, module=None, filename=None, plugins=(), return_exit_code=False)`
 
 Execute all tests in the passed module (defaults to __main__) with pytest.
 
