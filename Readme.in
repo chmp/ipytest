@@ -72,6 +72,9 @@ There are two sources of global state when using pytest inside the notebook:
 
 Note: development is tracked on the `develop` branch.
 
+- `0.6.0`: officially remove python 2 support. While `ipytest` was marked to
+  work on python 2 and python 3, this statement was not tested and most likely
+  not true. This change only documents the current state.
 - `0.5.0`:
     - Fix assertion rewriting via magics in `ipython>=7`
     - Add support to raise a `RuntimeError` on test errors (set
@@ -81,7 +84,7 @@ Note: development is tracked on the `develop` branch.
     - Add config setting to create a temporary file to work without the
       notebook filename (set `ipytest.config.tempfile_fallback = True`).
     - Allow to set multiple config values at the same time by calling the
-      config object (`ipytest.config(...)``).
+      config object (`ipytest.config(...)`).
     - Add `ipytest.running_as_test()` to detect whether a notebook is executed
       as a test.
 - `0.4.0`: add support for automatic AST transforms, deprecate non pytest API.
