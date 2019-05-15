@@ -1,4 +1,4 @@
-# ipytest - unit tests in IPython notbeooks
+# ipytest - Unit tests in IPython notebooks
 
 [Usage](#usage)
 | [Global state](#global-state)
