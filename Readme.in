@@ -72,7 +72,11 @@ There are two sources of global state when using pytest inside the notebook:
 
 Note: development is tracked on the `develop` branch.
 
-- `0.7.0b1`: ...
+- development:
+    - add option to run tests in separate threads. This change allows to test
+      async code with the `pytest_asyncio` plugin
+    - add a proper signature to `ipytest.config(...)` and show the current
+      settings as a repr.
 - `0.6.0`: officially remove python 2 support. While `ipytest` was marked to
   work on python 2 and python 3, this statement was not tested and most likely
   not true. This change only documents the current state.
