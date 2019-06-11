@@ -89,6 +89,10 @@ class Config:
     def raise_on_error(self, value):
         pass
 
+    @config_key(default=False)
+    def run_in_thread(self, value):
+        pass
+
 
 class ConfigContext:
     def __init__(self, config, updates):

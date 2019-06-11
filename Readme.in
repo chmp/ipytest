@@ -72,6 +72,7 @@ There are two sources of global state when using pytest inside the notebook:
 
 Note: development is tracked on the `develop` branch.
 
+- `0.7.0b1`: ...
 - `0.6.0`: officially remove python 2 support. While `ipytest` was marked to
   work on python 2 and python 3, this statement was not tested and most likely
   not true. This change only documents the current state.
@@ -170,6 +171,9 @@ Configure `ipytest`. The following settings are suported:
   invocations will raise a `RuntimeError`.
 - `ipytest.config.tempfile_fallback` (default: `False`): if `True`, a temporary
   file is created as a fallback when no valid filename can be determined.
+- `ipytest.config.run_in_thread` (default: `False`): if `True`, pytest will be
+  run a separate thread. This way of running is required when testing async
+  code with `pytest_asyncio` since it starts a separate event loop.
 
 To set multiple arguments at once, the config object can also be called, as in:
 
