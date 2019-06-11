@@ -5,7 +5,7 @@ name = "pypi"
 
 [packages]
 pytest = "*"
-ipytest = {editable = true, path = "."}
+ipytest = {editable = true,path = "."}
 notebook = "*"
 ipykernel = "*"
 
@@ -17,6 +17,7 @@ twine = "*"
 chmp = "*"
 docutils = "*"
 nbval = "*"
+pytest-asyncio = "*"
 
 [requires]
 python_version = "3.7"

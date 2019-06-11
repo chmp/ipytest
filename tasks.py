@@ -17,7 +17,13 @@ def test(c):
 @task()
 def integration(c):
     """Test ipytest - ipython integration."""
-    c.run("pytest --nbval-lax tests/TestIntegration.ipynb Example.ipynb")
+    notebooks = [
+        "tests/TestIntegration.ipynb",
+        "tests/TestAsync.ipynb",
+        "Example.ipynb",
+    ]
+
+    c.run("pytest --nbval-lax " + " ".join(notebooks))
 
 
 @task()

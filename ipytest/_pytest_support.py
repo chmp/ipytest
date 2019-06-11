@@ -5,6 +5,7 @@ import contextlib
 import shlex
 import warnings
 import tempfile
+import threading
 
 import py.path
 import pytest
@@ -55,6 +56,35 @@ def run(*args, module=None, filename=None, plugins=(), return_exit_code=False):
     :param plugins:
         additional plugins passed to pytest.
     """
+    if not config.run_in_thread:
+        return _run_impl(
+            *args,
+            module=module,
+            filename=filename,
+            plugins=plugins,
+            return_exit_code=return_exit_code,
+        )
+
+    exit_code = None
+
+    def _thread():
+        nonlocal exit_code
+        exit_code = _run_impl(
+            *args,
+            module=module,
+            filename=filename,
+            plugins=plugins,
+            return_exit_code=return_exit_code,
+        )
+
+    t = threading.Thread(target=_thread)
+    t.start()
+    t.join()
+
+    return exit_code
+
+
+def _run_impl(*args, module, filename, plugins, return_exit_code):
     if module is None:  # pragma: no cover
         import __main__ as module
 
