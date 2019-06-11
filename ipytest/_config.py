@@ -40,6 +40,9 @@ class Config:
     def __init__(self):
         self._rewrite_context = None
 
+    def __repr__(self):
+        return "<Config {}>".format(repr_config_values(self))
+
     def __call__(
         self,
         rewrite_asserts=keep,
@@ -151,6 +154,23 @@ class ConfigContext:
             setattr(self.config, k, v)
 
         self.old_values = None
+
+    def __repr__(self):
+        return "<ConfigContext {}>".format(repr_config_values(self.config))
+
+
+def repr_config_values(config):
+    """helper to print the state of the config object."""
+    parts = []
+
+    for name, class_value in vars(type(config)).items():
+        if not isinstance(class_value, ConfigKey):
+            continue
+
+        inst_value = getattr(config, name)
+        parts.append("{!s}={!r}".format(name, inst_value))
+
+    return ", ".join(parts)
 
 
 config = Config()
