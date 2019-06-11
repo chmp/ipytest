@@ -2,6 +2,17 @@
 import warnings
 
 
+class keep_meta(type):
+    def __repr__(self):
+        return "<keep>"
+
+
+class keep(metaclass=keep_meta):
+    """Sentinel for the config call"""
+
+    pass
+
+
 class ConfigKey:
     def __init__(self, func, default=None):
         self.func = func
@@ -29,7 +40,19 @@ class Config:
     def __init__(self):
         self._rewrite_context = None
 
-    def __call__(self, **updates):
+    def __repr__(self):
+        return "<Config {}>".format(repr_config_values(self))
+
+    def __call__(
+        self,
+        rewrite_asserts=keep,
+        magics=keep,
+        tempfile_fallback=keep,
+        clean=keep,
+        addopts=keep,
+        raise_on_error=keep,
+        run_in_thread=keep,
+    ):
         """Perform multiple context updates at the same time.
 
         The return value can be used as a context manager to revert any changes
@@ -42,6 +65,17 @@ class Config:
             iptytest.run('-qq')
 
         """
+        updates = dict(
+            rewrite_asserts=rewrite_asserts,
+            magics=magics,
+            tempfile_fallback=tempfile_fallback,
+            clean=clean,
+            addopts=addopts,
+            raise_on_error=raise_on_error,
+            run_in_thread=run_in_thread,
+        )
+        updates = {k: v for k, v in updates.items() if v is not keep}
+
         context = ConfigContext(self, updates)
         context.__enter__()
         return context
@@ -120,6 +154,23 @@ class ConfigContext:
             setattr(self.config, k, v)
 
         self.old_values = None
+
+    def __repr__(self):
+        return "<ConfigContext {}>".format(repr_config_values(self.config))
+
+
+def repr_config_values(config):
+    """helper to print the state of the config object."""
+    parts = []
+
+    for name, class_value in vars(type(config)).items():
+        if not isinstance(class_value, ConfigKey):
+            continue
+
+        inst_value = getattr(config, name)
+        parts.append("{!s}={!r}".format(name, inst_value))
+
+    return ", ".join(parts)
 
 
 config = Config()
