@@ -7,6 +7,7 @@ import warnings
 import tempfile
 import threading
 
+import packaging.version
 import py.path
 import pytest
 
@@ -184,8 +185,18 @@ class RewriteAssertTransformer(ast.NodeTransformer):
     def visit(self, node):
         from _pytest.assertion.rewrite import rewrite_asserts
 
-        rewrite_asserts(node)
+        pytest_version = get_pytest_version()
+        if pytest_version.release[0] >= 5:
+            # TODO: re-create a pseudo code to include the asserts?
+            rewrite_asserts(node, b"")
+
+        else:
+            rewrite_asserts(node)
         return node
+
+
+def get_pytest_version():
+    return packaging.version.parse(pytest.__version__)
 
 
 @magics_class

@@ -1,11 +1,14 @@
 from __future__ import print_function, division, absolute_import
 
+import ast
 import os.path
 import types
 
 import pytest
 
 import ipytest
+
+from ipytest._pytest_support import RewriteAssertTransformer
 
 
 def fake_module(__name__, **items):
@@ -58,3 +61,11 @@ def test_config():
 
     assert ipytest.config.raise_on_error is False
     assert ipytest.config.addopts == ()
+
+
+def test_rewrite_assert_transformer_runs():
+    with open(__file__, "rt") as fobj:
+        source = fobj.read()
+
+    node = ast.parse(source)
+    RewriteAssertTransformer().visit(node)
