@@ -72,7 +72,7 @@ There are two sources of global state when using pytest inside the notebook:
 
 Note: development is tracked on the `develop` branch.
 
-- `development`:
+- `0.7.1`:
     - fix assertion rewriting for `pytest>=5.0.0`
 - `0.7.0`:
     - add option to run tests in separate threads. This change allows to test
