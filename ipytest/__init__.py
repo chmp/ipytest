@@ -1,4 +1,4 @@
-from ._config import config
+from ._config import config, autoconfig
 from ._unittest_support import (
     run_tests,
     collect_tests,

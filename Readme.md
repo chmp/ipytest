@@ -33,9 +33,7 @@ The suggested way to import `ipytest` is:
 
 ```python
 import ipytest
-ipytest.config(rewrite_asserts=True, magics=True)
-
-__file__ = "INSERT YOUR NOTEBOOK FILENAME HERE"
+ipytest.autoconfig()
 ```
 
 Afterwards test in the current cell can be executed as in:
@@ -72,6 +70,8 @@ There are two sources of global state when using pytest inside the notebook:
 
 Note: development is tracked on the `develop` branch.
 
+- `development`:
+    - Add the `autoconfig` helper to simplfy setup with reasonable defaults
 - `0.7.1`:
     - fix assertion rewriting for `pytest>=5.0.0`
 - `0.7.0`:
@@ -119,27 +119,6 @@ Please create an issue, if I missed a packaged or mischaracterized any package.
 
 ## Reference
 
-### `ipytest.run`
-`ipytest.run(*args, module=None, filename=None, plugins=(), return_exit_code=False)`
-
-Execute all tests in the passed module (defaults to __main__) with pytest.
-
-#### Parameters
-
-* **args** (*any*):
-  additional commandline options passed to pytest
-* **module** (*any*):
-  the module containing the tests. If not given, __main__ will be used.
-* **filename** (*any*):
-  the filename of the file containing the tests. It has to be a real
-  file, e.g., a notebook name, since itts existence will be checked by
-  pytest. If not given, the __file__ attribute of the passed module
-  will be used.
-* **plugins** (*any*):
-  additional plugins passed to pytest.
-
-
-
 ### `%%run_pytest ...`
 
 IPython magic that first executes the cell, then executes `ipytest.run()`.
@@ -163,20 +142,24 @@ Same as the `%%run_pytest`, but cleans any previously found tests, i.e., only
 tests defined in the current cell are executed.
 To register the magics, run `ipytest.config.magics = True` first.
 
-### `%%rewrite_asserts`
+### `ipytest.autoconfig`
+`ipytest.autoconfig(rewrite_asserts=<default>, magics=<default>, tempfile_fallback=<default>, clean=<default>, addopts=<default>, raise_on_error=<default>, run_in_thread=<default>)`
 
-Rewrite any asserts in the current cell using pytest without running the tests.
-To get best results run the tests with `run_pytest`.
-To register the magics, run `ipytest.config.magics = True` first.
+Configure `ipytest` with reasonable defaults.
 
-For example::
+Specifically, it sets:
 
-```python
-%%rewrite_asserts
+- `rewrite_asserts`: `True`
+- `magics`: `True`
+- `tempfile_fallback`: `True`
+- `clean`: `'[Tt]est*'`
+- `addopts`: `('-q',)`
+- `raise_on_error`: `False`
+- `run_in_thread`: `False`
 
-def test_example():
-    ...
-```
+See [config](#config) for details.
+
+
 
 ### `ipytest.config`
 
@@ -210,6 +193,27 @@ ipytest.config(rewrite_asserts=True, raise_on_error=True)
 ### `ipytest.exit_code`
 
 The return code of the last pytest invocation.
+
+### `ipytest.run`
+`ipytest.run(*args, module=None, filename=None, plugins=(), return_exit_code=False)`
+
+Execute all tests in the passed module (defaults to __main__) with pytest.
+
+#### Parameters
+
+* **args** (*any*):
+  additional commandline options passed to pytest
+* **module** (*any*):
+  the module containing the tests. If not given, __main__ will be used.
+* **filename** (*any*):
+  the filename of the file containing the tests. It has to be a real
+  file, e.g., a notebook name, since itts existence will be checked by
+  pytest. If not given, the __file__ attribute of the passed module
+  will be used.
+* **plugins** (*any*):
+  additional plugins passed to pytest.
+
+
 
 ### `ipytest.clean_tests`
 `ipytest.clean_tests(pattern=None, items=None)`
@@ -264,6 +268,21 @@ model.fit(x, y, epochs=500 if not ipytest.running_as_test() else 1)
 ```
 
 
+
+### `%%rewrite_asserts`
+
+Rewrite any asserts in the current cell using pytest without running the tests.
+To get best results run the tests with `run_pytest`.
+To register the magics, run `ipytest.config.magics = True` first.
+
+For example::
+
+```python
+%%rewrite_asserts
+
+def test_example():
+    ...
+```
 
 ## Development
 

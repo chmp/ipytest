@@ -1,7 +1,21 @@
 """Add syntatic sugar for configuration"""
+import inspect
 import warnings
 
+default_clean = "[Tt]est*"
 
+defaults = dict(
+    rewrite_asserts=True,
+    magics=True,
+    tempfile_fallback=True,
+    clean=default_clean,
+    addopts=("-q",),
+    raise_on_error=False,
+    run_in_thread=False,
+)
+
+
+# adapt the repr for better display in completion
 class keep_meta(type):
     def __repr__(self):
         return "<keep>"
@@ -11,6 +25,24 @@ class keep(metaclass=keep_meta):
     """Sentinel for the config call"""
 
     pass
+
+
+class default_meta(type):
+    def __repr__(self):
+        return "<default>"
+
+
+class default(metaclass=default_meta):
+    """Sentinel to mark a default argument"""
+
+    pass
+
+
+def collect_arguments():
+    frame = inspect.currentframe()
+    frame = frame.f_back
+    args, _, _, values = inspect.getargvalues(frame)
+    return {key: values[key] for key in args}
 
 
 class ConfigKey:
@@ -65,15 +97,8 @@ class Config:
             iptytest.run('-qq')
 
         """
-        updates = dict(
-            rewrite_asserts=rewrite_asserts,
-            magics=magics,
-            tempfile_fallback=tempfile_fallback,
-            clean=clean,
-            addopts=addopts,
-            raise_on_error=raise_on_error,
-            run_in_thread=run_in_thread,
-        )
+        updates = collect_arguments()
+        updates.pop("self")
         updates = {k: v for k, v in updates.items() if v is not keep}
 
         context = ConfigContext(self, updates)
@@ -111,7 +136,7 @@ class Config:
     def tempfile_fallback(self, value):
         pass
 
-    @config_key(default="[Tt]est*")
+    @config_key(default=default_clean)
     def clean(self, value):
         pass
 
@@ -126,6 +151,42 @@ class Config:
     @config_key(default=False)
     def run_in_thread(self, value):
         pass
+
+
+def gen_default_docs(func):
+    defaults_docs = "\n".join(
+        "    * ``{key!s}``: ``{value!r}``".format(key=key, value=value)
+        for key, value in defaults.items()
+    )
+    defaults_docs = defaults_docs.strip()
+
+    func.__doc__ = func.__doc__.format(defaults_docs=defaults_docs)
+    return func
+
+
+@gen_default_docs
+def autoconfig(
+    rewrite_asserts=default,
+    magics=default,
+    tempfile_fallback=default,
+    clean=default,
+    addopts=default,
+    raise_on_error=default,
+    run_in_thread=default,
+):
+    """Configure ``ipytest`` with reasonable defaults.
+    
+    Specifically, it sets:
+    
+    {defaults_docs}
+
+    See :func:`config` for details.
+    """
+    updates = {
+        key: defaults.get(key) if value is default else value
+        for key, value in collect_arguments().items()
+    }
+    config(**updates)
 
 
 class ConfigContext:
