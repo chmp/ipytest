@@ -157,7 +157,7 @@ Specifically, it sets:
 - `raise_on_error`: `False`
 - `run_in_thread`: `False`
 
-See [config](#config) for details.
+See [ipytest.config](#ipytestconfig) for details.
 
 
 

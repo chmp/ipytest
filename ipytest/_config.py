@@ -180,7 +180,7 @@ def autoconfig(
     
     {defaults_docs}
 
-    See :func:`config` for details.
+    See :func:`ipytest.config` for details.
     """
     updates = {
         key: defaults.get(key) if value is default else value
