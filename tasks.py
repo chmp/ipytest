@@ -19,6 +19,7 @@ def integration(c):
     """Test ipytest - ipython integration."""
     notebooks = [
         "tests/TestIntegration.ipynb",
+        "tests/TestAutoconfig.ipynb",
         "tests/TestAsync.ipynb",
         "Example.ipynb",
     ]

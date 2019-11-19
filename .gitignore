@@ -4,6 +4,7 @@
 /build/
 /dist/
 /tmp/
+/.vscode/
 
 __pycache__/
 *.pyc
