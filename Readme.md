@@ -70,6 +70,7 @@ There are two sources of global state when using pytest inside the notebook:
 
 Note: development is tracked on the `develop` branch.
 
+- `development`:
 - `0.8.0`:
     - Add the `autoconfig` helper to simplfy setup with reasonable defaults
     - Stop using deprecated pytest API
