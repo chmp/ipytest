@@ -138,20 +138,24 @@ class ModuleCollectorPlugin(object):
 
     def pytest_collect_file(self, parent, path):
         if path == py.path.local(self.filename):
-            return Module(path=path, parent=parent, module=self.module)
+            # NOTE: the path has to have a .py suffix, it is only used for printing
+            return Module.from_parent(
+                parent, fspath=path.new(ext=".py"), module=self.module
+            )
 
 
 class Module(pytest.Module):
     """Wrapper to expose an already imported module.
     """
 
-    def __init__(self, path, parent, module):
-        # NOTE: the path has to have a .py suffix, it is only used for printing
-        super(Module, self).__init__(path.new(ext=".py"), parent)
-        self._module = module
-
     def _getobj(self):
         return self._module
+
+    @classmethod
+    def from_parent(cls, parent, *, fspath, module):
+        self = super().from_parent(parent, fspath=fspath)
+        self._module = module
+        return self
 
 
 class RewriteContext:

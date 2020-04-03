@@ -72,6 +72,7 @@ Note: development is tracked on the `develop` branch.
 
 - `development`:
     - Add the `autoconfig` helper to simplfy setup with reasonable defaults
+    - Stop using deprecated pytest API
 - `0.7.1`:
     - fix assertion rewriting for `pytest>=5.0.0`
 - `0.7.0`:
