@@ -1,5 +1,7 @@
-import os.path
+import pathlib
+
 from invoke import task
+from packaging import version
 
 
 @task()
@@ -36,11 +38,8 @@ def docs(c):
     except ImportError:
         raise RuntimeError("Need chmp installed to create docs")
 
-    self_path = os.path.dirname(__file__)
-
-    transform_file(
-        os.path.join(self_path, "Readme.in"), os.path.join(self_path, "Readme.md")
-    )
+    self_path = pathlib.Path(__file__).parent.resolve()
+    transform_file(self_path / "Readme.in", self_path / "Readme.md")
 
 
 @task()
@@ -49,3 +48,24 @@ def precommit(c):
     docs(c)
     test(c)
     integration(c)
+
+
+@task()
+def release(c):
+    c.run("python setup.py bdist_wheel")
+    c.run("python setup.py sdist --formats=gztar")
+
+    self_path = pathlib.Path(__file__).parent.resolve()
+    dist_path = self_path / "dist"
+
+    max_wheel = max(dist_path.glob("*.whl"), key=parse_file_version)
+    max_sdist = max(dist_path.glob("*.tar.gz"), key=parse_file_version)
+
+    print(f"Upload {[max_wheel.name, max_sdist.name]}?")
+
+    if input("[yN] ") == "y":
+        c.run(f"python setup.py twine upload '{max_wheel!s}' '{max_sdist!s}'")
+
+
+def parse_file_version(p):
+    return version.parse(p.stem)
