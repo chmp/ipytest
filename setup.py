@@ -11,6 +11,7 @@ setup(
     long_description_content_type="text/markdown",
     author="Christopher Prohm",
     author_email="mail@cprohm.de",
+    url="https://github.com/chmp/ipytest",
     license="MIT",
     packages=["ipytest"],
     install_requires=["packaging"],
