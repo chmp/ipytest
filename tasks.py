@@ -64,7 +64,7 @@ def release(c):
     print(f"Upload {[max_wheel.name, max_sdist.name]}?")
 
     if input("[yN] ") == "y":
-        c.run(f"python setup.py twine upload '{max_wheel!s}' '{max_sdist!s}'")
+        c.run(f"twine upload '{max_wheel!s}' '{max_sdist!s}'")
 
 
 def parse_file_version(p):
