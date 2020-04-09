@@ -10,6 +10,7 @@ setup(
     long_description=pathlib.Path("Readme.md").read_text(),
     long_description_content_type="text/markdown",
     author="Christopher Prohm",
+    url="https://github.com/chmp/ipytest",
     author_email="mail@cprohm.de",
     license="MIT",
     packages=["ipytest"],
