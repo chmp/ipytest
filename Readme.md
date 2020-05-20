@@ -6,7 +6,6 @@
 | [Related packages](#related-packages)
 | [Reference](#reference)
 | [Development](#development)
-| [Legacy functionality](#legacy-functionality)
 | [License](#license)
 
 
@@ -298,6 +297,12 @@ To execute the unit tests of `ipytest` run
 
 Before commit execute `pipenv run precommit` to update the documentation,
 format the code, and run tests.
+
+To create a new release execute:
+
+```bash
+pipenv run release
+```
 
 ## License
 
