@@ -71,6 +71,8 @@ There are two sources of global state when using pytest inside the notebook:
 Note: development is tracked on the `develop` branch.
 
 - `development`:
+    - Add `Pytest>=5.0` to the requirements
+    - Remove legacy functionality, mostly plain unittest integration
 - `0.8.1`: release with sdist for conda-forge
 - `0.8.0`:
     - Add the `autoconfig` helper to simplfy setup with reasonable defaults
@@ -122,6 +124,25 @@ Please create an issue, if I missed a packaged or mischaracterized any package.
 
 ## Reference
 
+### `ipytest.autoconfig`
+`ipytest.autoconfig(rewrite_asserts=<default>, magics=<default>, tempfile_fallback=<default>, clean=<default>, addopts=<default>, raise_on_error=<default>, run_in_thread=<default>)`
+
+Configure `ipytest` with reasonable defaults.
+
+Specifically, it sets:
+
+- `rewrite_asserts`: `True`
+- `magics`: `True`
+- `tempfile_fallback`: `True`
+- `clean`: `'[Tt]est*'`
+- `addopts`: `('-q',)`
+- `raise_on_error`: `False`
+- `run_in_thread`: `False`
+
+See [ipytest.config](#ipytestconfig) for details.
+
+
+
 ### `%%run_pytest ...`
 
 IPython magic that first executes the cell, then executes `ipytest.run()`.
@@ -144,25 +165,6 @@ def test_example():
 Same as the `%%run_pytest`, but cleans any previously found tests, i.e., only
 tests defined in the current cell are executed.
 To register the magics, run `ipytest.config.magics = True` first.
-
-### `ipytest.autoconfig`
-`ipytest.autoconfig(rewrite_asserts=<default>, magics=<default>, tempfile_fallback=<default>, clean=<default>, addopts=<default>, raise_on_error=<default>, run_in_thread=<default>)`
-
-Configure `ipytest` with reasonable defaults.
-
-Specifically, it sets:
-
-- `rewrite_asserts`: `True`
-- `magics`: `True`
-- `tempfile_fallback`: `True`
-- `clean`: `'[Tt]est*'`
-- `addopts`: `('-q',)`
-- `raise_on_error`: `False`
-- `run_in_thread`: `False`
-
-See [ipytest.config](#ipytestconfig) for details.
-
-
 
 ### `ipytest.config`
 
@@ -275,7 +277,7 @@ model.fit(x, y, epochs=500 if not ipytest.running_as_test() else 1)
 ### `%%rewrite_asserts`
 
 Rewrite any asserts in the current cell using pytest without running the tests.
-To get best results run the tests with `run_pytest`.
+To get best results run the tests with `run`.
 To register the magics, run `ipytest.config.magics = True` first.
 
 For example::
@@ -296,83 +298,6 @@ To execute the unit tests of `ipytest` run
 
 Before commit execute `pipenv run precommit` to update the documentation,
 format the code, and run tests.
-
-## Legacy functionality
-
-### `ipytest.run_pytest`
-`ipytest.run_pytest(*args, **kwargs)`
-
-Execute tests in the passed module (defaults to __main__) with pytest.
-
-**Arguments:**
-
-- module: the module containing the tests.
-  If not given, __main__ will be used.
-- filename: the filename of the file containing the tests.
-  It has to be a real file, e.g., a notebook name, since itts existence will
-  be checked by pytest.
-  If not given, the __file__ attribute of the passed module will be used.
-- pytest_options: additional options passed to pytest
-- pytest_plugins: additional plugins passed to pytest.
-
-
-
-### `ipytest.run_tests`
-`ipytest.run_tests(*args, **kwargs)`
-
-Run all tests in the given items dictionary.
-
-**Arguments:**
-
-- doctest: if True search for doctests.
-- * **items: the globals object containing the tests. If None is given, the**:
-  globals object is determined from the call stack.
-
-
-
-### `ipytest.collect_tests`
-`ipytest.collect_tests(*args, **kwargs)`
-
-Collect all test cases and return a unittest.TestSuite.
-
-The arguments are the same as for ipytest.run_tests.
-
-
-
-### `ipytest.assert_equals`
-`ipytest.assert_equals(*args, **kwargs)`
-
-Compare two objects and throw and exception if they are not equal.
-
-This method uses ipytest.get_assert_function to determine the assert
-implementation to use depending on the argument type.
-
-**Arguments**
-
-- a, b: the two objects to compare.
-- * **args, kwargs: (keyword) arguments that are passed to the underlying**:
-  test function. This option can, for example, be used to set the
-  tolerance when comparing numpy.array objects
-
-
-
-### `ipytest.get_assert_function`
-`ipytest.get_assert_function(*args, **kwargs)`
-
-Determine the assert function to use depending on the arguments.
-
-If either object is a numpy .ndarray, a pandas.Series, a
-pandas.DataFrame, or pandas.Panel, it returns the assert functions
-supplied by numpy and pandas.
-
-
-
-### `ipytest.unittest_assert_equals`
-`ipytest.unittest_assert_equals(*args, **kwargs)`
-
-Compare two objects with the assertEqual method of unittest.TestCase.
-
-
 
 ## License
 

@@ -14,7 +14,7 @@ setup(
     author_email="mail@cprohm.de",
     license="MIT",
     packages=["ipytest"],
-    install_requires=["packaging"],
+    install_requires=["packaging", "pytest>=5.0"],
     tests_require=["pytest"],
     python_requires=">=3",
     classifiers=[

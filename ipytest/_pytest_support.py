@@ -18,30 +18,6 @@ from ._config import config
 from ._util import deprecated, clean_tests
 
 
-@deprecated("ipytest.run_pytest is deprecated, prefer ipytest.run.")
-def run_pytest(module=None, filename=None, pytest_options=(), pytest_plugins=()):
-    """Execute tests in the passed module (defaults to __main__) with pytest.
-
-    **Arguments:**
-
-    - `module`: the module containing the tests.
-      If not given, `__main__` will be used.
-    - `filename`: the filename of the file containing the tests.
-      It has to be a real file, e.g., a notebook name, since itts existence will
-      be checked by pytest.
-      If not given, the `__file__` attribute of the passed module will be used.
-    - `pytest_options`: additional options passed to pytest
-    - `pytest_plugins`: additional plugins passed to pytest.
-    """
-    return run(
-        *pytest_options,
-        filename=filename,
-        module=module,
-        plugins=pytest_plugins,
-        return_exit_code=True,
-    )
-
-
 def run(*args, module=None, filename=None, plugins=(), return_exit_code=False):
     """Execute all tests in the passed module (defaults to __main__) with pytest.
 

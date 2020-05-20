@@ -71,6 +71,8 @@ There are two sources of global state when using pytest inside the notebook:
 Note: development is tracked on the `develop` branch.
 
 - `development`:
+    - Add `Pytest>=5.0` to the requirements
+    - Remove legacy functionality, mostly plain unittest integration
 - `0.8.1`: release with sdist for conda-forge
 - `0.8.0`: 
     - Add the `autoconfig` helper to simplfy setup with reasonable defaults
@@ -122,6 +124,8 @@ Please create an issue, if I missed a packaged or mischaracterized any package.
 
 ## Reference
 
+.. autofunction:: ipytest.autoconfig
+
 ### `%%run_pytest ...`
 
 IPython magic that first executes the cell, then executes `ipytest.run()`.
@@ -144,8 +148,6 @@ def test_example():
 Same as the `%%run_pytest`, but cleans any previously found tests, i.e., only
 tests defined in the current cell are executed.
 To register the magics, run `ipytest.config.magics = True` first.
-
-.. autofunction:: ipytest.autoconfig
 
 ### `ipytest.config`
 
@@ -191,7 +193,7 @@ The return code of the last pytest invocation.
 ### `%%rewrite_asserts`
 
 Rewrite any asserts in the current cell using pytest without running the tests.
-To get best results run the tests with `run_pytest`.
+To get best results run the tests with `run`.
 To register the magics, run `ipytest.config.magics = True` first.
 
 For example::
@@ -212,20 +214,6 @@ To execute the unit tests of `ipytest` run
 
 Before commit execute `pipenv run precommit` to update the documentation,
 format the code, and run tests.
-
-## Legacy functionality
-
-.. autofunction:: ipytest.run_pytest
-
-.. autofunction:: ipytest.run_tests
-
-.. autofunction:: ipytest.collect_tests
-
-.. autofunction:: ipytest.assert_equals
-
-.. autofunction:: ipytest.get_assert_function
-
-.. autofunction:: ipytest.unittest_assert_equals
 
 ## License
 
