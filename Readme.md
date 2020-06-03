@@ -74,6 +74,8 @@ Note: development is tracked on the `develop` branch.
     - Remove legacy functionality, mostly plain unittest integration
     - The `tempfile_fallback` also kicks in, if a filename was configured, but
       the file does not exist
+    - Add `register_module` option to register the notebook with the module
+      system of Python. This way `--doctest-modules` works as expected
 - `0.8.1`: release with sdist for conda-forge
 - `0.8.0`:
     - Add the `autoconfig` helper to simplfy setup with reasonable defaults
@@ -126,7 +128,7 @@ Please create an issue, if I missed a packaged or mischaracterized any package.
 ## Reference
 
 ### `ipytest.autoconfig`
-`ipytest.autoconfig(rewrite_asserts=<default>, magics=<default>, tempfile_fallback=<default>, clean=<default>, addopts=<default>, raise_on_error=<default>, run_in_thread=<default>)`
+`ipytest.autoconfig(rewrite_asserts=<default>, magics=<default>, tempfile_fallback=<default>, clean=<default>, addopts=<default>, raise_on_error=<default>, run_in_thread=<default>, register_module=<default>)`
 
 Configure `ipytest` with reasonable defaults.
 
@@ -188,6 +190,11 @@ Configure `ipytest`. The following settings are suported:
 - `ipytest.config.run_in_thread` (default: `False`): if `True`, pytest will be
   run a separate thread. This way of running is required when testing async
   code with `pytest_asyncio` since it starts a separate event loop.
+- `ipytest.register_module` (default: `False`): if `True`, ipytest will
+  register the notebook with Python module system. This way the module can be
+  imported. Some pytest plugins require importing the module. An eample is the
+  doctest module. It is strongly recommeneded to only use `register_module=True`
+  with the `tempfile_fallback`, since otherwise real modules may be shadowed.
 
 To set multiple arguments at once, the config object can also be called, as in:
 

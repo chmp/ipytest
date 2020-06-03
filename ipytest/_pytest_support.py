@@ -4,6 +4,7 @@ import ast
 import contextlib
 import pathlib
 import shlex
+import sys
 import tempfile
 import threading
 import warnings
@@ -66,12 +67,16 @@ def _run_impl(*args, module, filename, plugins, return_exit_code):
     if module is None:  # pragma: no cover
         import __main__ as module
 
-    with _valid_filename(filename, module) as valid_filename:
+    with _prepared_module(filename, module) as (valid_filename, prepared_module):
         exit_code = pytest.main(
             list(config.addopts) + list(args) + [valid_filename],
             plugins=(
                 list(plugins)
-                + [ModuleCollectorPlugin(module=module, filename=valid_filename)]
+                + [
+                    ModuleCollectorPlugin(
+                        module=prepared_module, filename=valid_filename
+                    )
+                ]
             ),
         )
 
@@ -82,6 +87,13 @@ def _run_impl(*args, module, filename, plugins, return_exit_code):
 
     if return_exit_code:
         return exit_code
+
+
+@contextlib.contextmanager
+def _prepared_module(filename, module):
+    with _valid_filename(filename, module) as valid_filename:
+        with _register_module(valid_filename, module):
+            yield valid_filename, module
 
 
 @contextlib.contextmanager
@@ -108,9 +120,59 @@ def _valid_filename(filename, module):
             "module {} has no valid __file__ and tempfile_fallback not configured, please pass filename instead."
         )
 
-    # generate an empty temporary file to use as a fallback
-    with tempfile.NamedTemporaryFile(dir=".", suffix=".ipynb") as f:
+    suffix = ".ipynb" if not config.register_module else ".py"
+    with tempfile.NamedTemporaryFile(dir=".", suffix=suffix) as f:
         yield f.name
+
+
+@contextlib.contextmanager
+def _register_module(filename, module):
+    if not config.register_module:
+        yield
+        return
+
+    if not config.tempfile_fallback:
+        warnings.warn(
+            "ipytest is configured with register_module=True and "
+            "tempfile_fallback=False. This setup may shadow other modules "
+            "and lead to hard-to-debug errors. It is strongly recommended "
+            "to only use register_module with the tempfile fallback."
+        )
+
+    prev_file = getattr(module, "__file__", False)
+
+    p = pathlib.Path(filename)
+    module_name = p.stem
+    module_file = str(p.with_suffix(".py"))
+
+    if "." in module_name or " " in module_name:
+        raise ValueError(
+            "Cannot register module wiht the invalid name {!r}".format(module_name)
+        )
+
+    if module_name in sys.modules:
+        # TODO: improve the error message
+        raise ValueError(
+            (
+                "Cannot register module wiht name {!r}. Consider not setting "
+                "__file__ inside the notebook and using the tempfile_fallback. "
+                "This way a random module name will be generated."
+            ).format(module_name)
+        )
+
+    sys.modules[module_name] = module
+    module.__file__ = module_file
+
+    try:
+        yield
+
+    finally:
+        del sys.modules[module_name]
+        if prev_file is False:
+            del module.__file__
+
+        else:
+            module.__file__ = prev_file
 
 
 class ModuleCollectorPlugin(object):

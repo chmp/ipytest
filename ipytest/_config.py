@@ -84,6 +84,7 @@ class Config:
         addopts=keep,
         raise_on_error=keep,
         run_in_thread=keep,
+        register_module=keep,
     ):
         """Perform multiple context updates at the same time.
 
@@ -152,6 +153,10 @@ class Config:
     def run_in_thread(self, value):
         pass
 
+    @config_key(default=False)
+    def register_module(self, value):
+        pass
+
 
 def gen_default_docs(func):
     defaults_docs = "\n".join(
@@ -173,6 +178,7 @@ def autoconfig(
     addopts=default,
     raise_on_error=default,
     run_in_thread=default,
+    register_module=default,
 ):
     """Configure ``ipytest`` with reasonable defaults.
     
