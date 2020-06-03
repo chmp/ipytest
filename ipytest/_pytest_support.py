@@ -2,10 +2,11 @@ from __future__ import print_function, division, absolute_import
 
 import ast
 import contextlib
+import pathlib
 import shlex
-import warnings
 import tempfile
 import threading
+import warnings
 
 import packaging.version
 import py.path
@@ -85,18 +86,26 @@ def _run_impl(*args, module, filename, plugins, return_exit_code):
 
 @contextlib.contextmanager
 def _valid_filename(filename, module):
-    if filename is not None:
-        yield filename
-        return
+    if filename is None:
+        filename = getattr(module, "__file__", None)
 
-    filename = getattr(module, "__file__", None)
     if filename is not None:
-        yield filename
-        return
+        if pathlib.Path(filename).exists():
+            yield filename
+            return
+
+        else:
+            warnings.warn(
+                "The configured filename could not be found\n"
+                "Consider\n"
+                "\n"
+                "* removing the explicit filename and using tempfile_fallback=True, or\n"
+                "* correcting the filename"
+            )
 
     if not config.tempfile_fallback:
         raise ValueError(
-            "module {} has no valid __file__, please pass filename instead."
+            "module {} has no valid __file__ and tempfile_fallback not configured, please pass filename instead."
         )
 
     # generate an empty temporary file to use as a fallback

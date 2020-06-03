@@ -20,10 +20,8 @@ def test(c):
 def integration(c):
     """Test ipytest - ipython integration."""
     notebooks = [
-        "tests/TestIntegration.ipynb",
-        "tests/TestAutoconfig.ipynb",
-        "tests/TestAsync.ipynb",
         "Example.ipynb",
+        *(str(p) for p in pathlib.Path("tests").glob("Test*.ipynb")),
     ]
 
     c.run("pytest --nbval-lax " + " ".join(notebooks))
