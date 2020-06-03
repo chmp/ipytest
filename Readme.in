@@ -72,6 +72,8 @@ Note: development is tracked on the `develop` branch.
 - `development`:
     - Add `Pytest>=5.4` to the requirements
     - Remove legacy functionality, mostly plain unittest integration
+    - The `tempfile_fallback` also kicks in, if a filename was configured, but
+      the file does not exist
 - `0.8.1`: release with sdist for conda-forge
 - `0.8.0`: 
     - Add the `autoconfig` helper to simplfy setup with reasonable defaults
