@@ -70,7 +70,7 @@ There are two sources of global state when using pytest inside the notebook:
 Note: development is tracked on the `develop` branch.
 
 - `development`:
-    - Add `Pytest>=5.0` to the requirements
+    - Add `Pytest>=5.4` to the requirements
     - Remove legacy functionality, mostly plain unittest integration
 - `0.8.1`: release with sdist for conda-forge
 - `0.8.0`:
