@@ -69,7 +69,7 @@ There are two sources of global state when using pytest inside the notebook:
 
 Note: development is tracked on the `develop` branch.
 
-- `development`:
+- `0.9.1`:
     - Add `ipython` as an explicit dependency
 - `0.9.0`:
     - Add `Pytest>=5.4` to the requirements
