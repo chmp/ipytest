@@ -26,16 +26,14 @@ Features:
 ## Usage
 
 For usage see the [example notebook](./Example.ipynb) or the documentation for
-the core API below.
-
-The suggested way to import `ipytest` is:
+the core API below. The suggested way to import `ipytest` is:
 
 ```python
 import ipytest
 ipytest.autoconfig()
 ```
 
-Afterwards test in the current cell can be executed as in:
+Afterwards in a *new* cell, tests can be executed as in:
 
 ```python
 %%run_pytest[clean] -qq
@@ -50,7 +48,7 @@ available functionality.
 
 ## Global state
 
-There are two sources of global state when using pytest inside the notebook:
+There are multiple sources of global state when using pytest inside the notebook:
 
 1. pytest will find any test function ever defined. This behavior can lead to
    unexpected results when test functions are renamed, as their previous
@@ -64,6 +62,10 @@ There are two sources of global state when using pytest inside the notebook:
    `autoreload` extension of IPython may also help here. To test local
    packages, it is advisable to install them as development packages, e.g.,
    `pip install -e .`.
+3. For async code, IPython will create an event loop in the current thread.
+   This setup may interfere with async tests. To support these use cases,
+   ipytest supports running tests in a separate thread. Simply setup ipytest
+   via `ipytest.autoconfig(run_in_thread=True)`.
 
 ## Changes
 
