@@ -76,6 +76,10 @@ Note: development is tracked on the `develop` branch.
       customized applications
     - Remove `return_exit_code` argument from `ipytest.run`
     - Simplify config implementation: restrict config changes to function calls
+    - Allow to use the generated module name in the arguments passed to pytest
+      by using `{MODULE}`
+    - Allow to fully customize the command line and to skip passing the
+      current module as an argument
 - `0.9.1`:
     - Add `ipython` as an explicit dependency
 - `0.9.0`:
