@@ -179,8 +179,11 @@ tests defined in the current cell are executed.
 To register the magics, run `ipytest.config.magics = True` first.
 
 ### `ipytest.config`
+`ipytest.config(rewrite_asserts=<keep>, magics=<keep>, tempfile_fallback=<keep>, clean=<keep>, addopts=<keep>, raise_on_error=<keep>, run_in_thread=<keep>, register_module=<keep>)`
 
-Configure `ipytest`. To update the configuration, call this function as in:
+Configure ipytest
+
+To update the configuration, call this function as in:
 
 ```python
 ipytest.config(rewrite_asserts=True, raise_on_error=True)
@@ -188,28 +191,30 @@ ipytest.config(rewrite_asserts=True, raise_on_error=True)
 
 The following settings are suported:
 
-- `rewrite_asserts` (default: `False`): enable ipython AST
-  transforms globally to rewrite asserts.
-- `magics` (default: `False`): if set to `True` register the
-  ipytest magics.
-- `clean` (default: `[Tt]est*`): the pattern used to clean
-  variables.
-- `addopts` (default: `()`): pytest command line arguments to
-  prepend to every pytest invocation. For example setting
+- * **rewrite_asserts (default: False): enable ipython AST transforms**:
+  globally to rewrite asserts
+- * **magics (default: False): if set to True register the ipytest**:
+  magics
+- `clean` (default: `[Tt]est*`): the pattern used to clean variables
+- * **addopts (default: ()): pytest command line arguments to prepend**:
+  to every pytest invocation. For example setting
   `ipytest.config(addopts=['-qq'])` will execute pytest with the least
-  verbosity.
-- `raise_on_error` (default: `False`): if `True`, unsuccessful
-  invocations will raise a `RuntimeError`.
-- `tempfile_fallback` (default: `False`): if `True`, a temporary
-  file is created as a fallback when no valid filename can be determined.
-- `run_in_thread` (default: `False`): if `True`, pytest will be
-  run a separate thread. This way of running is required when testing async code
-  with `pytest_asyncio` since it starts a separate event loop.
-- `register_module` (default: `False`): if `True`, ipytest will
-  register the notebook with Python module system. This way the module can be
-  imported. Some pytest plugins require importing the module. An eample is the
-  doctest module. It is strongly recommeneded to only use `register_module=True`
-  with the `tempfile_fallback`, since otherwise real modules may be shadowed.
+  verbosity
+- * **raise_on_error (default: False): if True, unsuccessful**:
+  invocations will raise a `RuntimeError`
+- * **tempfile_fallback (default: False): if True, a temporary file**:
+  is created as a fallback when no valid filename can be determined
+- * **run_in_thread (default: False): if True, pytest will be run a**:
+  separate thread. This way of running is required when testing async
+  code with `pytest_asyncio` since it starts a separate event loop
+- * **register_module (default: False): if True, ipytest will**:
+  register the notebook with Python module system. This way the module
+  can be imported. Some pytest plugins require importing the module. An
+  example is the doctest module. It is strongly recommended to only use
+  `register_module=True` with the `tempfile_fallback`, since
+  otherwise real modules may be shadowed
+
+
 
 ### `ipytest.exit_code`
 
