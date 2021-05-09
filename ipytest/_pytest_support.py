@@ -20,7 +20,7 @@ from ._config import config
 from ._util import deprecated, clean_tests
 
 
-def run(*args, module=None, filename=None, plugins=(), return_exit_code=False):
+def run(*args, module=None, filename=None, plugins=()):
     """Execute all tests in the passed module (defaults to __main__) with pytest.
 
     :param args:
@@ -41,7 +41,6 @@ def run(*args, module=None, filename=None, plugins=(), return_exit_code=False):
             module=module,
             filename=filename,
             plugins=plugins,
-            return_exit_code=return_exit_code,
         )
 
     exit_code = None
@@ -63,7 +62,7 @@ def run(*args, module=None, filename=None, plugins=(), return_exit_code=False):
     return exit_code
 
 
-def _run_impl(*args, module, filename, plugins, return_exit_code):
+def _run_impl(*args, module, filename, plugins):
     if module is None:  # pragma: no cover
         import __main__ as module
 
@@ -85,8 +84,7 @@ def _run_impl(*args, module, filename, plugins, return_exit_code):
             "Error in pytest invocation. Exit code: {}".format(exit_code)
         )
 
-    if return_exit_code:
-        return exit_code
+    return exit_code
 
 
 @contextlib.contextmanager
@@ -283,7 +281,7 @@ class IPyTestMagics(Magics):
 
         import ipytest
 
-        ipytest.exit_code = run(*shlex.split(line), return_exit_code=True)
+        ipytest.exit_code = run(*shlex.split(line))
 
     @cell_magic
     def rewrite_asserts(self, line, cell):

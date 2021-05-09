@@ -35,7 +35,6 @@ def test_fixtures():
             my_fixture=my_fixture,
             test_example=test_example,
         ),
-        return_exit_code=True,
     )
 
 
@@ -50,17 +49,7 @@ def test_parametrize():
             __file__=os.path.join(os.path.dirname(__file__), "empty_module.py"),
             test_example=test_example,
         ),
-        return_exit_code=True,
     )
-
-
-def test_config():
-    with ipytest.config(raise_on_error=True, addopts=["a", "b"]):
-        assert ipytest.config.raise_on_error is True
-        assert ipytest.config.addopts == ["a", "b"]
-
-    assert ipytest.config.raise_on_error is False
-    assert ipytest.config.addopts == ()
 
 
 def test_rewrite_assert_transformer_runs():

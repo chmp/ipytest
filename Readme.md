@@ -73,7 +73,8 @@ Note: development is tracked on the `develop` branch.
 
 - `development`:
     - Expose the `ModuleCollectorPlugin` that powers `ipytest` to enable more
-    customized applications
+      customized applications
+    - Remove `return_exit_code` argument from `ipytest.run`
 - `0.9.1`:
     - Add `ipython` as an explicit dependency
 - `0.9.0`:
@@ -215,7 +216,7 @@ ipytest.config(rewrite_asserts=True, raise_on_error=True)
 The return code of the last pytest invocation.
 
 ### `ipytest.run`
-`ipytest.run(*args, module=None, filename=None, plugins=(), return_exit_code=False)`
+`ipytest.run(*args, module=None, filename=None, plugins=())`
 
 Execute all tests in the passed module (defaults to __main__) with pytest.
 

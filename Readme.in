@@ -73,7 +73,8 @@ Note: development is tracked on the `develop` branch.
 
 - `development`:
     - Expose the `ModuleCollectorPlugin` that powers `ipytest` to enable more
-    customized applications
+      customized applications
+    - Remove `return_exit_code` argument from `ipytest.run`
 - `0.9.1`:
     - Add `ipython` as an explicit dependency
 - `0.9.0`:
