@@ -1,6 +1,6 @@
 from ._config import config, autoconfig
 from ._util import clean_tests, reload, running_as_test
-from ._pytest_support import run
+from ._pytest_support import run, ModuleCollectorPlugin
 
 # the pytest exit code
 exit_code = None
@@ -14,4 +14,5 @@ __all__ = [
     "clean_tests",
     "reload",
     "running_as_test",
+    "ModuleCollectorPlugin",
 ]

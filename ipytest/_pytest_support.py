@@ -176,7 +176,20 @@ def _register_module(filename, module):
 
 
 class ModuleCollectorPlugin(object):
-    """Small pytest plugin collect an already imported module.
+    """Pytest plugin to collect an already imported module.
+
+    Usage::
+
+        pytest.main(
+            [],
+            plugins=[
+                ModuleCollectorPlugin(module, "module.py"),
+            ],
+        )
+
+    While the filename can be chosen arbitrarily, it must be a file that exists
+    on disk, as Pytest will check for its existence. The module itself will be
+    handled in the normal way by Pytest during collection.
     """
 
     def __init__(self, module, filename):
@@ -192,8 +205,7 @@ class ModuleCollectorPlugin(object):
 
 
 class Module(pytest.Module):
-    """Wrapper to expose an already imported module.
-    """
+    """Wrapper to expose an already imported module."""
 
     def _getobj(self):
         return self._module

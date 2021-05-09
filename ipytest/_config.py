@@ -181,9 +181,9 @@ def autoconfig(
     register_module=default,
 ):
     """Configure ``ipytest`` with reasonable defaults.
-    
+
     Specifically, it sets:
-    
+
     {defaults_docs}
 
     See :func:`ipytest.config` for details.

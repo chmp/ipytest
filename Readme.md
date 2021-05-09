@@ -72,6 +72,8 @@ There are multiple sources of global state when using pytest inside the notebook
 Note: development is tracked on the `develop` branch.
 
 - `development`:
+    - Expose the `ModuleCollectorPlugin` that powers `ipytest` to enable more
+    customized applications
 - `0.9.1`:
     - Add `ipython` as an explicit dependency
 - `0.9.0`:
@@ -265,7 +267,7 @@ notebooks.
 
 Usage:
 
-```
+```python
 reload("ipytest._util", "ipytest")
 ```
 
@@ -281,9 +283,31 @@ ensure the runtime is not exceedingly long.
 
 Usage:
 
-```
+```python
 model.fit(x, y, epochs=500 if not ipytest.running_as_test() else 1)
 ```
+
+
+
+### `ipytest.ModuleCollectorPlugin`
+`ipytest.ModuleCollectorPlugin(module, filename)`
+
+Pytest plugin to collect an already imported module.
+
+Usage:
+
+```python
+pytest.main(
+    [],
+    plugins=[
+        ModuleCollectorPlugin(module, "module.py"),
+    ],
+)
+```
+
+While the filename can be chosen arbitrarily, it must be a file that exists
+on disk, as Pytest will check for its existence. The module itself will be
+handled in the normal way by Pytest during collection.
 
 
 
