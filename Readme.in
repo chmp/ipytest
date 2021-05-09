@@ -80,6 +80,10 @@ Note: development is tracked on the `develop` branch.
       by using `{MODULE}`
     - Allow to fully customize the command line and to skip passing the
       current module as an argument
+    - Remove `tempfile_fallback` and `register_module` config options
+    - Remove `filename` argument for run
+    - Remove `running_as_test` function
+    - Require `python>=3.6`
 - `0.9.1`:
     - Add `ipython` as an explicit dependency
 - `0.9.0`:
@@ -176,8 +180,6 @@ The return code of the last pytest invocation.
 .. autofunction:: ipytest.clean_tests
 
 .. autofunction:: ipytest.reload
-
-.. autofunction:: ipytest.running_as_test
 
 .. autoclass:: ipytest.ModuleCollectorPlugin
 

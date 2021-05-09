@@ -7,7 +7,6 @@ default_clean = "[Tt]est*"
 defaults = dict(
     rewrite_asserts=True,
     magics=True,
-    tempfile_fallback=True,
     clean=default_clean,
     addopts=("-q",),
     raise_on_error=False,
@@ -18,12 +17,10 @@ defaults = dict(
 current_config = dict(
     rewrite_asserts=False,
     magics=False,
-    tempfile_fallback=False,
     clean=default_clean,
     addopts=(),
     raise_on_error=False,
     run_in_thread=False,
-    register_module=False,
     defopts=True,
 )
 
@@ -34,7 +31,7 @@ class repr_meta(type):
     "Adapt repr for better display in completion"
 
     def __repr__(self):
-        return "<{}>".format(self.__name__)
+        return f"<{self.__name__}>"
 
 
 class keep(metaclass=repr_meta):
@@ -51,8 +48,7 @@ class default(metaclass=repr_meta):
 
 def gen_default_docs(func):
     defaults_docs = "\n".join(
-        "    * ``{key!s}``: ``{value!r}``".format(key=key, value=value)
-        for key, value in defaults.items()
+        f"    * ``{key!s}``: ``{value!r}``" for key, value in defaults.items()
     )
     defaults_docs = defaults_docs.strip()
 
@@ -64,12 +60,10 @@ def gen_default_docs(func):
 def autoconfig(
     rewrite_asserts=default,
     magics=default,
-    tempfile_fallback=default,
     clean=default,
     addopts=default,
     raise_on_error=default,
     run_in_thread=default,
-    register_module=default,
     defopts=default,
 ):
     """Configure ``ipytest`` with reasonable defaults.
@@ -92,12 +86,10 @@ def autoconfig(
 def config(
     rewrite_asserts=keep,
     magics=keep,
-    tempfile_fallback=keep,
     clean=keep,
     addopts=keep,
     raise_on_error=keep,
     run_in_thread=keep,
-    register_module=keep,
     defopts=keep,
 ):
     """Configure `ipytest`
@@ -119,17 +111,9 @@ def config(
       verbosity
     * ``raise_on_error`` (default: ``False``): if ``True``, unsuccessful
       invocations will raise a ``RuntimeError``
-    * ``tempfile_fallback`` (default: ``False``): if ``True``, a temporary file
-      is created as a fallback when no valid filename can be determined
     * ``run_in_thread`` (default: ``False``): if ``True``, pytest will be run a
       separate thread. This way of running is required when testing async
       code with ``pytest_asyncio`` since it starts a separate event loop
-    * ``register_module`` (default: ``False``): if ``True``, ipytest will
-      register the notebook with Python module system. This way the module
-      can be imported. Some pytest plugins require importing the module. An
-      example is the doctest module. It is strongly recommended to only use
-      ``register_module=True`` with the ``tempfile_fallback``, since
-      otherwise real modules may be shadowed
     * ``defopts`` (default: ``True``): if ``True``, ipytest will add the
       current module to the arguments passed to pytest. If ``False`` only the
       arguments given and ``adopts`` are passed. Such a setup may be helpful

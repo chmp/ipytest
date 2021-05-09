@@ -16,7 +16,7 @@ setup(
     packages=["ipytest"],
     install_requires=["packaging", "ipython", "pytest>=5.4"],
     tests_require=["pytest"],
-    python_requires=">=3",
+    python_requires=">=3.6",
     classifiers=[
         "Development Status :: 4 - Beta",
         "Intended Audience :: Developers",

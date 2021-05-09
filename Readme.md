@@ -80,6 +80,10 @@ Note: development is tracked on the `develop` branch.
       by using `{MODULE}`
     - Allow to fully customize the command line and to skip passing the
       current module as an argument
+    - Remove `tempfile_fallback` and `register_module` config options
+    - Remove `filename` argument for run
+    - Remove `is_running_as_test` function
+    - Require python 3.6
 - `0.9.1`:
     - Add `ipython` as an explicit dependency
 - `0.9.0`:
@@ -141,7 +145,7 @@ Please create an issue, if I missed a packaged or mischaracterized any package.
 ## Reference
 
 ### `ipytest.autoconfig`
-`ipytest.autoconfig(rewrite_asserts=<default>, magics=<default>, tempfile_fallback=<default>, clean=<default>, addopts=<default>, raise_on_error=<default>, run_in_thread=<default>, register_module=<default>, defopts=<default>)`
+`ipytest.autoconfig(rewrite_asserts=<default>, magics=<default>, clean=<default>, addopts=<default>, raise_on_error=<default>, run_in_thread=<default>, defopts=<default>)`
 
 Configure `ipytest` with reasonable defaults.
 
@@ -149,7 +153,6 @@ Specifically, it sets:
 
 - `rewrite_asserts`: `True`
 - `magics`: `True`
-- `tempfile_fallback`: `True`
 - `clean`: `'[Tt]est*'`
 - `addopts`: `('-q',)`
 - `raise_on_error`: `False`
@@ -184,7 +187,7 @@ tests defined in the current cell are executed.
 To register the magics, run `ipytest.config.magics = True` first.
 
 ### `ipytest.config`
-`ipytest.config(rewrite_asserts=<keep>, magics=<keep>, tempfile_fallback=<keep>, clean=<keep>, addopts=<keep>, raise_on_error=<keep>, run_in_thread=<keep>, register_module=<keep>, defopts=<keep>)`
+`ipytest.config(rewrite_asserts=<keep>, magics=<keep>, clean=<keep>, addopts=<keep>, raise_on_error=<keep>, run_in_thread=<keep>, defopts=<keep>)`
 
 Configure ipytest
 
@@ -207,17 +210,9 @@ The following settings are supported:
   verbosity
 - `raise_on_error` (default: `False`): if `True`, unsuccessful
   invocations will raise a `RuntimeError`
-- `tempfile_fallback` (default: `False`): if `True`, a temporary file
-  is created as a fallback when no valid filename can be determined
 - `run_in_thread` (default: `False`): if `True`, pytest will be run a
   separate thread. This way of running is required when testing async
   code with `pytest_asyncio` since it starts a separate event loop
-- `register_module` (default: `False`): if `True`, ipytest will
-  register the notebook with Python module system. This way the module
-  can be imported. Some pytest plugins require importing the module. An
-  example is the doctest module. It is strongly recommended to only use
-  `register_module=True` with the `tempfile_fallback`, since
-  otherwise real modules may be shadowed
 - `defopts` (default: `True`): if `True`, ipytest will add the
   current module to the arguments passed to pytest. If `False` only the
   arguments given and `adopts` are passed. Such a setup may be helpful
@@ -230,7 +225,7 @@ The following settings are supported:
 The return code of the last pytest invocation.
 
 ### `ipytest.run`
-`ipytest.run(*args, module=None, filename=None, plugins=())`
+`ipytest.run(*args, module=None, plugins=())`
 
 Execute all tests in the passed module (defaults to __main__) with pytest.
 
@@ -284,22 +279,6 @@ Usage:
 
 ```python
 reload("ipytest._util", "ipytest")
-```
-
-
-
-### `ipytest.running_as_test`
-`ipytest.running_as_test()`
-
-Check whether the notebook is executed as a test.
-
-This function may be useful, when running notebooks as integration tests to
-ensure the runtime is not exceedingly long.
-
-Usage:
-
-```python
-model.fit(x, y, epochs=500 if not ipytest.running_as_test() else 1)
 ```
 
 

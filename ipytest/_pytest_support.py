@@ -6,7 +6,6 @@ import pathlib
 import shlex
 import sys
 import tempfile
-import threading
 import warnings
 
 import packaging.version
@@ -17,10 +16,10 @@ from IPython import get_ipython
 from IPython.core.magic import Magics, magics_class, cell_magic
 
 from ._config import current_config
-from ._util import deprecated, clean_tests
+from ._util import clean_tests, patch, run_direct, run_in_thread
 
 
-def run(*args, module=None, filename=None, plugins=()):
+def run(*args, module=None, plugins=()):
     """Execute all tests in the passed module (defaults to __main__) with pytest.
 
     :param args:
@@ -35,45 +34,23 @@ def run(*args, module=None, filename=None, plugins=()):
     :param plugins:
         additional plugins passed to pytest.
     """
-    if not current_config["run_in_thread"]:
-        return _run_impl(
-            *args,
-            module=module,
-            filename=filename,
-            plugins=plugins,
-        )
-
-    exit_code = None
-
-    def _thread():
-        nonlocal exit_code
-        exit_code = _run_impl(
-            *args,
-            module=module,
-            filename=filename,
-            plugins=plugins,
-        )
-
-    t = threading.Thread(target=_thread)
-    t.start()
-    t.join()
-
-    return exit_code
+    run = run_in_thread if current_config["run_in_thread"] else run_direct
+    return run(
+        _run_impl,
+        *args,
+        module=module,
+        plugins=plugins,
+    )
 
 
-def _run_impl(*args, module, filename, plugins):
-    if module is None:  # pragma: no cover
-        import __main__ as module
-
-    with _prepared_module(filename, module) as (valid_filename, prepared_module):
+def _run_impl(*args, module, plugins):
+    with _prepared_module(module) as (valid_filename, prepared_module):
         full_args = _build_full_args(args, valid_filename)
         plugin = ModuleCollectorPlugin(module=prepared_module, filename=valid_filename)
         exit_code = pytest.main(full_args, plugins=[*plugins, plugin])
 
     if current_config["raise_on_error"] and exit_code != 0:
-        raise RuntimeError(
-            "Error in pytest invocation. Exit code: {}".format(exit_code)
-        )
+        raise RuntimeError(f"Error in pytest invocation. Exit code: {exit_code}")
 
     return exit_code
 
@@ -90,89 +67,62 @@ def _build_full_args(args, valid_filename):
 
 
 @contextlib.contextmanager
-def _prepared_module(filename, module):
-    with _valid_filename(filename, module) as valid_filename:
+def _prepared_module(module):
+    if module is None:  # pragma: no cover
+        import __main__ as module
+
+    with _valid_filename(module) as valid_filename:
         with _register_module(valid_filename, module):
             yield valid_filename, module
 
 
 @contextlib.contextmanager
-def _valid_filename(filename, module):
-    if filename is None:
-        filename = getattr(module, "__file__", None)
+def _valid_filename(module):
+    filename = getattr(module, "__file__", None)
 
-    if filename is not None:
-        if pathlib.Path(filename).exists():
-            yield filename
-            return
+    if filename is not None and pathlib.Path(filename).exists():
+        yield filename
 
-        else:
+    else:
+        if filename is not None:
             warnings.warn(
-                "The configured filename could not be found\n"
-                "Consider\n"
-                "\n"
-                "* removing the explicit filename and using tempfile_fallback=True, or\n"
-                "* correcting the filename"
+                f"The configured filename {filename} could not be found. "
+                "A temporary file with be used instead."
             )
 
-    if not current_config["tempfile_fallback"]:
-        raise ValueError(
-            "module {} has no valid __file__ and tempfile_fallback not configured, please pass filename instead."
-        )
-
-    suffix = ".ipynb" if not current_config["register_module"] else ".py"
-    with tempfile.NamedTemporaryFile(dir=".", suffix=suffix) as f:
-        yield f.name
+        with tempfile.NamedTemporaryFile(dir=".", suffix=".py") as f:
+            yield f.name
 
 
 @contextlib.contextmanager
 def _register_module(filename, module):
-    if not current_config["register_module"]:
-        yield
-        return
-
-    if not current_config["tempfile_fallback"]:
-        warnings.warn(
-            "ipytest is configured with register_module=True and "
-            "tempfile_fallback=False. This setup may shadow other modules "
-            "and lead to hard-to-debug errors. It is strongly recommended "
-            "to only use register_module with the tempfile fallback."
-        )
-
-    prev_file = getattr(module, "__file__", False)
-
     p = pathlib.Path(filename)
     module_name = p.stem
     module_file = str(p.with_suffix(".py"))
 
-    if "." in module_name or " " in module_name:
+    if not _is_valid_module_name(module_name):
         raise ValueError(
-            "Cannot register module wiht the invalid name {!r}".format(module_name)
+            f"Cannot register module with the invalid name {module_name!r}"
         )
 
     if module_name in sys.modules:
-        # TODO: improve the error message
         raise ValueError(
-            (
-                "Cannot register module with name {!r}. Consider not setting "
-                "__file__ inside the notebook and using the tempfile_fallback. "
-                "This way a random module name will be generated."
-            ).format(module_name)
+            f"Cannot register module with name {module_name!r}. It would "
+            "override and existing module. Consider not setting __file__ "
+            "inside the notebook. This way a random module name will be generated."
         )
 
-    sys.modules[module_name] = module
-    module.__file__ = module_file
+    with patch(module, "__file__", module_file):
+        sys.modules[module_name] = module
+        try:
+            yield
 
-    try:
-        yield
+        finally:
+            del sys.modules[module_name]
 
-    finally:
-        del sys.modules[module_name]
-        if prev_file is False:
-            del module.__file__
 
-        else:
-            module.__file__ = prev_file
+def _is_valid_module_name(name):
+    return all(c not in name for c in ".- ")
 
 
 class ModuleCollectorPlugin(object):
@@ -266,9 +216,7 @@ def get_pytest_version():
 class IPyTestMagics(Magics):
     @cell_magic("run_pytest[clean]")
     def run_pytest_clean(self, line, cell):
-        import __main__
-
-        clean_tests(items=__main__.__dict__)
+        clean_tests()
         return self.run_pytest(line, cell)
 
     @cell_magic

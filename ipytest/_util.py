@@ -1,9 +1,7 @@
+import contextlib
 import fnmatch
-import functools as ft
 import importlib
-import inspect
-import os
-import sys
+import threading
 
 from ._config import current_config
 
@@ -27,7 +25,9 @@ def clean_tests(pattern=None, items=None):
         globals object is determined from the call stack.
     """
     if items is None:
-        items = _get_globals_of_caller(distance=1)
+        import __main__
+
+        items = vars(__main__)
 
     if pattern is None:
         pattern = current_config["clean"]
@@ -53,44 +53,37 @@ def reload(*mods):
         importlib.reload(importlib.import_module(mod))
 
 
-def deprecated(message):
-    def decorator(func):
-        @ft.wraps(func)
-        def impl(*args, **kwargs):
-            emit_deprecation_warning(message)
-            return func(*args, **kwargs)
+@contextlib.contextmanager
+def patch(obj, attr, val):
+    had_attr = hasattr(obj, attr)
+    prev_val = getattr(obj, attr, None)
 
-        return impl
+    setattr(obj, attr, val)
 
-    return decorator
+    try:
+        yield
 
+    finally:
+        if not had_attr:
+            delattr(obj, attr)
 
-def emit_deprecation_warning(message):
-    if message in emit_deprecation_warning.warned:
-        return
-
-    emit_deprecation_warning.warned.add(message)
-    print(message, file=sys.stderr)
+        else:
+            setattr(obj, attr, prev_val)
 
 
-emit_deprecation_warning.warned = set()
+def run_direct(func, *args, **kwargs):
+    return func(*args, **kwargs)
 
 
-def running_as_test():
-    """Check whether the notebook is executed as a test.
+def run_in_thread(func, *args, **kwargs):
+    res = None
 
-    This function may be useful, when running notebooks as integration tests to
-    ensure the runtime is not exceedingly long.
+    def _thread():
+        nonlocal res
+        res = func(*args, **kwargs)
 
-    Usage::
+    t = threading.Thread(target=_thread)
+    t.start()
+    t.join()
 
-        model.fit(x, y, epochs=500 if not ipytest.running_as_test() else 1)
-
-    """
-    return os.environ.get("PYTEST_CURRENT_TEST") is not None
-
-
-def _get_globals_of_caller(distance=0):
-    stack = inspect.stack()
-    frame_record = stack[distance + 1]
-    return frame_record[0].f_globals
+    return res
