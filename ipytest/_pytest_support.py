@@ -79,9 +79,12 @@ def _run_impl(*args, module, filename, plugins):
 
 
 def _build_full_args(args, valid_filename):
+    def _fmt(arg):
+        return arg.format(MODULE=valid_filename)
+
     return [
-        *current_config["addopts"],
-        *(arg.format(MODULE=valid_filename) for arg in args),
+        *(_fmt(arg) for arg in current_config["addopts"]),
+        *(_fmt(arg) for arg in args),
         *([valid_filename] if current_config["defopts"] else []),
     ]
 
