@@ -66,8 +66,9 @@ def _run_impl(*args, module, filename, plugins):
         import __main__ as module
 
     with _prepared_module(filename, module) as (valid_filename, prepared_module):
+        full_args = _build_full_args(args, valid_filename)
         exit_code = pytest.main(
-            list(current_config["addopts"]) + list(args) + [valid_filename],
+            full_args,
             plugins=(
                 list(plugins)
                 + [
@@ -84,6 +85,14 @@ def _run_impl(*args, module, filename, plugins):
         )
 
     return exit_code
+
+
+def _build_full_args(args, valid_filename):
+    return [
+        *current_config["addopts"],
+        *(arg.format(MODULE=valid_filename) for arg in args),
+        *([valid_filename] if current_config["defopts"] else []),
+    ]
 
 
 @contextlib.contextmanager
@@ -151,7 +160,7 @@ def _register_module(filename, module):
         # TODO: improve the error message
         raise ValueError(
             (
-                "Cannot register module wiht name {!r}. Consider not setting "
+                "Cannot register module with name {!r}. Consider not setting "
                 "__file__ inside the notebook and using the tempfile_fallback. "
                 "This way a random module name will be generated."
             ).format(module_name)

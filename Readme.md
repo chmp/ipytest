@@ -137,7 +137,7 @@ Please create an issue, if I missed a packaged or mischaracterized any package.
 ## Reference
 
 ### `ipytest.autoconfig`
-`ipytest.autoconfig(rewrite_asserts=<default>, magics=<default>, tempfile_fallback=<default>, clean=<default>, addopts=<default>, raise_on_error=<default>, run_in_thread=<default>, register_module=<default>)`
+`ipytest.autoconfig(rewrite_asserts=<default>, magics=<default>, tempfile_fallback=<default>, clean=<default>, addopts=<default>, raise_on_error=<default>, run_in_thread=<default>, register_module=<default>, defopts=<default>)`
 
 Configure `ipytest` with reasonable defaults.
 
@@ -150,6 +150,7 @@ Specifically, it sets:
 - `addopts`: `('-q',)`
 - `raise_on_error`: `False`
 - `run_in_thread`: `False`
+- `defopts`: `True`
 
 See [ipytest.config](#ipytestconfig) for details.
 
@@ -179,7 +180,7 @@ tests defined in the current cell are executed.
 To register the magics, run `ipytest.config.magics = True` first.
 
 ### `ipytest.config`
-`ipytest.config(rewrite_asserts=<keep>, magics=<keep>, tempfile_fallback=<keep>, clean=<keep>, addopts=<keep>, raise_on_error=<keep>, run_in_thread=<keep>, register_module=<keep>)`
+`ipytest.config(rewrite_asserts=<keep>, magics=<keep>, tempfile_fallback=<keep>, clean=<keep>, addopts=<keep>, raise_on_error=<keep>, run_in_thread=<keep>, register_module=<keep>, defopts=<keep>)`
 
 Configure ipytest
 

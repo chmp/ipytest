@@ -12,6 +12,7 @@ defaults = dict(
     addopts=("-q",),
     raise_on_error=False,
     run_in_thread=False,
+    defopts=True,
 )
 
 current_config = dict(
@@ -23,6 +24,7 @@ current_config = dict(
     raise_on_error=False,
     run_in_thread=False,
     register_module=False,
+    defopts=True,
 )
 
 _rewrite_context = None
@@ -68,6 +70,7 @@ def autoconfig(
     raise_on_error=default,
     run_in_thread=default,
     register_module=default,
+    defopts=default,
 ):
     """Configure ``ipytest`` with reasonable defaults.
 
@@ -95,6 +98,7 @@ def config(
     raise_on_error=keep,
     run_in_thread=keep,
     register_module=keep,
+    defopts=keep,
 ):
     """Configure `ipytest`
 
