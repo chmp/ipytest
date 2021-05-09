@@ -214,6 +214,10 @@ The following settings are suported:
   example is the doctest module. It is strongly recommended to only use
   `register_module=True` with the `tempfile_fallback`, since
   otherwise real modules may be shadowed
+- * **defopts (default: True): if True, ipytest will add the**:
+  current module to the arguments passed to pytest. If `False` only the
+  arguments given and `adopts` are passed. Such a setup may be helpful
+  to customize the test selection
 
 
 
