@@ -67,17 +67,8 @@ def _run_impl(*args, module, filename, plugins):
 
     with _prepared_module(filename, module) as (valid_filename, prepared_module):
         full_args = _build_full_args(args, valid_filename)
-        exit_code = pytest.main(
-            full_args,
-            plugins=(
-                list(plugins)
-                + [
-                    ModuleCollectorPlugin(
-                        module=prepared_module, filename=valid_filename
-                    )
-                ]
-            ),
-        )
+        plugin = ModuleCollectorPlugin(module=prepared_module, filename=valid_filename)
+        exit_code = pytest.main(full_args, plugins=[*plugins, plugin])
 
     if current_config["raise_on_error"] and exit_code != 0:
         raise RuntimeError(
