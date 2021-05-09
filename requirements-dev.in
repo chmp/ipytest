@@ -1,0 +1,10 @@
+pip-tools
+black==21.5b0
+wheel
+twine
+chmp
+docutils
+nbval
+pytest-asyncio
+
+-e .

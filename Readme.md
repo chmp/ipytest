@@ -304,25 +304,33 @@ def test_example():
 
 ## Development
 
+Setup the virtual environment via:
+
+```bash
+pip install -r requirements-dev.txt
+```
+
 To execute the unit tests of `ipytest` run
 
-    pipenv sync --dev
-    pipenv run test
+```bash
+python make.py test
+python make.py integration
+```
 
-Before commit execute `pipenv run precommit` to update the documentation,
+Before commit execute `python make.py precommit` to update the documentation,
 format the code, and run tests.
 
 To create a new release execute:
 
 ```bash
-pipenv run release
+python make.py release
 ```
 
 ## License
 
 ```
 The MIT License (MIT)
-Copyright (c) 2015 - 2020 Christopher Prohm
+Copyright (c) 2015 - 2021 Christopher Prohm
 
 Permission is hereby granted, free of charge, to any person obtaining a
 copy of this software and associated documentation files (the "Software"),
