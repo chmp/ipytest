@@ -26,3 +26,8 @@ def test_clean(spec):
     ipytest.clean_tests(items=actual)
 
     assert actual == expected
+
+
+def test_reprs():
+    assert repr(ipytest._config.keep) == "<keep>"
+    assert repr(ipytest._config.default) == "<default>"

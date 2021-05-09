@@ -5,7 +5,7 @@ import inspect
 import os
 import sys
 
-from ._config import config
+from ._config import current_config
 
 
 def clean_tests(pattern=None, items=None):
@@ -30,7 +30,7 @@ def clean_tests(pattern=None, items=None):
         items = _get_globals_of_caller(distance=1)
 
     if pattern is None:
-        pattern = config.clean
+        pattern = current_config["clean"]
 
     to_delete = [key for key in items.keys() if fnmatch.fnmatchcase(key, pattern)]
 

@@ -75,6 +75,7 @@ Note: development is tracked on the `develop` branch.
     - Expose the `ModuleCollectorPlugin` that powers `ipytest` to enable more
       customized applications
     - Remove `return_exit_code` argument from `ipytest.run`
+    - Simplify config implementation: restrict config changes to function calls
 - `0.9.1`:
     - Add `ipython` as an explicit dependency
 - `0.9.0`:
@@ -179,37 +180,36 @@ To register the magics, run `ipytest.config.magics = True` first.
 
 ### `ipytest.config`
 
-Configure `ipytest`. The following settings are suported:
+Configure `ipytest`. To update the configuration, call this function as in:
 
-- `ipytest.config.rewrite_asserts` (default: `False`): enable ipython AST
+```python
+ipytest.config(rewrite_asserts=True, raise_on_error=True)
+```
+
+The following settings are suported:
+
+- `rewrite_asserts` (default: `False`): enable ipython AST
   transforms globally to rewrite asserts.
-- `ipytest.config.magics` (default: `False`): if set to `True` register the
+- `magics` (default: `False`): if set to `True` register the
   ipytest magics.
-- `ipytest.config.clean` (default: `[Tt]est*`): the pattern used to clean
+- `clean` (default: `[Tt]est*`): the pattern used to clean
   variables.
-- `ipytest.config.addopts` (default: `()`): pytest command line arguments to
+- `addopts` (default: `()`): pytest command line arguments to
   prepend to every pytest invocation. For example setting
-  `ipytest.config.addopts= ['-qq']` will execute pytest with the least
+  `ipytest.config(addopts=['-qq'])` will execute pytest with the least
   verbosity.
-- `ipytest.config.raise_on_error` (default: `False`): if `True`, unsuccessful
+- `raise_on_error` (default: `False`): if `True`, unsuccessful
   invocations will raise a `RuntimeError`.
-- `ipytest.config.tempfile_fallback` (default: `False`): if `True`, a temporary
+- `tempfile_fallback` (default: `False`): if `True`, a temporary
   file is created as a fallback when no valid filename can be determined.
-- `ipytest.config.run_in_thread` (default: `False`): if `True`, pytest will be
-  run a separate thread. This way of running is required when testing async
-  code with `pytest_asyncio` since it starts a separate event loop.
-- `ipytest.register_module` (default: `False`): if `True`, ipytest will
+- `run_in_thread` (default: `False`): if `True`, pytest will be
+  run a separate thread. This way of running is required when testing async code
+  with `pytest_asyncio` since it starts a separate event loop.
+- `register_module` (default: `False`): if `True`, ipytest will
   register the notebook with Python module system. This way the module can be
   imported. Some pytest plugins require importing the module. An eample is the
   doctest module. It is strongly recommeneded to only use `register_module=True`
   with the `tempfile_fallback`, since otherwise real modules may be shadowed.
-
-To set multiple arguments at once, the config object can also be called, as in:
-
-```python
-
-ipytest.config(rewrite_asserts=True, raise_on_error=True)
-```
 
 ### `ipytest.exit_code`
 

@@ -72,6 +72,7 @@ def integration():
     python(
         "pytest",
         "--nbval-lax",
+        "--current-env",
         "Example.ipynb",
         *pathlib.Path("tests").glob("Test*.ipynb"),
     )

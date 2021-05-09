@@ -16,7 +16,7 @@ import pytest
 from IPython import get_ipython
 from IPython.core.magic import Magics, magics_class, cell_magic
 
-from ._config import config
+from ._config import current_config
 from ._util import deprecated, clean_tests
 
 
@@ -35,7 +35,7 @@ def run(*args, module=None, filename=None, plugins=()):
     :param plugins:
         additional plugins passed to pytest.
     """
-    if not config.run_in_thread:
+    if not current_config["run_in_thread"]:
         return _run_impl(
             *args,
             module=module,
@@ -52,7 +52,6 @@ def run(*args, module=None, filename=None, plugins=()):
             module=module,
             filename=filename,
             plugins=plugins,
-            return_exit_code=return_exit_code,
         )
 
     t = threading.Thread(target=_thread)
@@ -68,7 +67,7 @@ def _run_impl(*args, module, filename, plugins):
 
     with _prepared_module(filename, module) as (valid_filename, prepared_module):
         exit_code = pytest.main(
-            list(config.addopts) + list(args) + [valid_filename],
+            list(current_config["addopts"]) + list(args) + [valid_filename],
             plugins=(
                 list(plugins)
                 + [
@@ -79,7 +78,7 @@ def _run_impl(*args, module, filename, plugins):
             ),
         )
 
-    if config.raise_on_error and exit_code != 0:
+    if current_config["raise_on_error"] and exit_code != 0:
         raise RuntimeError(
             "Error in pytest invocation. Exit code: {}".format(exit_code)
         )
@@ -113,23 +112,23 @@ def _valid_filename(filename, module):
                 "* correcting the filename"
             )
 
-    if not config.tempfile_fallback:
+    if not current_config["tempfile_fallback"]:
         raise ValueError(
             "module {} has no valid __file__ and tempfile_fallback not configured, please pass filename instead."
         )
 
-    suffix = ".ipynb" if not config.register_module else ".py"
+    suffix = ".ipynb" if not current_config["register_module"] else ".py"
     with tempfile.NamedTemporaryFile(dir=".", suffix=suffix) as f:
         yield f.name
 
 
 @contextlib.contextmanager
 def _register_module(filename, module):
-    if not config.register_module:
+    if not current_config["register_module"]:
         yield
         return
 
-    if not config.tempfile_fallback:
+    if not current_config["tempfile_fallback"]:
         warnings.warn(
             "ipytest is configured with register_module=True and "
             "tempfile_fallback=False. This setup may shadow other modules "
@@ -271,9 +270,9 @@ class IPyTestMagics(Magics):
 
     @cell_magic
     def run_pytest(self, line, cell):
-        # If config.rewrite_asserts is True assertions are being
-        # rewritten by default, do not re-rewrite them.
-        if not config.rewrite_asserts:
+        # If rewrite_asserts is True assertions are being rewritten by default,
+        # do not re-rewrite them again.
+        if not current_config["rewrite_asserts"]:
             self.rewrite_asserts(line, cell)
 
         else:
@@ -297,7 +296,7 @@ class IPyTestMagics(Magics):
             from ipytest import run_pytest
             run_pytest()
         """
-        if config.rewrite_asserts:
+        if current_config["rewrite_asserts"]:
             warnings.warn("skip rewriting as global rewriting is active")
             return
 

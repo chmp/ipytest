@@ -14,148 +14,37 @@ defaults = dict(
     run_in_thread=False,
 )
 
+current_config = dict(
+    rewrite_asserts=False,
+    magics=False,
+    tempfile_fallback=False,
+    clean=default_clean,
+    addopts=(),
+    raise_on_error=False,
+    run_in_thread=False,
+    register_module=False,
+)
 
-# adapt the repr for better display in completion
-class keep_meta(type):
+_rewrite_context = None
+
+
+class repr_meta(type):
+    "Adapt repr for better display in completion"
+
     def __repr__(self):
-        return "<keep>"
+        return "<{}>".format(self.__name__)
 
 
-class keep(metaclass=keep_meta):
+class keep(metaclass=repr_meta):
     """Sentinel for the config call"""
 
     pass
 
 
-class default_meta(type):
-    def __repr__(self):
-        return "<default>"
-
-
-class default(metaclass=default_meta):
+class default(metaclass=repr_meta):
     """Sentinel to mark a default argument"""
 
     pass
-
-
-def collect_arguments():
-    frame = inspect.currentframe()
-    frame = frame.f_back
-    args, _, _, values = inspect.getargvalues(frame)
-    return {key: values[key] for key in args}
-
-
-class ConfigKey:
-    def __init__(self, func, default=None):
-        self.func = func
-        self.value = default
-
-    def __get__(self, instance, owner):
-        return self.value
-
-    def __set__(self, instance, value):
-        if self.value == value:
-            return
-
-        self.value = value
-        self.func(instance, value)
-
-
-def config_key(**kwargs):
-    def decorator(func):
-        return ConfigKey(func, **kwargs)
-
-    return decorator
-
-
-class Config:
-    def __init__(self):
-        self._rewrite_context = None
-
-    def __repr__(self):
-        return "<Config {}>".format(repr_config_values(self))
-
-    def __call__(
-        self,
-        rewrite_asserts=keep,
-        magics=keep,
-        tempfile_fallback=keep,
-        clean=keep,
-        addopts=keep,
-        raise_on_error=keep,
-        run_in_thread=keep,
-        register_module=keep,
-    ):
-        """Perform multiple context updates at the same time.
-
-        The return value can be used as a context manager to revert any changes
-        upon exit::
-
-            with ipytest.config(addopts=['-qq']):
-                ipytest.run()
-
-            # this call is equivalent to
-            iptytest.run('-qq')
-
-        """
-        updates = collect_arguments()
-        updates.pop("self")
-        updates = {k: v for k, v in updates.items() if v is not keep}
-
-        context = ConfigContext(self, updates)
-        context.__enter__()
-        return context
-
-    @config_key(default=False)
-    def rewrite_asserts(self, value):
-        from IPython import get_ipython
-        from ._pytest_support import RewriteContext
-
-        if value:
-            assert self._rewrite_context is None
-            self._rewrite_context = RewriteContext(shell=get_ipython())
-            self._rewrite_context.__enter__()
-
-        else:
-            assert self._rewrite_context is not None
-            self._rewrite_context.__exit__(None, None, None)
-            self._rewrite_context = None
-
-    @config_key(default=False)
-    def magics(self, value):
-        from IPython import get_ipython
-        from ._pytest_support import IPyTestMagics
-
-        if value:
-            get_ipython().register_magics(IPyTestMagics)
-
-        else:
-            warnings.warn("IPython does not support de-registering magics.")
-            pass
-
-    @config_key(default=False)
-    def tempfile_fallback(self, value):
-        pass
-
-    @config_key(default=default_clean)
-    def clean(self, value):
-        pass
-
-    @config_key(default=())
-    def addopts(self, value):
-        pass
-
-    @config_key(default=False)
-    def raise_on_error(self, value):
-        pass
-
-    @config_key(default=False)
-    def run_in_thread(self, value):
-        pass
-
-    @config_key(default=False)
-    def register_module(self, value):
-        pass
 
 
 def gen_default_docs(func):
@@ -188,56 +77,75 @@ def autoconfig(
 
     See :func:`ipytest.config` for details.
     """
-    updates = {
-        key: defaults.get(key) if value is default else value
-        for key, value in collect_arguments().items()
+    args = collect_args()
+    config(
+        **{
+            key: replace_with_default(default, args[key], defaults.get(key))
+            for key in current_config
+        }
+    )
+
+
+def config(
+    rewrite_asserts=keep,
+    magics=keep,
+    tempfile_fallback=keep,
+    clean=keep,
+    addopts=keep,
+    raise_on_error=keep,
+    run_in_thread=keep,
+    register_module=keep,
+):
+    args = collect_args()
+    new_config = {
+        key: replace_with_default(keep, args[key], current_config.get(key))
+        for key in current_config
     }
-    config(**updates)
+
+    if new_config["rewrite_asserts"] != current_config["rewrite_asserts"]:
+        configure_rewrite_asserts(new_config["rewrite_asserts"])
+
+    if new_config["magics"] != current_config["magics"]:
+        configure_magics(new_config["magics"])
+
+    current_config.update(new_config)
+    return dict(current_config)
 
 
-class ConfigContext:
-    def __init__(self, config, updates):
-        self.config = config
-        self.updates = updates
-        self.old_values = None
+def configure_rewrite_asserts(enable):
+    global _rewrite_context
 
-    def __enter__(self):
-        # re-entry, just do nothing
-        if self.old_values is not None:
-            return self
+    from IPython import get_ipython
+    from ._pytest_support import RewriteContext
 
-        self.old_values = {k: getattr(self.config, k) for k in self.updates}
+    if enable:
+        assert _rewrite_context is None
+        _rewrite_context = RewriteContext(shell=get_ipython())
+        _rewrite_context.__enter__()
 
-        for k, v in self.updates.items():
-            setattr(self.config, k, v)
-
-        return self
-
-    def __exit__(self, exc_type, exc_val, exc_tb):
-        if self.old_values is None:
-            raise RuntimeError("Cannot exit, before entering.")
-
-        for k, v in self.old_values.items():
-            setattr(self.config, k, v)
-
-        self.old_values = None
-
-    def __repr__(self):
-        return "<ConfigContext {}>".format(repr_config_values(self.config))
+    else:
+        assert _rewrite_context is not None
+        _rewrite_context.__exit__(None, None, None)
+        _rewrite_context = None
 
 
-def repr_config_values(config):
-    """helper to print the state of the config object."""
-    parts = []
+def configure_magics(enable):
+    from IPython import get_ipython
+    from ._pytest_support import IPyTestMagics
 
-    for name, class_value in vars(type(config)).items():
-        if not isinstance(class_value, ConfigKey):
-            continue
+    if enable:
+        get_ipython().register_magics(IPyTestMagics)
 
-        inst_value = getattr(config, name)
-        parts.append("{!s}={!r}".format(name, inst_value))
-
-    return ", ".join(parts)
+    else:
+        warnings.warn("IPython does not support de-registering magics.")
 
 
-config = Config()
+def replace_with_default(sentinel, value, default):
+    return default if value is sentinel else value
+
+
+def collect_args():
+    frame = inspect.currentframe()
+    frame = frame.f_back
+    args, _, _, values = inspect.getargvalues(frame)
+    return {key: values[key] for key in args}
