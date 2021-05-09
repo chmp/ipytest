@@ -1,8 +1,0 @@
-[run]
-
-source = ipytest
-
-omit =
-    /usr/*
-    tests/*
-
