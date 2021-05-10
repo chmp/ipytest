@@ -144,11 +144,11 @@ def configure_rewrite_asserts(enable):
     if enable:
         assert _rewrite_context is None
         _rewrite_context = RewriteContext(shell=get_ipython())
-        _rewrite_context.__enter__()
+        _rewrite_context.register()
 
     else:
         assert _rewrite_context is not None
-        _rewrite_context.__exit__(None, None, None)
+        _rewrite_context.unregister()
         _rewrite_context = None
 
 

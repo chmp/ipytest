@@ -84,6 +84,7 @@ Note: development is tracked on the `develop` branch.
     - Remove `filename` argument for run
     - Remove `running_as_test` function
     - Require `python>=3.6`
+    - Remove `%%rewrite_asserts` magic
 - `0.9.1`:
     - Add `ipython` as an explicit dependency
 - `0.9.0`:
@@ -182,21 +183,6 @@ The return code of the last pytest invocation.
 .. autofunction:: ipytest.reload
 
 .. autoclass:: ipytest.ModuleCollectorPlugin
-
-### `%%rewrite_asserts`
-
-Rewrite any asserts in the current cell using pytest without running the tests.
-To get best results run the tests with `run`.
-To register the magics, run `ipytest.config.magics = True` first.
-
-For example::
-
-```python
-%%rewrite_asserts
-
-def test_example():
-    ...
-```
 
 ## Development
 

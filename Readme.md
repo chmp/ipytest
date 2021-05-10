@@ -82,8 +82,9 @@ Note: development is tracked on the `develop` branch.
       current module as an argument
     - Remove `tempfile_fallback` and `register_module` config options
     - Remove `filename` argument for run
-    - Remove `is_running_as_test` function
-    - Require python 3.6
+    - Remove `running_as_test` function
+    - Require `python>=3.6`
+    - Remove `%%rewrite_asserts` magic
 - `0.9.1`:
     - Add `ipython` as an explicit dependency
 - `0.9.0`:
@@ -304,21 +305,6 @@ on disk, as Pytest will check for its existence. The module itself will be
 handled in the normal way by Pytest during collection.
 
 
-
-### `%%rewrite_asserts`
-
-Rewrite any asserts in the current cell using pytest without running the tests.
-To get best results run the tests with `run`.
-To register the magics, run `ipytest.config.magics = True` first.
-
-For example::
-
-```python
-%%rewrite_asserts
-
-def test_example():
-    ...
-```
 
 ## Development
 

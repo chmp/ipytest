@@ -172,13 +172,6 @@ class RewriteContext:
         self.shell = shell
         self.transformer = None
 
-    def __enter__(self):
-        self.register()
-        return self
-
-    def __exit__(self, exc_type=None, exc_val=None, exc_tb=None):
-        self.unregister()
-
     def register(self):
         assert self.transformer is None
 
@@ -221,35 +214,7 @@ class IPyTestMagics(Magics):
 
     @cell_magic
     def run_pytest(self, line, cell):
-        # If rewrite_asserts is True assertions are being rewritten by default,
-        # do not re-rewrite them again.
-        if not current_config["rewrite_asserts"]:
-            self.rewrite_asserts(line, cell)
-
-        else:
-            self.shell.run_cell(cell)
-
         import ipytest
 
+        self.shell.run_cell(cell)
         ipytest.exit_code = run(*shlex.split(line))
-
-    @cell_magic
-    def rewrite_asserts(self, line, cell):
-        """Rewrite asserts with pytest.
-
-        Usage::
-
-            %%rewrite_asserts
-
-            ...
-
-            # new cell:
-            from ipytest import run_pytest
-            run_pytest()
-        """
-        if current_config["rewrite_asserts"]:
-            warnings.warn("skip rewriting as global rewriting is active")
-            return
-
-        with RewriteContext(get_ipython()):
-            self.shell.run_cell(cell)
