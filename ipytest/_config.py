@@ -27,23 +27,18 @@ current_config = dict(
 _rewrite_context = None
 
 
-class repr_meta(type):
+class sentinel:
     "Adapt repr for better display in completion"
 
+    def __init__(self, name):
+        self.name = name
+
     def __repr__(self):
-        return f"<{self.__name__}>"
+        return f"<{self.name}>"
 
 
-class keep(metaclass=repr_meta):
-    """Sentinel for the config call"""
-
-    pass
-
-
-class default(metaclass=repr_meta):
-    """Sentinel to mark a default argument"""
-
-    pass
+keep = sentinel("keep")
+default = sentinel("default")
 
 
 def gen_default_docs(func):
