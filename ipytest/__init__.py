@@ -10,7 +10,6 @@ __all__ = [
     "autoconfig",
     "run",
     "config",
-    "exit_code",
     "clean_tests",
     "reload",
     "running_as_test",

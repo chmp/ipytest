@@ -33,8 +33,10 @@ def run(*args, module=None, plugins=()):
     :param plugins:
         additional plugins passed to pytest.
     """
+    import ipytest
+
     run = _util.run_in_thread if current_config["run_in_thread"] else _util.run_direct
-    return run(
+    ipytest.exit_code = run(
         _run_impl,
         *args,
         module=module,
@@ -46,12 +48,7 @@ def _run_impl(*args, module, plugins):
     with _prepared_module(module) as (valid_filename, prepared_module):
         full_args = _build_full_args(args, valid_filename)
         plugin = ModuleCollectorPlugin(module=prepared_module, filename=valid_filename)
-        exit_code = pytest.main(full_args, plugins=[*plugins, plugin])
-
-    if current_config["raise_on_error"] and exit_code != 0:
-        raise RuntimeError(f"Error in pytest invocation. Exit code: {exit_code}")
-
-    return exit_code
+        return pytest.main(full_args, plugins=[*plugins, plugin])
 
 
 def _build_full_args(args, valid_filename):
@@ -189,15 +186,11 @@ def get_pytest_version():
 
 
 def run_pytest_clean(line, cell):
-    import ipytest
-
     _util.clean_tests()
     get_ipython().run_cell(cell)
-    ipytest.exit_code = run(*shlex.split(line))
+    run(*shlex.split(line))
 
 
 def run_pytest(line, cell):
-    import ipytest
-
     get_ipython().run_cell(cell)
-    ipytest.exit_code = run(*shlex.split(line))
+    run(*shlex.split(line))

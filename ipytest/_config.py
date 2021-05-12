@@ -9,7 +9,6 @@ defaults = dict(
     magics=True,
     clean=default_clean,
     addopts=("-q",),
-    raise_on_error=False,
     run_in_thread=False,
     defopts=True,
 )
@@ -19,7 +18,6 @@ current_config = dict(
     magics=False,
     clean=default_clean,
     addopts=(),
-    raise_on_error=False,
     run_in_thread=False,
     defopts=True,
 )
@@ -57,7 +55,6 @@ def autoconfig(
     magics=default,
     clean=default,
     addopts=default,
-    raise_on_error=default,
     run_in_thread=default,
     defopts=default,
 ):
@@ -83,7 +80,6 @@ def config(
     magics=keep,
     clean=keep,
     addopts=keep,
-    raise_on_error=keep,
     run_in_thread=keep,
     defopts=keep,
 ):
@@ -91,7 +87,7 @@ def config(
 
     To update the configuration, call this function as in::
 
-        ipytest.config(rewrite_asserts=True, raise_on_error=True)
+        ipytest.config(rewrite_asserts=True)
 
     The following settings are supported:
 
@@ -104,8 +100,6 @@ def config(
       to every pytest invocation. For example setting
       ``ipytest.config(addopts=['-qq'])`` will execute pytest with the least
       verbosity
-    * ``raise_on_error`` (default: ``False``): if ``True``, unsuccessful
-      invocations will raise a ``RuntimeError``
     * ``run_in_thread`` (default: ``False``): if ``True``, pytest will be run a
       separate thread. This way of running is required when testing async
       code with ``pytest_asyncio`` since it starts a separate event loop

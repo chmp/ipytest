@@ -28,7 +28,7 @@ def test_fixtures():
     def test_example(my_fixture):
         assert my_fixture == 42
 
-    assert 0 == ipytest.run(
+    ipytest.run(
         module=fake_module(
             __name__="empty_module",
             __file__=os.path.join(os.path.dirname(__file__), "empty_module.py"),
@@ -36,6 +36,7 @@ def test_fixtures():
             test_example=test_example,
         ),
     )
+    assert ipytest.exit_code == 0
 
 
 def test_parametrize():
@@ -43,13 +44,14 @@ def test_parametrize():
     def test_example(val):
         assert val % 2 == 0
 
-    assert 0 == ipytest.run(
+    ipytest.run(
         module=fake_module(
             __name__="empty_module",
             __file__=os.path.join(os.path.dirname(__file__), "empty_module.py"),
             test_example=test_example,
         ),
     )
+    assert ipytest.exit_code == 0
 
 
 def test_rewrite_assert_transformer_runs():

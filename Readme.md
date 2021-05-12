@@ -110,19 +110,21 @@ filename associated with the notebook.
 Note: development is tracked on the `develop` branch.
 
 - `development`:
+    - Allow to fully customize the command line and to skip passing the
+      current module as an argument
     - Expose the `ModuleCollectorPlugin` that powers `ipytest` to enable more
       customized applications
-    - Remove `return_exit_code` argument from `ipytest.run`
     - Simplify config implementation: restrict config changes to function calls
     - Allow to use the generated module name in the arguments passed to pytest
       by using `{MODULE}`
-    - Allow to fully customize the command line and to skip passing the
-      current module as an argument
-    - Remove `tempfile_fallback` and `register_module` config options
-    - Remove `filename` argument for run
-    - Remove `running_as_test` function
     - Require `python>=3.6`
     - Remove `%%rewrite_asserts` magic
+    - Remove `tempfile_fallback` config option
+    - Remove `register_module` config option
+    - Remove `raise_on_error` config option
+    - Remove `filename` argument for `ipytest.run`
+    - Remove `return_exit_code` argument from `ipytest.run`
+    - Remove `running_as_test` function
 - `0.9.1`:
     - Add `ipython` as an explicit dependency
 - `0.9.0`:
@@ -169,7 +171,7 @@ Note: development is tracked on the `develop` branch.
 ## Reference
 
 ### `ipytest.autoconfig`
-`ipytest.autoconfig(rewrite_asserts=<default>, magics=<default>, clean=<default>, addopts=<default>, raise_on_error=<default>, run_in_thread=<default>, defopts=<default>)`
+`ipytest.autoconfig(rewrite_asserts=<default>, magics=<default>, clean=<default>, addopts=<default>, run_in_thread=<default>, defopts=<default>)`
 
 Configure `ipytest` with reasonable defaults.
 
@@ -179,7 +181,6 @@ Specifically, it sets:
 - `magics`: `True`
 - `clean`: `'[Tt]est*'`
 - `addopts`: `('-q',)`
-- `raise_on_error`: `False`
 - `run_in_thread`: `False`
 - `defopts`: `True`
 
@@ -217,14 +218,14 @@ Additional arguments can be passed to pytest. See the section "How does it work"
 arguments for specifics.
 
 ### `ipytest.config`
-`ipytest.config(rewrite_asserts=<keep>, magics=<keep>, clean=<keep>, addopts=<keep>, raise_on_error=<keep>, run_in_thread=<keep>, defopts=<keep>)`
+`ipytest.config(rewrite_asserts=<keep>, magics=<keep>, clean=<keep>, addopts=<keep>, run_in_thread=<keep>, defopts=<keep>)`
 
 Configure ipytest
 
 To update the configuration, call this function as in:
 
 ```python
-ipytest.config(rewrite_asserts=True, raise_on_error=True)
+ipytest.config(rewrite_asserts=True)
 ```
 
 The following settings are supported:
@@ -238,8 +239,6 @@ The following settings are supported:
   to every pytest invocation. For example setting
   `ipytest.config(addopts=['-qq'])` will execute pytest with the least
   verbosity
-- `raise_on_error` (default: `False`): if `True`, unsuccessful
-  invocations will raise a `RuntimeError`
 - `run_in_thread` (default: `False`): if `True`, pytest will be run a
   separate thread. This way of running is required when testing async
   code with `pytest_asyncio` since it starts a separate event loop
