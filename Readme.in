@@ -2,10 +2,11 @@
 
 [Usage](#usage)
 | [Global state](#global-state)
+| [How does it work?](#how-does-it-work)
 | [Changes](#changes)
-| [Related packages](#related-packages)
 | [Reference](#reference)
 | [Development](#development)
+| [Related packages](#related-packages)
 | [License](#license)
 
 
@@ -69,8 +70,8 @@ There are multiple sources of global state when using pytest inside the notebook
 
 ## How does it work?
 
-Depending on the configuration some steps may very. In its default configuration
-(via `autoconfig()`), `ipytest` performs the following steps:
+In its default configuration (via `autoconfig()`), `ipytest` performs the
+following steps:
 
 1. Register pytest's assertion rewriter with the IPython kernel. The rewriter
    will rewrite any assert statements entered into the notebook to give better
@@ -87,19 +88,20 @@ Depending on the configuration some steps may very. In its default configuration
 4. Call pytest with a plugin that makes pytest believe the notebook is a proper
    module
 
-`ipytest` can pass additional arguments to pytest. Per default the only the
+`ipytest` can pass additional arguments to pytest. Per default, only the
 filename that is associated with the notebook is passed. There are a number of
 ways to configure this behavior:
 
 - `ipytest.config(addopts=...)` or `ipytest.autconfig(addopts=...)` allow to
-  specify a list of strings that is added to the command line. Also For example
+  specify a list of strings that are added to the command line. For example,
   `ipytest.autoconfig(addopts=["-x", "--pdb"])` will attach the debugger on the
-  first test error and not run further tests.
+  first test failure and not run further tests.
 - `ipytest.run(...)`: allows to specify additional arguments as strings
 - `%%run_pytest` and `%%run_pytest[clean]` allow to specify additional
   arguments in the same line
 - `ipytest.config(defopts=False)` or `ipytest.autoconfig(defopts=False)` will
-  instruct `ipytest` to not pass the current module filename
+  instruct `ipytest` to not pass the current module filename. It can still be
+  passed manually by adding `{MODULE}` to the command line.
 
 The arguments are formatted using Python's standard string formatting.
 Currently, only the `{MODULE}` variable is understood. It is replaced with the
