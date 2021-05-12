@@ -36,7 +36,7 @@ def release():
     print(f"Upload {[max_wheel.name, max_sdist.name]}?")
 
     if input("[yN] ") == "y":
-        c.run(f"twine upload '{max_wheel!s}' '{max_sdist!s}'")
+        run("twine", "upload", max_wheel, max_sdist)
 
 
 @cmd()
