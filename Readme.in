@@ -67,6 +67,44 @@ There are multiple sources of global state when using pytest inside the notebook
    ipytest supports running tests in a separate thread. Simply setup ipytest
    via `ipytest.autoconfig(run_in_thread=True)`.
 
+## How does it work?
+
+Depending on the configuration some steps may very. In its default configuration
+(via `autoconfig()`), `ipytest` performs the following steps:
+
+1. Register pytest's assertion rewriter with the IPython kernel. The rewriter
+   will rewrite any assert statements entered into the notebook to give better
+   error messages. This change will affect also non test based code, but should
+   generally improve the development experience.
+2. Ensure the notebook can be mapped to a file. While this file must exists in
+   the current directory, it does not have to be the notebook file itself.
+   Without further configuration, `ipytest` will create a temporary file in the
+   current directory. Alternatively, the `__file__` variable in the notebook can
+   be set to specify the file to use.
+3. Register the notebook scope temporarily as a module. This step is necessary
+   to allow pytest's doctest plugin to import the notebook. If an existing
+   module would be overwritten this step is skipped with a warning.
+4. Call pytest with a plugin that makes pytest believe the notebook is a proper
+   module
+
+`ipytest` can pass additional arguments to pytest. Per default the only the
+filename that is associated with the notebook is passed. There are a number of
+ways to configure this behavior:
+
+- `ipytest.config(addopts=...)` or `ipytest.autconfig(addopts=...)` allow to
+  specify a list of strings that is added to the command line. Also For example
+  `ipytest.autoconfig(addopts=["-x", "--pdb"])` will attach the debugger on the
+  first test error and not run further tests.
+- `ipytest.run(...)`: allows to specify additional arguments as strings
+- `%%run_pytest` and `%%run_pytest[clean]` allow to specify additional
+  arguments in the same line
+- `ipytest.config(defopts=False)` or `ipytest.autoconfig(defopts=False)` will
+  instruct `ipytest` to not pass the current module filename
+
+The arguments are formatted using Python's standard string formatting.
+Currently, only the `{MODULE}` variable is understood. It is replaced with the
+filename associated with the notebook.
+
 ## Changes
 
 Note: development is tracked on the `develop` branch.
@@ -128,30 +166,18 @@ Note: development is tracked on the `develop` branch.
 - `0.1.0`: support for running `unittest.FunctionTestCase`,
   `unittest.TestCases`, and `doctests`.
 
-## Related packages
-
-`ipytest` is designed to enable running tests within an interactive notebook
-session. There are also other packages that aim to use notebooks as tests
-themselves, for example by comparing the output of running all cells to the
-output of previous runs. These packages include:
-
-- [nbval](https://github.com/computationalmodelling/nbval) is actively
-  maintained. It is also used in the integration tests of `ipytest`.
-- [pytest-ipynb](https://github.com/zonca/pytest-ipynb) seems to be no longer
-  maintained as the latest commit was on March 2016. .
-- ...
-
-Please create an issue, if I missed a packaged or mischaracterized any package.
-
 ## Reference
 
 .. autofunction:: ipytest.autoconfig
 
 ### `%%run_pytest ...`
 
-IPython magic that first executes the cell, then executes `ipytest.run()`.
-Any arguments passed on the magic line be passed on to pytest.
-To register the magics, run `ipytest.config.magics = True` first.
+IPython magic that first executes the cell, then executes `ipytest.run()`. Any
+arguments passed on the magic line be passed on to pytest. To register the
+magics, run `ipytest.autoconfig()` or `ipytest.config(magics=True)` first.
+
+Additional arguments can be passed to pytest. See the section "How does it work"
+for specifics.
 
 For example:
 
@@ -167,8 +193,11 @@ def test_example():
 ### `%%run_pytest[clean] ...`
 
 Same as the `%%run_pytest`, but cleans any previously found tests, i.e., only
-tests defined in the current cell are executed.
-To register the magics, run `ipytest.config.magics = True` first.
+tests defined in the current cell are executed. To register the magics, run
+`ipytest.autoconfig()` or `ipytest.config(magics=True)` first.
+
+Additional arguments can be passed to pytest. See the section "How does it work"
+arguments for specifics.
 
 .. autofunction:: ipytest.config
 
@@ -207,6 +236,23 @@ To create a new release execute:
 ```bash
 python make.py release
 ```
+
+
+## Related packages
+
+`ipytest` is designed to enable running tests within an interactive notebook
+session. There are also other packages that aim to use notebooks as tests
+themselves, for example by comparing the output of running all cells to the
+output of previous runs. These packages include:
+
+- [nbval](https://github.com/computationalmodelling/nbval) is actively
+  maintained. It is also used in the integration tests of `ipytest`.
+- [pytest-ipynb](https://github.com/zonca/pytest-ipynb) seems to be no longer
+  maintained as the latest commit was on March 2016. .
+- ...
+
+Please create an issue, if I missed a packaged or mischaracterized any package.
+
 
 ## License
 

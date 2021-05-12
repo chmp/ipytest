@@ -1,6 +1,7 @@
 import contextlib
 import fnmatch
 import importlib
+import sys
 import threading
 
 from ._config import current_config
@@ -71,6 +72,19 @@ def patch(obj, attr, val):
             setattr(obj, attr, prev_val)
 
 
+@contextlib.contextmanager
+def register_module(obj, name):
+    if name in sys.modules:
+        raise RuntimeError(f"Cannot overwrite existing module {name}")
+
+    sys.modules[name] = obj
+    try:
+        yield
+
+    finally:
+        del sys.modules[name]
+
+
 def run_direct(func, *args, **kwargs):
     return func(*args, **kwargs)
 
@@ -87,3 +101,7 @@ def run_in_thread(func, *args, **kwargs):
     t.join()
 
     return res
+
+
+def is_valid_module_name(name):
+    return all(c not in name for c in ".- ")

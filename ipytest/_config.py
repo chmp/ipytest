@@ -24,7 +24,7 @@ current_config = dict(
     defopts=True,
 )
 
-_rewrite_context = None
+_rewrite_transformer = None
 
 
 class sentinel:
@@ -131,28 +131,32 @@ def config(
 
 
 def configure_rewrite_asserts(enable):
-    global _rewrite_context
+    global _rewrite_transformer
 
     from IPython import get_ipython
-    from ._pytest_support import RewriteContext
+    from ._pytest_support import RewriteAssertTransformer
+
+    shell = get_ipython()
 
     if enable:
-        assert _rewrite_context is None
-        _rewrite_context = RewriteContext(shell=get_ipython())
-        _rewrite_context.register()
+        assert _rewrite_transformer is None
+        _rewrite_transformer = RewriteAssertTransformer()
+        _rewrite_transformer.register_with_shell(shell)
 
     else:
-        assert _rewrite_context is not None
-        _rewrite_context.unregister()
-        _rewrite_context = None
+        assert _rewrite_transformer is not None
+        _rewrite_transformer.unregister_with_shell(shell)
+        _rewrite_transformer = None
 
 
 def configure_magics(enable):
     from IPython import get_ipython
-    from ._pytest_support import IPyTestMagics
+    from ._pytest_support import run_pytest, run_pytest_clean
 
     if enable:
-        get_ipython().register_magics(IPyTestMagics)
+        shell = get_ipython()
+        shell.register_magic_function(run_pytest, "cell", "run_pytest")
+        shell.register_magic_function(run_pytest_clean, "cell", "run_pytest[clean]")
 
     else:
         warnings.warn("IPython does not support de-registering magics.")

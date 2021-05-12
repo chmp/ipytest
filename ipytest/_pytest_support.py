@@ -13,10 +13,9 @@ import py.path
 import pytest
 
 from IPython import get_ipython
-from IPython.core.magic import Magics, magics_class, cell_magic
 
 from ._config import current_config
-from ._util import clean_tests, patch, run_direct, run_in_thread
+from . import _util
 
 
 def run(*args, module=None, plugins=()):
@@ -34,7 +33,7 @@ def run(*args, module=None, plugins=()):
     :param plugins:
         additional plugins passed to pytest.
     """
-    run = run_in_thread if current_config["run_in_thread"] else run_direct
+    run = _util.run_in_thread if current_config["run_in_thread"] else _util.run_direct
     return run(
         _run_impl,
         *args,
@@ -71,13 +70,17 @@ def _prepared_module(module):
     if module is None:  # pragma: no cover
         import __main__ as module
 
-    with _valid_filename(module) as valid_filename:
-        with _register_module(valid_filename, module):
-            yield valid_filename, module
+    with valid_filename(module) as filename:
+        p = pathlib.Path(filename)
+        module_name = p.stem
+        module_filename = str(p.with_suffix(".py"))
+
+        with registered_module(module, module_name, module_filename):
+            yield filename, module
 
 
 @contextlib.contextmanager
-def _valid_filename(module):
+def valid_filename(module):
     filename = getattr(module, "__file__", None)
 
     if filename is not None and pathlib.Path(filename).exists():
@@ -95,34 +98,24 @@ def _valid_filename(module):
 
 
 @contextlib.contextmanager
-def _register_module(filename, module):
-    p = pathlib.Path(filename)
-    module_name = p.stem
-    module_file = str(p.with_suffix(".py"))
+def registered_module(module, module_name, module_filename):
+    if not _util.is_valid_module_name(module_name):
+        warnings.warn(f"Cannot register module with the invalid name {module_name!r}")
+        yield
+        return
 
-    if not _is_valid_module_name(module_name):
-        raise ValueError(
-            f"Cannot register module with the invalid name {module_name!r}"
-        )
-
-    if module_name in sys.modules:
-        raise ValueError(
+    elif module_name in sys.modules:
+        warnings.warn(
             f"Cannot register module with name {module_name!r}. It would "
             "override and existing module. Consider not setting __file__ "
             "inside the notebook. This way a random module name will be generated."
         )
+        yield
+        return
 
-    with patch(module, "__file__", module_file):
-        sys.modules[module_name] = module
-        try:
+    with _util.patch(module, "__file__", module_filename):
+        with _util.register_module(module, module_name):
             yield
-
-        finally:
-            del sys.modules[module_name]
-
-
-def _is_valid_module_name(name):
-    return all(c not in name for c in ".- ")
 
 
 class ModuleCollectorPlugin(object):
@@ -167,27 +160,17 @@ class Module(pytest.Module):
         return self
 
 
-class RewriteContext:
-    def __init__(self, shell):
-        self.shell = shell
-        self.transformer = None
-
-    def register(self):
-        assert self.transformer is None
-
-        self.transformer = RewriteAssertTransformer()
-        self.shell.ast_transformers.append(self.transformer)
-
-    def unregister(self):
-        self.shell.ast_transformers[:] = [
-            transformer
-            for transformer in self.shell.ast_transformers
-            if transformer is not self.transformer
-        ]
-        self.transformer = None
-
-
 class RewriteAssertTransformer(ast.NodeTransformer):
+    def register_with_shell(self, shell):
+        shell.ast_transformers.append(self)
+
+    def unregister_with_shell(self, shell):
+        shell.ast_transformers[:] = [
+            transformer
+            for transformer in shell.ast_transformers
+            if transformer is not self
+        ]
+
     def visit(self, node):
         from _pytest.assertion.rewrite import rewrite_asserts
 
@@ -205,16 +188,16 @@ def get_pytest_version():
     return packaging.version.parse(pytest.__version__)
 
 
-@magics_class
-class IPyTestMagics(Magics):
-    @cell_magic("run_pytest[clean]")
-    def run_pytest_clean(self, line, cell):
-        clean_tests()
-        return self.run_pytest(line, cell)
+def run_pytest_clean(line, cell):
+    import ipytest
 
-    @cell_magic
-    def run_pytest(self, line, cell):
-        import ipytest
+    _util.clean_tests()
+    get_ipython().run_cell(cell)
+    ipytest.exit_code = run(*shlex.split(line))
 
-        self.shell.run_cell(cell)
-        ipytest.exit_code = run(*shlex.split(line))
+
+def run_pytest(line, cell):
+    import ipytest
+
+    get_ipython().run_cell(cell)
+    ipytest.exit_code = run(*shlex.split(line))
