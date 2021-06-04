@@ -112,10 +112,10 @@ filename associated with the notebook.
 Note: development is tracked on the `develop` branch.
 
 - `development`:
+    - Remove the `ModuleCollectorPlugin` in favor of relying on pytest's builtin
+      collection mechanism
     - Allow to fully customize the command line and to skip passing the
       current module as an argument
-    - Expose the `ModuleCollectorPlugin` that powers `ipytest` to enable more
-      customized applications
     - Simplify config implementation: restrict config changes to function calls
     - Allow to use the generated module name in the arguments passed to pytest
       by using `{MODULE}`
@@ -311,28 +311,6 @@ Usage:
 ```python
 reload("ipytest._util", "ipytest")
 ```
-
-
-
-### `ipytest.ModuleCollectorPlugin`
-`ipytest.ModuleCollectorPlugin(module, filename)`
-
-Pytest plugin to collect an already imported module.
-
-Usage:
-
-```python
-pytest.main(
-    [],
-    plugins=[
-        ModuleCollectorPlugin(module, "module.py"),
-    ],
-)
-```
-
-While the filename can be chosen arbitrarily, it must be a file that exists
-on disk, as Pytest will check for its existence. The module itself will be
-handled in the normal way by Pytest during collection.
 
 
 

@@ -112,10 +112,10 @@ filename associated with the notebook.
 Note: development is tracked on the `develop` branch.
 
 - `development`:
+    - Remove the `ModuleCollectorPlugin` in favor of relying on pytest's builtin
+      collection mechanism
     - Allow to fully customize the command line and to skip passing the
       current module as an argument
-    - Expose the `ModuleCollectorPlugin` that powers `ipytest` to enable more
-      customized applications
     - Simplify config implementation: restrict config changes to function calls
     - Allow to use the generated module name in the arguments passed to pytest
       by using `{MODULE}`
@@ -214,8 +214,6 @@ The return code of the last pytest invocation.
 .. autofunction:: ipytest.clean_tests
 
 .. autofunction:: ipytest.reload
-
-.. autoclass:: ipytest.ModuleCollectorPlugin
 
 ## Development
 
