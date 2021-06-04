@@ -77,11 +77,8 @@ following steps:
    will rewrite any assert statements entered into the notebook to give better
    error messages. This change will affect also non test based code, but should
    generally improve the development experience.
-2. Ensure the notebook can be mapped to a file. While this file must exists in
-   the current directory, it does not have to be the notebook file itself.
-   Without further configuration, `ipytest` will create a temporary file in the
-   current directory. Alternatively, the `__file__` variable in the notebook can
-   be set to specify the file to use.
+2. Ensure the notebook can be mapped to a file. `ipytest` will create a
+   temporary file in the current directory and remove if afterwards.
 3. Register the notebook scope temporarily as a module. This step is necessary
    to allow pytest's doctest plugin to import the notebook. If an existing
    module would be overwritten this step is skipped with a warning.
