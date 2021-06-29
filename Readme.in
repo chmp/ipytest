@@ -116,7 +116,7 @@ filename associated with the notebook.
 
 Note: development is tracked on the `develop` branch.
 
-- `development`:
+- `0.10.0`:
     - Remove the `ModuleCollectorPlugin` in favor of relying on pytest's builtin
       collection mechanism
     - Allow to fully customize the command line and to skip passing the
