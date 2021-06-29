@@ -44,8 +44,16 @@ def test_example():
 ```
 
 This command will first delete any previously defined tests, execute the cell
-and then run pytest. See the [reference](#reference) for a detailed list of
-available functionality.
+and then run pytest. It is also possible to use `ipytest` without magics by
+calling the `run` function as in:
+
+```python
+ipytest.run()
+```
+
+This function is a thin wrapper around `pytest.main` and will execute any tests
+defined in the current notebook session.  See the [reference](#reference) for a
+detailed list of available functionality.
 
 ## Global state
 
