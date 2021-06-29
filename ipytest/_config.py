@@ -128,7 +128,7 @@ def configure_rewrite_asserts(enable):
     global _rewrite_transformer
 
     from IPython import get_ipython
-    from ._pytest_support import RewriteAssertTransformer
+    from ._impl import RewriteAssertTransformer
 
     shell = get_ipython()
 
@@ -145,7 +145,7 @@ def configure_rewrite_asserts(enable):
 
 def configure_magics(enable):
     from IPython import get_ipython
-    from ._pytest_support import run_pytest, run_pytest_clean
+    from ._impl import run_pytest, run_pytest_clean
 
     if enable:
         shell = get_ipython()

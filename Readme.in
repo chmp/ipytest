@@ -77,11 +77,8 @@ following steps:
    will rewrite any assert statements entered into the notebook to give better
    error messages. This change will affect also non test based code, but should
    generally improve the development experience.
-2. Ensure the notebook can be mapped to a file. While this file must exists in
-   the current directory, it does not have to be the notebook file itself.
-   Without further configuration, `ipytest` will create a temporary file in the
-   current directory. Alternatively, the `__file__` variable in the notebook can
-   be set to specify the file to use.
+2. Ensure the notebook can be mapped to a file. `ipytest` will create a
+   temporary file in the current directory and remove if afterwards.
 3. Register the notebook scope temporarily as a module. This step is necessary
    to allow pytest's doctest plugin to import the notebook. If an existing
    module would be overwritten this step is skipped with a warning.
@@ -112,10 +109,10 @@ filename associated with the notebook.
 Note: development is tracked on the `develop` branch.
 
 - `development`:
+    - Remove the `ModuleCollectorPlugin` in favor of relying on pytest's builtin
+      collection mechanism
     - Allow to fully customize the command line and to skip passing the
       current module as an argument
-    - Expose the `ModuleCollectorPlugin` that powers `ipytest` to enable more
-      customized applications
     - Simplify config implementation: restrict config changes to function calls
     - Allow to use the generated module name in the arguments passed to pytest
       by using `{MODULE}`
@@ -214,8 +211,6 @@ The return code of the last pytest invocation.
 .. autofunction:: ipytest.clean_tests
 
 .. autofunction:: ipytest.reload
-
-.. autoclass:: ipytest.ModuleCollectorPlugin
 
 ## Development
 
