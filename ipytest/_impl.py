@@ -4,6 +4,7 @@ import ast
 import contextlib
 import fnmatch
 import importlib
+import os
 import pathlib
 import shlex
 import sys
@@ -105,7 +106,7 @@ def reload(*mods):
 
 
 def _run_impl(*args, module, plugins):
-    with _prepared_module(module) as filename:
+    with _prepared_env(module) as filename:
         full_args = _build_full_args(args, filename)
         return pytest.main(full_args, plugins=plugins)
 
@@ -122,7 +123,7 @@ def _build_full_args(args, filename):
 
 
 @contextlib.contextmanager
-def _prepared_module(module):
+def _prepared_env(module):
     if module is None:  # pragma: no cover
         import __main__ as module
 
@@ -146,7 +147,8 @@ def _prepared_module(module):
 
         with patch(module, "__file__", str(path)):
             with register_module(module, module_name):
-                yield str(path)
+                with patched_columns():
+                    yield str(path)
 
 
 class RewriteAssertTransformer(ast.NodeTransformer):
@@ -206,6 +208,27 @@ def register_module(obj, name):
 
     finally:
         del sys.modules[name]
+
+
+@contextlib.contextmanager
+def patched_columns():
+    display_columns = current_config["display_columns"]
+
+    if not display_columns:
+        yield
+        return
+
+    # NOTE: since values have to be strings, None identifies unset values
+    prev_columns = os.environ.get("COLUMNS")
+
+    os.environ["COLUMNS"] = str(display_columns)
+    yield
+
+    if prev_columns is not None:
+        os.environ["COLUMNS"] = prev_columns
+
+    else:
+        del os.environ["COLUMNS"]
 
 
 def run_direct(func, *args, **kwargs):
