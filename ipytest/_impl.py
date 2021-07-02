@@ -140,8 +140,8 @@ def _prepared_module(module):
         if module_name in sys.modules:
             raise RuntimeError(
                 f"Cannot register module with name {module_name!r}. It would "
-                "override and existing module. Consider not setting __file__ "
-                "inside the notebook. This way a random module name will be generated."
+                "override and existing module. This should not happen. Please "
+                "report a bug at 'https://github.com/chmp/ipytest/issues'."
             )
 
         with patch(module, "__file__", str(path)):
