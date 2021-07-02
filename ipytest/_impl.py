@@ -141,7 +141,7 @@ def _prepared_env(module):
         if module_name in sys.modules:
             raise RuntimeError(
                 f"Cannot register module with name {module_name!r}. It would "
-                "override and existing module. This should not happen. Please "
+                "override an existing module. This should not happen. Please "
                 "report a bug at 'https://github.com/chmp/ipytest/issues'."
             )
 
