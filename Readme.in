@@ -96,10 +96,8 @@ following steps:
 2. Ensure the notebook can be mapped to a file. `ipytest` will create a
    temporary file in the current directory and remove if afterwards.
 3. Register the notebook scope temporarily as a module. This step is necessary
-   to allow pytest's doctest plugin to import the notebook. If an existing
-   module would be overwritten this step is skipped with a warning.
-4. Call pytest with a plugin that makes pytest believe the notebook is a proper
-   module
+   to allow pytest's doctest plugin to import the notebook.
+4. Call pytest with the name of the temporary module
 
 `ipytest` can pass additional arguments to pytest. Per default, only the
 filename that is associated with the notebook is passed. There are a number of
@@ -128,6 +126,7 @@ Note: development is tracked on the `develop` branch.
     - Force color pytest output by default by adding `--color=yes` to the
       default `addopts` value
     - Configure the number of columns available to pytest
+    - Add warning and workaround for non-standard IPython implementations
 - `0.10.0`:
     - Remove the `ModuleCollectorPlugin` in favor of relying on pytest's builtin
       collection mechanism
