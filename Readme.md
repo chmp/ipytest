@@ -117,6 +117,8 @@ filename associated with the notebook.
 Note: development is tracked on the `develop` branch.
 
 - `Development`:
+    - Force colored pytest output by default, by adding `--color=yes` to the
+      default `addopts` value
 - `0.10.0`:
     - Remove the `ModuleCollectorPlugin` in favor of relying on pytest's builtin
       collection mechanism
@@ -188,7 +190,7 @@ Specifically, it sets:
 - `rewrite_asserts`: `True`
 - `magics`: `True`
 - `clean`: `'[Tt]est*'`
-- `addopts`: `('-q',)`
+- `addopts`: `('-q', '--color=yes')`
 - `run_in_thread`: `False`
 - `defopts`: `True`
 
@@ -246,7 +248,7 @@ The following settings are supported:
 - `addopts` (default: `()`): pytest command line arguments to prepend
   to every pytest invocation. For example setting
   `ipytest.config(addopts=['-qq'])` will execute pytest with the least
-  verbosity
+  verbosity. Consider adding `--color=yes` to force colored output
 - `run_in_thread` (default: `False`): if `True`, pytest will be run a
   separate thread. This way of running is required when testing async
   code with `pytest_asyncio` since it starts a separate event loop
