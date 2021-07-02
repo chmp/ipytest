@@ -48,13 +48,25 @@ def run(*args, module=None, plugins=()):
 def run_pytest_clean(line, cell):
     """IPython magic function running pytest after cleaning the tests"""
     clean_tests()
-    get_ipython().run_cell(cell)
-    run(*shlex.split(line))
+    run_pytest(line, cell)
 
 
 def run_pytest(line, cell):
     """IPython magic function running pytest"""
-    get_ipython().run_cell(cell)
+    try:
+        get_ipython().run_cell(cell)
+
+    except TypeError as e:
+        if "raw_cell" in str(e):
+            raise RuntimeError(
+                "The ipytest magic cannot evaluate the cell. Most likely you "
+                "are running a modified ipython version. Consider using "
+                "`ipytest.run` and `ipytest.clean_tests` directly."
+            ) from e
+
+        else:
+            raise e
+
     run(*shlex.split(line))
 
 
