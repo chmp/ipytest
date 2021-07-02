@@ -11,6 +11,7 @@ defaults = dict(
     addopts=("-q", "--color=yes"),
     run_in_thread=False,
     defopts=True,
+    display_columns=100,
 )
 
 current_config = dict(
@@ -20,6 +21,7 @@ current_config = dict(
     addopts=(),
     run_in_thread=False,
     defopts=True,
+    display_columns=100,
 )
 
 _rewrite_transformer = None
@@ -57,6 +59,7 @@ def autoconfig(
     addopts=default,
     run_in_thread=default,
     defopts=default,
+    display_columns=default,
 ):
     """Configure ``ipytest`` with reasonable defaults.
 
@@ -82,6 +85,7 @@ def config(
     addopts=keep,
     run_in_thread=keep,
     defopts=keep,
+    display_columns=keep,
 ):
     """Configure `ipytest`
 
@@ -99,7 +103,7 @@ def config(
     * ``addopts`` (default: ``()``): pytest command line arguments to prepend
       to every pytest invocation. For example setting
       ``ipytest.config(addopts=['-qq'])`` will execute pytest with the least
-      verbosity. Consider adding ``--color=yes`` to force colored output
+      verbosity. Consider adding ``--color=yes`` to force color output
     * ``run_in_thread`` (default: ``False``): if ``True``, pytest will be run a
       separate thread. This way of running is required when testing async
       code with ``pytest_asyncio`` since it starts a separate event loop
@@ -107,6 +111,9 @@ def config(
       current module to the arguments passed to pytest. If ``False`` only the
       arguments given and ``adopts`` are passed. Such a setup may be helpful
       to customize the test selection
+    * ``display_columns`` (default: ``100``) if not `False`, configure Pytest
+      to use the given number of columns for its output. This option will
+      temporarily override the ``COLUMNS`` environment variable.
     """
     args = collect_args()
     new_config = {
