@@ -117,6 +117,8 @@ filename associated with the notebook.
 Note: development is tracked on the `develop` branch.
 
 - `Development`:
+    - Force colored pytest output by default, by adding `--color=yes` to the
+      default `addopts` value
 - `0.10.0`:
     - Remove the `ModuleCollectorPlugin` in favor of relying on pytest's builtin
       collection mechanism
