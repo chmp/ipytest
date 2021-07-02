@@ -55,6 +55,14 @@ This function is a thin wrapper around `pytest.main` and will execute any tests
 defined in the current notebook session.  See the [reference](#reference) for a
 detailed list of available functionality.
 
+**NOTE:** Some notebook implementations modify the core IPython package and
+magics may not work correctly (see [here][issue-47] or [here][issue-50]). In
+this case, using `ipytest.run` and `ipytest.clean_tests` directly should still
+work as expected.
+
+[issue-47]: https://github.com/chmp/ipytest/issues/47
+[issue-50]: https://github.com/chmp/ipytest/issues/50
+
 ## Global state
 
 There are multiple sources of global state when using pytest inside the notebook:
