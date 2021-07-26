@@ -1,6 +1,7 @@
 """Add syntatic sugar for configuration"""
 import inspect
 import warnings
+import sys
 
 default_clean = "[Tt]est*"
 
@@ -152,15 +153,29 @@ def configure_rewrite_asserts(enable):
 
 def configure_magics(enable):
     from IPython import get_ipython
-    from ._impl import run_pytest, run_pytest_clean
+    from ._impl import pytest_magic
 
     if enable:
         shell = get_ipython()
-        shell.register_magic_function(run_pytest, "cell", "run_pytest")
-        shell.register_magic_function(run_pytest_clean, "cell", "run_pytest[clean]")
+        shell.register_magic_function(pytest_magic, "cell", "ipytest")
+        shell.register_magic_function(_deprecated_magic, "cell", "run_pytest")
+        shell.register_magic_function(_deprecated_magic, "cell", "run_pytest[clean]")
 
     else:
         warnings.warn("IPython does not support de-registering magics.")
+
+
+def _deprecated_magic(line, cell):
+    print(
+        "%%run_pytest[clean] and %%run_pytest are deprecated in favor of "
+        "%%ipytest. %%ipytest will clean tests, evaluate the cell and then "
+        "run pytest. To disable cleaning, configure ipytest with "
+        "ipytest.config(clean=False).",
+        file=sys.stderr,
+    )
+    from ._impl import pytest_magic
+
+    pytest_magic(line, cell)
 
 
 def replace_with_default(sentinel, value, default):

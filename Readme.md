@@ -297,7 +297,7 @@ Execute all tests in the passed module (defaults to __main__) with pytest.
 
 
 ### `ipytest.clean_tests`
-`ipytest.clean_tests(pattern=None, items=None)`
+`ipytest.clean_tests(pattern='[Tt]est*', items=None)`
 
 Delete tests with names matching the given pattern.
 

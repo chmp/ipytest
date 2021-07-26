@@ -16,7 +16,7 @@ import pytest
 
 from IPython import get_ipython
 
-from ._config import current_config
+from ._config import current_config, default_clean
 
 
 def run(*args, module=None, plugins=()):
@@ -45,14 +45,11 @@ def run(*args, module=None, plugins=()):
     )
 
 
-def run_pytest_clean(line, cell):
-    """IPython magic function running pytest after cleaning the tests"""
-    clean_tests()
-    run_pytest(line, cell)
-
-
-def run_pytest(line, cell):
+def pytest_magic(line, cell):
     """IPython magic function running pytest"""
+    if current_config["clean"] is not False:
+        clean_tests(current_config["clean"])
+
     try:
         get_ipython().run_cell(cell)
 
@@ -70,7 +67,7 @@ def run_pytest(line, cell):
     run(*shlex.split(line))
 
 
-def clean_tests(pattern=None, items=None):
+def clean_tests(pattern=default_clean, items=None):
     """Delete tests with names matching the given pattern.
 
     In IPython the results of all evaluations are kept in global variables
@@ -92,9 +89,6 @@ def clean_tests(pattern=None, items=None):
         import __main__
 
         items = vars(__main__)
-
-    if pattern is None:
-        pattern = current_config["clean"]
 
     to_delete = [key for key in items.keys() if fnmatch.fnmatchcase(key, pattern)]
 
