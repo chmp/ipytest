@@ -37,7 +37,7 @@ ipytest.autoconfig()
 Afterwards in a *new* cell, tests can be executed as in:
 
 ```python
-%%run_pytest[clean] -qq
+%%ipytest -qq
 
 def test_example():
     assert [1, 2, 3] == [1, 2, 3]
@@ -71,7 +71,7 @@ There are multiple sources of global state when using pytest inside the notebook
    unexpected results when test functions are renamed, as their previous
    definition is still available inside the kernel. `ipytest` ships the
    [`clean_test`](#ipytestclean_tests) function to delete such instances.
-   Also the [`%%run_pytest[clean]`](#run_pytestclean-) magic clears any
+   Also the [`%%ipytest`](#ipyest) magic clears any
    previously defined tests.
 2. Python's module system caches imports and therefore acts as a global state.
    To test the most recent version of any module, the module needs to be
@@ -108,8 +108,7 @@ ways to configure this behavior:
   `ipytest.autoconfig(addopts=["-x", "--pdb"])` will attach the debugger on the
   first test failure and not run further tests.
 - `ipytest.run(...)`: allows to specify additional arguments as strings
-- `%%run_pytest` and `%%run_pytest[clean]` allow to specify additional
-  arguments in the same line
+- `%%ipytest` allows to specify additional arguments in the same line
 - `ipytest.config(defopts=False)` or `ipytest.autoconfig(defopts=False)` will
   instruct `ipytest` to not pass the current module filename. It can still be
   passed manually by adding `{MODULE}` to the command line.
@@ -123,6 +122,7 @@ filename associated with the notebook.
 Note: development is tracked on the `develop` branch.
 
 - `Development`:
+    - Deprecate `%%run_pytest` and `%%run_pytest[clean]` in favor of `%%ipytest`
     - Force color pytest output by default by adding `--color=yes` to the
       default `addopts` value
     - Configure the number of columns available to pytest
@@ -207,11 +207,14 @@ See [ipytest.config](#ipytestconfig) for details.
 
 
 
-### `%%run_pytest ...`
+### `%%ipytest ...`
 
 IPython magic that first executes the cell, then executes `ipytest.run()`. Any
-arguments passed on the magic line be passed on to pytest. To register the
-magics, run `ipytest.autoconfig()` or `ipytest.config(magics=True)` first.
+arguments passed on the magic line be passed on to pytest. It cleans any
+previously found tests, i.e., only tests defined in the current cell are
+executed. To disable this behavior, use `ipytest.config(clean=False)`. To
+register the magics, run `ipytest.autoconfig()` or `ipytest.config(magics=True)`
+first.
 
 Additional arguments can be passed to pytest. See the section "How does it work"
 for specifics.
@@ -219,22 +222,13 @@ for specifics.
 For example:
 
 ```python
-%%run_pytest -qq
+%%ipytest -qq
 
 
 def test_example():
     ...
 
 ```
-
-### `%%run_pytest[clean] ...`
-
-Same as the `%%run_pytest`, but cleans any previously found tests, i.e., only
-tests defined in the current cell are executed. To register the magics, run
-`ipytest.autoconfig()` or `ipytest.config(magics=True)` first.
-
-Additional arguments can be passed to pytest. See the section "How does it work"
-arguments for specifics.
 
 ### `ipytest.config`
 `ipytest.config(rewrite_asserts=<keep>, magics=<keep>, clean=<keep>, addopts=<keep>, run_in_thread=<keep>, defopts=<keep>, display_columns=<keep>)`
