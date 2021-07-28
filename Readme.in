@@ -122,6 +122,7 @@ filename associated with the notebook.
 Note: development is tracked on the `develop` branch.
 
 - `Development`:
+    - Overwrite the program name in pytest error messages for incorrect arguments
     - Deprecate `%%run_pytest` and `%%run_pytest[clean]` in favor of `%%ipytest`
     - Force color pytest output by default by adding `--color=yes` to the
       default `addopts` value
