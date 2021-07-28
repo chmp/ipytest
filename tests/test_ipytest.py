@@ -1,4 +1,6 @@
 import ast
+import contextlib
+import io
 import os.path
 import types
 
@@ -86,3 +88,13 @@ def test_rewrite_assert_transformer_runs():
 
     node = ast.parse(source)
     RewriteAssertTransformer().visit(node)
+
+
+def test_program_name():
+    with io.StringIO() as fobj, contextlib.redirect_stderr(fobj):
+        ipytest.run("--foo")
+        res = fobj.getvalue()
+
+    assert "error" in res
+    assert "%%ipytest" in res
+    assert "ipykernel_launcher.py" not in res

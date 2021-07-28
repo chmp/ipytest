@@ -114,7 +114,7 @@ def reload(*mods):
 def _run_impl(*args, module, plugins):
     with _prepared_env(module) as filename:
         full_args = _build_full_args(args, filename)
-        return pytest.main(full_args, plugins=plugins)
+        return pytest.main(full_args, plugins=[*plugins, FixProgramNamePlugin()])
 
 
 def _build_full_args(args, filename):
@@ -179,6 +179,23 @@ class RewriteAssertTransformer(ast.NodeTransformer):
         else:
             rewrite_asserts(node)
         return node
+
+
+class FixProgramNamePlugin:
+    def pytest_addoption(self, parser):
+        # Explanation:
+        #
+        # - the prog instance variable is defined, but never overwritten [1]
+        # - this variable is passed to the the underlying argparse Parser [2]
+        #   via [3]
+        # - with a `None` value argparse uses sys.argv array to determine the
+        #   program name
+        #
+        # [1]: https://github.com/pytest-dev/pytest/blob/6d6bc97231f2d9a68002f1d191828fd3476ca8b8/src/_pytest/config/argparsing.py#L41
+        # [2]: https://github.com/pytest-dev/pytest/blob/6d6bc97231f2d9a68002f1d191828fd3476ca8b8/src/_pytest/config/argparsing.py#L397
+        # [3]: https://github.com/pytest-dev/pytest/blob/6d6bc97231f2d9a68002f1d191828fd3476ca8b8/src/_pytest/config/argparsing.py#L119
+        #
+        parser.prog = "%%ipytest"
 
 
 def get_pytest_version():
