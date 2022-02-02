@@ -63,6 +63,15 @@ work as expected.
 [issue-47]: https://github.com/chmp/ipytest/issues/47
 [issue-50]: https://github.com/chmp/ipytest/issues/50
 
+**NOTE:** In its default configuration `%%ipytest` and `ipytest.run` will not
+raise and error, when tests fail. The reason is that having multiple tracebacks
+(the one from pytest and ipytest) may be confusing. To raise exceptions on test
+errors, e.g., to use ipytest inside a CI/CD context, use:
+
+```python
+ipytest.autoconfig(raise_on_error=True)
+```
+
 ## Global state
 
 There are multiple sources of global state when using pytest inside the notebook:
@@ -122,6 +131,7 @@ filename associated with the notebook.
 Note: development is tracked on the `develop` branch.
 
 - `development`:
+    - Readd the `raise_on_error` config option
 - `0.11.0`:
     - Overwrite the program name in pytest error messages for incorrect arguments
     - Deprecate `%%run_pytest` and `%%run_pytest[clean]` in favor of `%%ipytest`
@@ -262,9 +272,11 @@ The following settings are supported:
   current module to the arguments passed to pytest. If `False` only the
   arguments given and `adopts` are passed. Such a setup may be helpful
   to customize the test selection
-- `display_columns` (default: `100`) if not False, configure Pytest
+- `display_columns` (default: `100`): if not `False`, configure Pytest
   to use the given number of columns for its output. This option will
   temporarily override the `COLUMNS` environment variable.
+- `raise_on_error` (default `False` ): if `True`, `ipytest.run`
+  and `%%ipytest` will raise an error if pytest fails.
 
 
 
