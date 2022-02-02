@@ -237,6 +237,8 @@ The return code of the last pytest invocation.
 
 .. autofunction:: ipytest.reload
 
+.. autoclass:: ipytest.Error
+
 ## Development
 
 Setup the virtual environment via:

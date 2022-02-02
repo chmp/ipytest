@@ -276,7 +276,7 @@ The following settings are supported:
   to use the given number of columns for its output. This option will
   temporarily override the `COLUMNS` environment variable.
 - `raise_on_error` (default `False` ): if `True`, `ipytest.run`
-  and `%%ipytest` will raise an error if pytest fails.
+  and `%%ipytest` will raise an `ipytest.Error` if pytest fails.
 
 
 
@@ -344,6 +344,13 @@ Usage:
 ```python
 reload("ipytest._util", "ipytest")
 ```
+
+
+
+### `ipytest.Error`
+`ipytest.Error(exit_code)`
+
+Error raised by ipytest on test failure
 
 
 

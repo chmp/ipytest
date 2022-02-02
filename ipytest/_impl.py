@@ -56,6 +56,11 @@ def run(*args, module=None, plugins=()):
 
 
 class Error(RuntimeError):
+    """Error raised by ipytest on test failure"""
+
+    def __init__(self, exit_code):
+        super().__init__(exit_code)
+
     def __str__(self):
         return f"ipytest failed with exit_code {self.args[0]}"
 
