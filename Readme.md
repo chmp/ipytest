@@ -191,7 +191,7 @@ Note: development is tracked on the `develop` branch.
 ## Reference
 
 ### `ipytest.autoconfig`
-`ipytest.autoconfig(rewrite_asserts=<default>, magics=<default>, clean=<default>, addopts=<default>, run_in_thread=<default>, defopts=<default>, display_columns=<default>)`
+`ipytest.autoconfig(rewrite_asserts=<default>, magics=<default>, clean=<default>, addopts=<default>, run_in_thread=<default>, defopts=<default>, display_columns=<default>, raise_on_error=<default>)`
 
 Configure `ipytest` with reasonable defaults.
 
@@ -204,6 +204,7 @@ Specifically, it sets:
 - `run_in_thread`: `False`
 - `defopts`: `True`
 - `display_columns`: `100`
+- `raise_on_error`: `False`
 
 See [ipytest.config](#ipytestconfig) for details.
 
@@ -233,7 +234,7 @@ def test_example():
 ```
 
 ### `ipytest.config`
-`ipytest.config(rewrite_asserts=<keep>, magics=<keep>, clean=<keep>, addopts=<keep>, run_in_thread=<keep>, defopts=<keep>, display_columns=<keep>)`
+`ipytest.config(rewrite_asserts=<keep>, magics=<keep>, clean=<keep>, addopts=<keep>, run_in_thread=<keep>, defopts=<keep>, display_columns=<keep>, raise_on_error=<keep>)`
 
 Configure ipytest
 
@@ -289,6 +290,10 @@ Execute all tests in the passed module (defaults to __main__) with pytest.
   will be used.
 * **plugins** (*any*):
   additional plugins passed to pytest.
+
+#### Returns
+
+the exit code of pytest.main.
 
 
 

@@ -13,6 +13,7 @@ defaults = dict(
     run_in_thread=False,
     defopts=True,
     display_columns=100,
+    raise_on_error=False,
 )
 
 current_config = dict(
@@ -23,6 +24,7 @@ current_config = dict(
     run_in_thread=False,
     defopts=True,
     display_columns=100,
+    raise_on_error=False,
 )
 
 _rewrite_transformer = None
@@ -61,6 +63,7 @@ def autoconfig(
     run_in_thread=default,
     defopts=default,
     display_columns=default,
+    raise_on_error=default,
 ):
     """Configure ``ipytest`` with reasonable defaults.
 
@@ -87,6 +90,7 @@ def config(
     run_in_thread=keep,
     defopts=keep,
     display_columns=keep,
+    raise_on_error=keep,
 ):
     """Configure `ipytest`
 
