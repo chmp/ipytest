@@ -33,16 +33,36 @@ def run(*args, module=None, plugins=()):
         will be used.
     :param plugins:
         additional plugins passed to pytest.
+
+    :returns:
+        the exit code of `pytest.main`.
     """
     import ipytest
 
     run = run_in_thread if current_config["run_in_thread"] else run_direct
-    ipytest.exit_code = run(
+    exit_code = run(
         _run_impl,
         *args,
         module=module,
         plugins=plugins,
     )
+
+    ipytest.exit_code = exit_code
+
+    if current_config["raise_on_error"] is True and exit_code != 0:
+        raise Error(exit_code)
+
+    return exit_code
+
+
+class Error(RuntimeError):
+    """Error raised by ipytest on test failure"""
+
+    def __init__(self, exit_code):
+        super().__init__(exit_code)
+
+    def __str__(self):
+        return f"ipytest failed with exit_code {self.args[0]}"
 
 
 def pytest_magic(line, cell):

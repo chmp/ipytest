@@ -13,6 +13,7 @@ defaults = dict(
     run_in_thread=False,
     defopts=True,
     display_columns=100,
+    raise_on_error=False,
 )
 
 current_config = dict(
@@ -23,6 +24,7 @@ current_config = dict(
     run_in_thread=False,
     defopts=True,
     display_columns=100,
+    raise_on_error=False,
 )
 
 _rewrite_transformer = None
@@ -61,6 +63,7 @@ def autoconfig(
     run_in_thread=default,
     defopts=default,
     display_columns=default,
+    raise_on_error=default,
 ):
     """Configure ``ipytest`` with reasonable defaults.
 
@@ -87,6 +90,7 @@ def config(
     run_in_thread=keep,
     defopts=keep,
     display_columns=keep,
+    raise_on_error=keep,
 ):
     """Configure `ipytest`
 
@@ -112,9 +116,11 @@ def config(
       current module to the arguments passed to pytest. If ``False`` only the
       arguments given and ``adopts`` are passed. Such a setup may be helpful
       to customize the test selection
-    * ``display_columns`` (default: ``100``) if not `False`, configure Pytest
+    * ``display_columns`` (default: ``100``): if not ``False``, configure Pytest
       to use the given number of columns for its output. This option will
       temporarily override the ``COLUMNS`` environment variable.
+    * ``raise_on_error`` (default ``False`` ): if ``True``, ``ipytest.run``
+      and ``%%ipytest`` will raise an ``ipytest.Error`` if pytest fails.
     """
     args = collect_args()
     new_config = {
