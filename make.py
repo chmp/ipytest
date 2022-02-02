@@ -57,6 +57,7 @@ def format():
         "black",
         "ipytest",
         "tests",
+        "Example.ipynb",
         "setup.py",
         "make.py",
     )
