@@ -57,6 +57,7 @@ def format():
         "black",
         "ipytest",
         "tests",
+        "Example.ipynb",
         "setup.py",
         "make.py",
     )
@@ -83,6 +84,7 @@ def compile_requirements():
     res = python(
         "piptools",
         "compile",
+        "--upgrade",
         "--no-annotate",
         "--no-header",
         "requirements-dev.in",
