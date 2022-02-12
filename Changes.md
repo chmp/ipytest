@@ -2,8 +2,8 @@
 
 Note: development is tracked on the [`develop` branch](https://github.com/chmp/ipytest/tree/develop).
 
-- `0.12.0b`:
-    - Readd the `raise_on_error` config option
+- `0.12.0`:
+    - Re-add the `raise_on_error` config option
     - Return the `exit_code` from `ipyest.run()`
 - `0.11.0`:
     - Overwrite the program name in pytest error messages for incorrect arguments
