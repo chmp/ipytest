@@ -1,8 +1,8 @@
 # ipytest - Pytest in Jupyter notebooks
 
 [Usage](#usage)
-[Usage](#extended-usage)
 | [Global state](#global-state)
+| [Extend Usage](#extended-usage)
 | [How does it work?](#how-does-it-work)
 | [Changes](Changes.md)
 | [Reference](#reference)
