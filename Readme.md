@@ -1,7 +1,8 @@
-# ipytest - Unit tests in IPython notebooks
+# ipytest - Pytest in Jupyter notebooks
 
 [Usage](#usage)
 | [Global state](#global-state)
+| [Extended Usage](#extended-usage)
 | [How does it work?](#how-does-it-work)
 | [Changes](Changes.md)
 | [Reference](#reference)
@@ -9,20 +10,11 @@
 | [Related packages](#related-packages)
 | [License](#license)
 
-
-Sometimes quick experiments in IPython grow large and you find yourself wanting
-unit tests. This module aims to make testing code in IPython notebooks easy. At
-its core, it offers a way to run [`pytest`](https://pytest.org) tests inside the
-notebook environment. It is also designed to make the transfer of the tests into
-proper python modules easy.
+`ipytest` allows you to run [Pytest](https://pytest.org) in Jupyter notebooks.
+`ipytest` aims to give access to the full `pytest` experience to make it easy to
+transfer tests out of notebooks into separate test files.
 
 Installation: `pip install ipytest`
-
-Features:
-
-- support for [pytest](pytest.org) inside notebooks (with all bells and
-  whistles)
-- tight integration with IPython via magics and automatic code transforms
 
 ## Usage
 
@@ -44,16 +36,8 @@ def test_example():
 ```
 
 This command will first delete any previously defined tests, execute the cell
-and then run pytest. It is also possible to use `ipytest` without magics by
-calling the `run` function as in:
-
-```python
-ipytest.run()
-```
-
-This function is a thin wrapper around `pytest.main` and will execute any tests
-defined in the current notebook session.  See the [reference](#reference) for a
-detailed list of available functionality.
+and then run pytest. For further details on how to use `ipytest` see [Extended
+usage](#extended-usage).
 
 **NOTE:** Some notebook implementations modify the core IPython package and
 magics may not work correctly (see [here][issue-47] or [here][issue-50]). In
@@ -63,25 +47,16 @@ work as expected.
 [issue-47]: https://github.com/chmp/ipytest/issues/47
 [issue-50]: https://github.com/chmp/ipytest/issues/50
 
-**NOTE:** In its default configuration `%%ipytest` and `ipytest.run` will not
-raise an error, when tests fail. The reason is that having multiple tracebacks
-(the one from pytest and ipytest) may be confusing. To raise exceptions on test
-errors, e.g., to use ipytest inside a CI/CD context, use:
-
-```python
-ipytest.autoconfig(raise_on_error=True)
-```
-
 ## Global state
 
 There are multiple sources of global state when using pytest inside the notebook:
 
 1. pytest will find any test function ever defined. This behavior can lead to
    unexpected results when test functions are renamed, as their previous
-   definition is still available inside the kernel. `ipytest` ships the
-   [`clean_test`](#ipytestclean_tests) function to delete such instances.
-   Also the [`%%ipytest`](#ipyest) magic clears any
-   previously defined tests.
+   definition is still available inside the kernel. Running
+   [`%%ipytest`](#ipyest) per default deletes any previously defined tests. As
+   an alternative the [`clean_test`](#ipytestclean_tests) function allows to
+   delete previously defined tests.
 2. Python's module system caches imports and therefore acts as a global state.
    To test the most recent version of any module, the module needs to be
    reloaded. `ipytest` offers the [`reload`](#ipytestreload) function. The
@@ -93,20 +68,27 @@ There are multiple sources of global state when using pytest inside the notebook
    ipytest supports running tests in a separate thread. Simply setup ipytest
    via `ipytest.autoconfig(run_in_thread=True)`.
 
-## How does it work?
+## Extended usage
 
-In its default configuration (via `autoconfig()`), `ipytest` performs the
-following steps:
+It is also possible to use `ipytest` without magics by calling the `run`
+function as in:
 
-1. Register pytest's assertion rewriter with the IPython kernel. The rewriter
-   will rewrite any assert statements entered into the notebook to give better
-   error messages. This change will affect also non test based code, but should
-   generally improve the development experience.
-2. Ensure the notebook can be mapped to a file. `ipytest` will create a
-   temporary file in the current directory and remove if afterwards.
-3. Register the notebook scope temporarily as a module. This step is necessary
-   to allow pytest's doctest plugin to import the notebook.
-4. Call pytest with the name of the temporary module
+```python
+ipytest.run()
+```
+
+This function is a thin wrapper around `pytest.main` and will execute any tests
+defined in the current notebook session.  See the [reference](#reference) for a
+detailed list of available functionality.
+
+**NOTE:** In its default configuration `%%ipytest` and `ipytest.run` will not
+raise an error, when tests fail. The reason is that having multiple tracebacks
+(the one from pytest and ipytest) may be confusing. To raise exceptions on test
+errors, e.g., to use ipytest inside a CI/CD context, use:
+
+```python
+ipytest.autoconfig(raise_on_error=True)
+```
 
 `ipytest` can pass additional arguments to pytest. Per default, only the
 filename that is associated with the notebook is passed. There are a number of
@@ -125,6 +107,21 @@ ways to configure this behavior:
 The arguments are formatted using Python's standard string formatting.
 Currently, only the `{MODULE}` variable is understood. It is replaced with the
 filename associated with the notebook.
+
+## How does it work?
+
+In its default configuration (via `autoconfig()`), `ipytest` performs the
+following steps:
+
+1. Register pytest's assertion rewriter with the IPython kernel. The rewriter
+   will rewrite any assert statements entered into the notebook to give better
+   error messages. This change will affect also non test based code, but should
+   generally improve the development experience.
+2. Ensure the notebook can be mapped to a file. `ipytest` will create a
+   temporary file in the current directory and remove if afterwards.
+3. Register the notebook scope temporarily as a module. This step is necessary
+   to allow pytest's doctest plugin to import the notebook.
+4. Call pytest with the name of the temporary module
 
 ## Reference
 
