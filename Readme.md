@@ -2,7 +2,7 @@
 
 [Usage](#usage)
 | [Global state](#global-state)
-| [Extend Usage](#extended-usage)
+| [Extended Usage](#extended-usage)
 | [How does it work?](#how-does-it-work)
 | [Changes](Changes.md)
 | [Reference](#reference)
@@ -37,7 +37,7 @@ def test_example():
 
 This command will first delete any previously defined tests, execute the cell
 and then run pytest. For further details on how to use `ipytest` see [Extended
-usage](#extend-usage).
+usage](#extended-usage).
 
 **NOTE:** Some notebook implementations modify the core IPython package and
 magics may not work correctly (see [here][issue-47] or [here][issue-50]). In
@@ -68,7 +68,7 @@ There are multiple sources of global state when using pytest inside the notebook
    ipytest supports running tests in a separate thread. Simply setup ipytest
    via `ipytest.autoconfig(run_in_thread=True)`.
 
-## Extend usage
+## Extended usage
 
 It is also possible to use `ipytest` without magics by calling the `run`
 function as in:
