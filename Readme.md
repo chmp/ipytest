@@ -41,8 +41,9 @@ usage](#extended-usage).
 
 **NOTE:** Some notebook implementations modify the core IPython package and
 magics may not work correctly (see [here][issue-47] or [here][issue-50]). In
-this case, using `ipytest.run` and `ipytest.clean_tests` directly should still
-work as expected.
+this case, using [`ipytest.run`][ipytest.run] and
+[`ipytest.clean_tests`][ipytest.clean_tests] directly should still work as
+expected.
 
 [issue-47]: https://github.com/chmp/ipytest/issues/47
 [issue-50]: https://github.com/chmp/ipytest/issues/50
@@ -54,24 +55,24 @@ There are multiple sources of global state when using pytest inside the notebook
 1. pytest will find any test function ever defined. This behavior can lead to
    unexpected results when test functions are renamed, as their previous
    definition is still available inside the kernel. Running
-   [`%%ipytest`](#ipyest) per default deletes any previously defined tests. As
-   an alternative the [`clean_test`](#ipytestclean_tests) function allows to
-   delete previously defined tests.
+   [`%%ipytest`][ipyest.ipytest] per default deletes any previously defined
+   tests. As an alternative the [`clean_test`][ipytest.clean_tests] function
+   allows to delete previously defined tests.
 2. Python's module system caches imports and therefore acts as a global state.
    To test the most recent version of any module, the module needs to be
-   reloaded. `ipytest` offers the [`reload`](#ipytestreload) function. The
-   `autoreload` extension of IPython may also help here. To test local
-   packages, it is advisable to install them as development packages, e.g.,
-   `pip install -e .`.
-3. For async code, IPython will create an event loop in the current thread.
-   This setup may interfere with async tests. To support these use cases,
-   ipytest supports running tests in a separate thread. Simply setup ipytest
-   via `ipytest.autoconfig(run_in_thread=True)`.
+   reloaded. `ipytest` offers the [`reload`][ipytest.reload] function. The
+   `autoreload` extension of IPython may also help here. To test local packages,
+   it is advisable to install them as development packages, e.g., `pip install
+   -e .`.
+3. For async code, IPython will create an event loop in the current thread. This
+   setup may interfere with async tests. To support these use cases, ipytest
+   supports running tests in a separate thread. Simply setup ipytest via
+   `ipytest.autoconfig(run_in_thread=True)`.
 
 ## Extended usage
 
-It is also possible to use `ipytest` without magics by calling the `run`
-function as in:
+It is also possible to use `ipytest` without magics by calling the
+[`run`][ipytest.run] function as in:
 
 ```python
 ipytest.run()
@@ -81,10 +82,11 @@ This function is a thin wrapper around `pytest.main` and will execute any tests
 defined in the current notebook session.  See the [reference](#reference) for a
 detailed list of available functionality.
 
-**NOTE:** In its default configuration `%%ipytest` and `ipytest.run` will not
-raise an error, when tests fail. The reason is that having multiple tracebacks
-(the one from pytest and ipytest) may be confusing. To raise exceptions on test
-errors, e.g., to use ipytest inside a CI/CD context, use:
+**NOTE:** In its default configuration [`%%ipytest`][ipytest.ipytest] and
+[`ipytest.run`][ipytest.run] will not raise an error, when tests fail. The
+reason is that having multiple tracebacks (the one from pytest and ipytest) may
+be confusing. To raise exceptions on test errors, e.g., to use ipytest inside a
+CI/CD context, use:
 
 ```python
 ipytest.autoconfig(raise_on_error=True)
@@ -148,6 +150,8 @@ See [`ipytest.config`][ipytest.config] for details.
 <!-- minidoc -->
 
 ### `%%ipytest ...`
+
+[ipytest.ipytest]: #ipytest-
 
 IPython magic that first executes the cell, then executes `ipytest.run()`. Any
 arguments passed on the magic line be passed on to pytest. It cleans any
