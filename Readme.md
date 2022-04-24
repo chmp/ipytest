@@ -14,7 +14,11 @@
 `ipytest` aims to give access to the full `pytest` experience to make it easy to
 transfer tests out of notebooks into separate test files.
 
-Installation: `pip install ipytest`
+Installation:
+
+```bash
+pip install ipytest
+```
 
 ## Usage
 
