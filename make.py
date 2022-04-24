@@ -5,6 +5,8 @@ import sys
 
 from packaging import version
 
+import minidoc
+
 self_path = pathlib.Path(__file__).parent.resolve()
 
 _md = lambda effect: lambda f: [f, effect(f)][0]
@@ -41,14 +43,8 @@ def release():
 
 @cmd()
 def docs():
-    try:
-        from chmp.tools.mddocs import transform_file
-
-    except ImportError:
-        raise RuntimeError("Need chmp installed to create docs")
-
-    self_path = pathlib.Path(__file__).parent.resolve()
-    transform_file(self_path / "Readme.in", self_path / "Readme.md")
+    print("Update documentation")
+    minidoc.update_docs(self_path / "Readme.md")
 
 
 @cmd()
@@ -60,6 +56,7 @@ def format():
         "Example.ipynb",
         "setup.py",
         "make.py",
+        "minidoc.py",
     )
 
 
