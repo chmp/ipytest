@@ -129,12 +129,12 @@ following steps:
 
 [`autoconfig`][ipytest.autoconfig]
 | [`%%ipytest`][ipytest.ipytest]
-| [`ipytest.config`][ipytest.config]
-| [`ipytest.exit_code`][ipytest.exit_code]
-| [`ipytest.run`][ipytest.run]
-| [`ipytest.clean_tests`][ipytest.clean_tests]
-| [`ipytest.reload`][ipytest.reload]
-| [`ipytest.Error`][ipytest.Error]
+| [`config`][ipytest.config]
+| [`exit_code`][ipytest.exit_code]
+| [`run`][ipytest.run]
+| [`clean_tests`][ipytest.clean_tests]
+| [`reload`][ipytest.reload]
+| [`Error`][ipytest.Error]
 
 <!-- minidoc "function": "ipytest.autoconfig" -->
 ### `ipytest.autoconfig(rewrite_asserts=<default>, magics=<default>, clean=<default>, addopts=<default>, run_in_thread=<default>, defopts=<default>, display_columns=<default>, raise_on_error=<default>)`
