@@ -130,20 +130,20 @@ following steps:
 
 [ipytest.autoconfig]: #ipytestautoconfigrewrite_assertsdefault-magicsdefault-cleandefault-addoptsdefault-run_in_threaddefault-defoptsdefault-display_columnsdefault-raise_on_errordefault
 
-Configure ``ipytest`` with reasonable defaults.
+Configure `ipytest` with reasonable defaults.
 
 Specifically, it sets:
 
-* ``rewrite_asserts``: ``True``
-* ``magics``: ``True``
-* ``clean``: ``'[Tt]est*'``
-* ``addopts``: ``('-q', '--color=yes')``
-* ``run_in_thread``: ``False``
-* ``defopts``: ``True``
-* ``display_columns``: ``100``
-* ``raise_on_error``: ``False``
+* `rewrite_asserts`: `True`
+* `magics`: `True`
+* `clean`: `'[Tt]est*'`
+* `addopts`: `('-q', '--color=yes')`
+* `run_in_thread`: `False`
+* `defopts`: `True`
+* `display_columns`: `100`
+* `raise_on_error`: `False`
 
-See :func:`ipytest.config` for details.
+See [`ipytest.config`][ipytest.config] for details.
 
 <!-- minidoc -->
 
@@ -177,33 +177,34 @@ def test_example():
 
 Configure `ipytest`
 
-To update the configuration, call this function as in::
+To update the configuration, call this function as in:
 
-    ipytest.config(rewrite_asserts=True)
+```python
+ipytest.config(rewrite_asserts=True)
+```
 
 The following settings are supported:
 
-* ``rewrite_asserts`` (default: ``False``): enable ipython AST transforms
+* `rewrite_asserts` (default: `False`): enable ipython AST transforms
   globally to rewrite asserts
-* ``magics`` (default: ``False``): if set to ``True`` register the ipytest
-  magics
-* ``clean`` (default: ``[Tt]est*``): the pattern used to clean variables
-* ``addopts`` (default: ``()``): pytest command line arguments to prepend
-  to every pytest invocation. For example setting
-  ``ipytest.config(addopts=['-qq'])`` will execute pytest with the least
-  verbosity. Consider adding ``--color=yes`` to force color output
-* ``run_in_thread`` (default: ``False``): if ``True``, pytest will be run a
-  separate thread. This way of running is required when testing async
-  code with ``pytest_asyncio`` since it starts a separate event loop
-* ``defopts`` (default: ``True``): if ``True``, ipytest will add the
-  current module to the arguments passed to pytest. If ``False`` only the
-  arguments given and ``adopts`` are passed. Such a setup may be helpful
-  to customize the test selection
-* ``display_columns`` (default: ``100``): if not ``False``, configure Pytest
-  to use the given number of columns for its output. This option will
-  temporarily override the ``COLUMNS`` environment variable.
-* ``raise_on_error`` (default ``False`` ): if ``True``, ``ipytest.run``
-  and ``%%ipytest`` will raise an ``ipytest.Error`` if pytest fails.
+* `magics` (default: `False`): if set to `True` register the ipytest magics
+* `clean` (default: `[Tt]est*`): the pattern used to clean variables
+* `addopts` (default: `()`): pytest command line arguments to prepend to
+  every pytest invocation. For example setting
+  `ipytest.config(addopts=['-qq'])` will execute pytest with the least
+  verbosity. Consider adding `--color=yes` to force color output
+* `run_in_thread` (default: `False`): if `True`, pytest will be run a
+  separate thread. This way of running is required when testing async code
+  with `pytest_asyncio` since it starts a separate event loop
+* `defopts` (default: `True`): if `True`, ipytest will add the current
+  module to the arguments passed to pytest. If `False` only the arguments
+  given and `adopts` are passed. Such a setup may be helpful to customize
+  the test selection
+* `display_columns` (default: `100`): if not `False`, configure Pytest to
+  use the given number of columns for its output. This option will
+  temporarily override the `COLUMNS` environment variable.
+* `raise_on_error` (default `False` ): if `True`, `ipytest.run` and
+  `%%ipytest` will raise an `ipytest.Error` if pytest fails.
 
 <!-- minidoc -->
 
