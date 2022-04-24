@@ -20,22 +20,20 @@ from ._config import current_config, default_clean
 
 
 def run(*args, module=None, plugins=()):
-    """Execute all tests in the passed module (defaults to __main__) with pytest.
+    """Execute all tests in the passed module (defaults to `__main__`) with pytest.
 
-    :param args:
-        additional commandline options passed to pytest
-    :param module:
-        the module containing the tests. If not given, `__main__` will be used.
-    :param filename:
-        the filename of the file containing the tests. It has to be a real
-        file, e.g., a notebook name, since itts existence will be checked by
-        pytest. If not given, the `__file__` attribute of the passed module
-        will be used.
-    :param plugins:
-        additional plugins passed to pytest.
+    **Parameters:**
 
-    :returns:
-        the exit code of `pytest.main`.
+    - `args`: additional commandline options passed to pytest
+    - `module`: the module containing the tests. If not given, `__main__` will
+      be used.
+    - `filename`: the filename of the file containing the tests. It has to be a
+      real file, e.g., a notebook name, since its existence will be checked by
+      pytest. If not given, the `__file__` attribute of the passed module will
+      be used.
+    - `plugins`: additional plugins passed to pytest.
+
+    **Returns**: the exit code of `pytest.main`.
     """
     import ipytest
 
@@ -95,11 +93,11 @@ def clean_tests(pattern=default_clean, items=None):
     the previous definitions will still be found if not deleted. This method
     aims to simply this process.
 
-    An effecitve pattern is to start with the cell containing tests with a call
+    An effective pattern is to start with the cell containing tests with a call
     to `clean_tests`, then defined all test cases, and finally call `run_tests`.
     This way renaming tests works as expected.
 
-    **Arguments:**
+    **Parameters:**
 
     - `pattern`: a glob pattern used to match the tests to delete.
     - `items`: the globals object containing the tests. If `None` is given, the
@@ -122,10 +120,11 @@ def reload(*mods):
     This function may be useful, when mixing code in external modules and
     notebooks.
 
-    Usage::
+    Usage:
 
-        reload("ipytest._util", "ipytest")
-
+    ```python
+    reload("ipytest._util", "ipytest")
+    ```
     """
     for mod in mods:
         importlib.reload(importlib.import_module(mod))
