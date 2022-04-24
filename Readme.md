@@ -41,8 +41,9 @@ usage](#extended-usage).
 
 **NOTE:** Some notebook implementations modify the core IPython package and
 magics may not work correctly (see [here][issue-47] or [here][issue-50]). In
-this case, using `ipytest.run` and `ipytest.clean_tests` directly should still
-work as expected.
+this case, using [`ipytest.run`][ipytest.run] and
+[`ipytest.clean_tests`][ipytest.clean_tests] directly should still work as
+expected.
 
 [issue-47]: https://github.com/chmp/ipytest/issues/47
 [issue-50]: https://github.com/chmp/ipytest/issues/50
@@ -54,24 +55,24 @@ There are multiple sources of global state when using pytest inside the notebook
 1. pytest will find any test function ever defined. This behavior can lead to
    unexpected results when test functions are renamed, as their previous
    definition is still available inside the kernel. Running
-   [`%%ipytest`](#ipyest) per default deletes any previously defined tests. As
-   an alternative the [`clean_test`](#ipytestclean_tests) function allows to
-   delete previously defined tests.
+   [`%%ipytest`][ipyest.ipytest] per default deletes any previously defined
+   tests. As an alternative the [`clean_tests`][ipytest.clean_tests] function
+   allows to delete previously defined tests.
 2. Python's module system caches imports and therefore acts as a global state.
    To test the most recent version of any module, the module needs to be
-   reloaded. `ipytest` offers the [`reload`](#ipytestreload) function. The
-   `autoreload` extension of IPython may also help here. To test local
-   packages, it is advisable to install them as development packages, e.g.,
-   `pip install -e .`.
-3. For async code, IPython will create an event loop in the current thread.
-   This setup may interfere with async tests. To support these use cases,
-   ipytest supports running tests in a separate thread. Simply setup ipytest
-   via `ipytest.autoconfig(run_in_thread=True)`.
+   reloaded. `ipytest` offers the [`reload`][ipytest.reload] function. The
+   `autoreload` extension of IPython may also help here. To test local packages,
+   it is advisable to install them as development packages, e.g., `pip install
+   -e .`.
+3. For async code, IPython will create an event loop in the current thread. This
+   setup may interfere with async tests. To support these use cases, ipytest
+   supports running tests in a separate thread. Simply setup ipytest via
+   `ipytest.autoconfig(run_in_thread=True)`.
 
 ## Extended usage
 
-It is also possible to use `ipytest` without magics by calling the `run`
-function as in:
+It is also possible to use `ipytest` without magics by calling the
+[`run`][ipytest.run] function as in:
 
 ```python
 ipytest.run()
@@ -81,10 +82,11 @@ This function is a thin wrapper around `pytest.main` and will execute any tests
 defined in the current notebook session.  See the [reference](#reference) for a
 detailed list of available functionality.
 
-**NOTE:** In its default configuration `%%ipytest` and `ipytest.run` will not
-raise an error, when tests fail. The reason is that having multiple tracebacks
-(the one from pytest and ipytest) may be confusing. To raise exceptions on test
-errors, e.g., to use ipytest inside a CI/CD context, use:
+**NOTE:** In its default configuration [`%%ipytest`][ipytest.ipytest] and
+[`ipytest.run`][ipytest.run] will not raise an error, when tests fail. The
+reason is that having multiple tracebacks (the one from pytest and ipytest) may
+be confusing. To raise exceptions on test errors, e.g., to use ipytest inside a
+CI/CD context, use:
 
 ```python
 ipytest.autoconfig(raise_on_error=True)
@@ -125,27 +127,40 @@ following steps:
 
 ## Reference
 
-### `ipytest.autoconfig`
-`ipytest.autoconfig(rewrite_asserts=<default>, magics=<default>, clean=<default>, addopts=<default>, run_in_thread=<default>, defopts=<default>, display_columns=<default>, raise_on_error=<default>)`
+[`autoconfig`][ipytest.autoconfig]
+| [`%%ipytest`][ipytest.ipytest]
+| [`config`][ipytest.config]
+| [`exit_code`][ipytest.exit_code]
+| [`run`][ipytest.run]
+| [`clean_tests`][ipytest.clean_tests]
+| [`reload`][ipytest.reload]
+| [`Error`][ipytest.Error]
+
+<!-- minidoc "function": "ipytest.autoconfig" -->
+### `ipytest.autoconfig(rewrite_asserts=<default>, magics=<default>, clean=<default>, addopts=<default>, run_in_thread=<default>, defopts=<default>, display_columns=<default>, raise_on_error=<default>)`
+
+[ipytest.autoconfig]: #ipytestautoconfigrewrite_assertsdefault-magicsdefault-cleandefault-addoptsdefault-run_in_threaddefault-defoptsdefault-display_columnsdefault-raise_on_errordefault
 
 Configure `ipytest` with reasonable defaults.
 
 Specifically, it sets:
 
-- `rewrite_asserts`: `True`
-- `magics`: `True`
-- `clean`: `'[Tt]est*'`
-- `addopts`: `('-q', '--color=yes')`
-- `run_in_thread`: `False`
-- `defopts`: `True`
-- `display_columns`: `100`
-- `raise_on_error`: `False`
+* `rewrite_asserts`: `True`
+* `magics`: `True`
+* `clean`: `'[Tt]est*'`
+* `addopts`: `('-q', '--color=yes')`
+* `run_in_thread`: `False`
+* `defopts`: `True`
+* `display_columns`: `100`
+* `raise_on_error`: `False`
 
-See [ipytest.config](#ipytestconfig) for details.
+See [`ipytest.config`][ipytest.config] for details.
 
-
+<!-- minidoc -->
 
 ### `%%ipytest ...`
+
+[ipytest.ipytest]: #ipytest-
 
 IPython magic that first executes the cell, then executes `ipytest.run()`. Any
 arguments passed on the magic line be passed on to pytest. It cleans any
@@ -168,10 +183,12 @@ def test_example():
 
 ```
 
-### `ipytest.config`
-`ipytest.config(rewrite_asserts=<keep>, magics=<keep>, clean=<keep>, addopts=<keep>, run_in_thread=<keep>, defopts=<keep>, display_columns=<keep>, raise_on_error=<keep>)`
+<!-- minidoc "function": "ipytest.config" -->
+#### `ipytest.config(rewrite_asserts=<keep>, magics=<keep>, clean=<keep>, addopts=<keep>, run_in_thread=<keep>, defopts=<keep>, display_columns=<keep>, raise_on_error=<keep>)`
 
-Configure ipytest
+[ipytest.config]: #ipytestconfigrewrite_assertskeep-magicskeep-cleankeep-addoptskeep-run_in_threadkeep-defoptskeep-display_columnskeep-raise_on_errorkeep
+
+Configure `ipytest`
 
 To update the configuration, call this function as in:
 
@@ -181,61 +198,60 @@ ipytest.config(rewrite_asserts=True)
 
 The following settings are supported:
 
-- `rewrite_asserts` (default: `False`): enable ipython AST transforms
+* `rewrite_asserts` (default: `False`): enable ipython AST transforms
   globally to rewrite asserts
-- `magics` (default: `False`): if set to `True` register the ipytest
-  magics
-- `clean` (default: `[Tt]est*`): the pattern used to clean variables
-- `addopts` (default: `()`): pytest command line arguments to prepend
-  to every pytest invocation. For example setting
+* `magics` (default: `False`): if set to `True` register the ipytest magics
+* `clean` (default: `[Tt]est*`): the pattern used to clean variables
+* `addopts` (default: `()`): pytest command line arguments to prepend to
+  every pytest invocation. For example setting
   `ipytest.config(addopts=['-qq'])` will execute pytest with the least
   verbosity. Consider adding `--color=yes` to force color output
-- `run_in_thread` (default: `False`): if `True`, pytest will be run a
-  separate thread. This way of running is required when testing async
-  code with `pytest_asyncio` since it starts a separate event loop
-- `defopts` (default: `True`): if `True`, ipytest will add the
-  current module to the arguments passed to pytest. If `False` only the
-  arguments given and `adopts` are passed. Such a setup may be helpful
-  to customize the test selection
-- `display_columns` (default: `100`): if not `False`, configure Pytest
-  to use the given number of columns for its output. This option will
+* `run_in_thread` (default: `False`): if `True`, pytest will be run a
+  separate thread. This way of running is required when testing async code
+  with `pytest_asyncio` since it starts a separate event loop
+* `defopts` (default: `True`): if `True`, ipytest will add the current
+  module to the arguments passed to pytest. If `False` only the arguments
+  given and `adopts` are passed. Such a setup may be helpful to customize
+  the test selection
+* `display_columns` (default: `100`): if not `False`, configure Pytest to
+  use the given number of columns for its output. This option will
   temporarily override the `COLUMNS` environment variable.
-- `raise_on_error` (default `False` ): if `True`, `ipytest.run`
-  and `%%ipytest` will raise an `ipytest.Error` if pytest fails.
+* `raise_on_error` (default `False` ): if `True`, `ipytest.run` and
+  `%%ipytest` will raise an `ipytest.Error` if pytest fails.
 
-
+<!-- minidoc -->
 
 ### `ipytest.exit_code`
 
+[ipytest.exit_code]: #ipytestexit_code
+
 The return code of the last pytest invocation.
 
-### `ipytest.run`
-`ipytest.run(*args, module=None, plugins=())`
+<!-- minidoc "function": "ipytest.run" -->
+#### `ipytest.run(*args, module=None, plugins=())`
 
-Execute all tests in the passed module (defaults to __main__) with pytest.
+[ipytest.run]: #ipytestrunargs-modulenone-plugins
 
-#### Parameters
+Execute all tests in the passed module (defaults to `__main__`) with pytest.
 
-* **args** (*any*):
-  additional commandline options passed to pytest
-* **module** (*any*):
-  the module containing the tests. If not given, __main__ will be used.
-* **filename** (*any*):
-  the filename of the file containing the tests. It has to be a real
-  file, e.g., a notebook name, since itts existence will be checked by
-  pytest. If not given, the __file__ attribute of the passed module
-  will be used.
-* **plugins** (*any*):
-  additional plugins passed to pytest.
+**Parameters:**
 
-#### Returns
+- `args`: additional commandline options passed to pytest
+- `module`: the module containing the tests. If not given, `__main__` will
+  be used.
+- `filename`: the filename of the file containing the tests. It has to be a
+  real file, e.g., a notebook name, since its existence will be checked by
+  pytest. If not given, the `__file__` attribute of the passed module will
+  be used.
+- `plugins`: additional plugins passed to pytest.
 
-the exit code of pytest.main.
+**Returns**: the exit code of `pytest.main`.
 
+<!-- minidoc -->
+<!-- minidoc "function": "ipytest.clean_tests" -->
+#### `ipytest.clean_tests(pattern='[Tt]est*', items=None)`
 
-
-### `ipytest.clean_tests`
-`ipytest.clean_tests(pattern='[Tt]est*', items=None)`
+[ipytest.clean_tests]: #ipytestclean_testspatternttest-itemsnone
 
 Delete tests with names matching the given pattern.
 
@@ -244,20 +260,21 @@ unless explicitly deleted. This behavior implies that when tests are renamed
 the previous definitions will still be found if not deleted. This method
 aims to simply this process.
 
-An effecitve pattern is to start with the cell containing tests with a call
-to clean_tests, then defined all test cases, and finally call run_tests.
+An effective pattern is to start with the cell containing tests with a call
+to `clean_tests`, then defined all test cases, and finally call `run_tests`.
 This way renaming tests works as expected.
 
-**Arguments:**
+**Parameters:**
 
-- pattern: a glob pattern used to match the tests to delete.
-- * **items: the globals object containing the tests. If None is given, the**:
-  globals object is determined from the call stack.
+- `pattern`: a glob pattern used to match the tests to delete.
+- `items`: the globals object containing the tests. If `None` is given, the
+    globals object is determined from the call stack.
 
+<!-- minidoc -->
+<!-- minidoc "function": "ipytest.reload" -->
+#### `ipytest.reload(*mods)`
 
-
-### `ipytest.reload`
-`ipytest.reload(*mods)`
+[ipytest.reload]: #ipytestreloadmods
 
 Reload all modules passed as strings.
 
@@ -270,14 +287,15 @@ Usage:
 reload("ipytest._util", "ipytest")
 ```
 
+<!-- minidoc -->
+<!-- minidoc "class": "ipytest.Error" -->
+#### `ipytest.Error(exit_code)`
 
-
-### `ipytest.Error`
-`ipytest.Error(exit_code)`
+[ipytest.Error]: #ipytesterrorexit_code
 
 Error raised by ipytest on test failure
 
-
+<!-- minidoc -->
 
 ## Development
 
