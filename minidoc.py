@@ -350,7 +350,7 @@ def _get_module_contents(module: Any) -> Iterable[Tuple[str, Any]]:
 
 
 def header_to_link(header: str) -> str:
-    for c in "`.()=*,<>[]:":
+    for c in "`.()=*,<>[]:'\"":
         header = header.replace(c, "")
 
     header = header.replace(" ", "-")

@@ -240,7 +240,7 @@ Execute all tests in the passed module (defaults to `__main__`) with pytest.
 <!-- minidoc "function": "ipytest.clean_tests" -->
 #### `ipytest.clean_tests(pattern='[Tt]est*', items=None)`
 
-[ipytest.clean_tests]: #ipytestclean_testspattern'ttest'-itemsnone
+[ipytest.clean_tests]: #ipytestclean_testspatternttest-itemsnone
 
 Delete tests with names matching the given pattern.
 
