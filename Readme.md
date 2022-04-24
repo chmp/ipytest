@@ -56,7 +56,7 @@ There are multiple sources of global state when using pytest inside the notebook
    unexpected results when test functions are renamed, as their previous
    definition is still available inside the kernel. Running
    [`%%ipytest`][ipyest.ipytest] per default deletes any previously defined
-   tests. As an alternative the [`clean_test`][ipytest.clean_tests] function
+   tests. As an alternative the [`clean_tests`][ipytest.clean_tests] function
    allows to delete previously defined tests.
 2. Python's module system caches imports and therefore acts as a global state.
    To test the most recent version of any module, the module needs to be
@@ -126,6 +126,15 @@ following steps:
 4. Call pytest with the name of the temporary module
 
 ## Reference
+
+[`autoconfig`][ipytest.autoconfig]
+| [`%%ipytest`][ipytest.ipytest]
+| [`ipytest.config`][ipytest.config]
+| [`ipytest.exit_code`][ipytest.exit_code]
+| [`ipytest.run`][ipytest.run]
+| [`ipytest.clean_tests`][ipytest.clean_tests]
+| [`ipytest.reload`][ipytest.reload]
+| [`ipytest.Error`][ipytest.Error]
 
 <!-- minidoc "function": "ipytest.autoconfig" -->
 ### `ipytest.autoconfig(rewrite_asserts=<default>, magics=<default>, clean=<default>, addopts=<default>, run_in_thread=<default>, defopts=<default>, display_columns=<default>, raise_on_error=<default>)`
