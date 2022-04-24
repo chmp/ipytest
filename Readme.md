@@ -223,6 +223,8 @@ The following settings are supported:
 
 ### `ipytest.exit_code`
 
+[ipytest.exit_code]: #ipytestexit_code
+
 The return code of the last pytest invocation.
 
 <!-- minidoc "function": "ipytest.run" -->
