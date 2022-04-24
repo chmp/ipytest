@@ -1,6 +1,7 @@
 # ipytest - Pytest in Jupyter notebooks
 
-[Usage](#usage)
+[PyPI](https://pypi.org/project/ipytest)
+| [Usage](#usage)
 | [Global state](#global-state)
 | [Extended Usage](#extended-usage)
 | [How does it work?](#how-does-it-work)
