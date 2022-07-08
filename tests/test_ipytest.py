@@ -29,11 +29,13 @@ from ipytest._impl import RewriteAssertTransformer, eval_run_kwargs
     ],
 )
 def test_clean(spec):
-    expected = {k: v for k, v in spec.items() if not v}
-    actual = spec.copy()
-    ipytest.clean_tests(items=actual)
+    expected = {k for k, v in spec.items() if not v}
+    module = types.ModuleType("module")
+    vars(module).update(spec)
 
-    assert actual == expected
+    ipytest.clean_tests(module=module)
+
+    assert set(vars(module)) & set(spec) == expected
 
 
 def test_reprs():

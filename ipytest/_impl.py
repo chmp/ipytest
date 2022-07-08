@@ -88,7 +88,7 @@ def pytest_magic(line, cell, module=None):
     run_kwargs = eval_run_kwargs(cell, module=module)
 
     if current_config["clean"] is not False:
-        clean_tests(current_config["clean"])
+        clean_tests(current_config["clean"], module=run_kwargs.get("module"))
 
     try:
         get_ipython().run_cell(cell)
@@ -107,7 +107,7 @@ def pytest_magic(line, cell, module=None):
     run(*run_args, **run_kwargs)
 
 
-def clean_tests(pattern=default_clean, items=None):
+def clean_tests(pattern=default_clean, *, module=None):
     """Delete tests with names matching the given pattern.
 
     In IPython the results of all evaluations are kept in global variables
@@ -125,11 +125,10 @@ def clean_tests(pattern=default_clean, items=None):
     - `items`: the globals object containing the tests. If `None` is given, the
         globals object is determined from the call stack.
     """
-    if items is None:
-        import __main__
+    if module is None:
+        import __main__ as module
 
-        items = vars(__main__)
-
+    items = vars(module)
     to_delete = [key for key in items.keys() if fnmatch.fnmatchcase(key, pattern)]
 
     for key in to_delete:

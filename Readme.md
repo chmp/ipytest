@@ -254,9 +254,9 @@ Execute all tests in the passed module (defaults to `__main__`) with pytest.
 
 <!-- minidoc -->
 <!-- minidoc "function": "ipytest.clean_tests", "header_depth": 3 -->
-### `ipytest.clean_tests(pattern='[Tt]est*', items=None)`
+### `ipytest.clean_tests(pattern='[Tt]est*', *, module=None)`
 
-[ipytest.clean_tests]: #ipytestclean_testspatternttest-itemsnone
+[ipytest.clean_tests]: #ipytestclean_testspatternttest--modulenone
 
 Delete tests with names matching the given pattern.
 
