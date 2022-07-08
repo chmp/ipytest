@@ -108,7 +108,7 @@ def pytest_magic(line, cell, module=None):
     ```
 
     is equivalent to passing `-qq` to pytest. See also the section ["How does it
-    work"][#how-does-it-work] for further details.
+    work"](#how-does-it-work) for further details.
 
     The keyword arguments passed to [`ipytest.run()`][ipytest.run] can be
     customized by including a comment of the form `# ipytest: arg1=value1,

@@ -60,7 +60,7 @@ There are multiple sources of global state when using pytest inside the notebook
 1. pytest will find any test function ever defined. This behavior can lead to
    unexpected results when test functions are renamed, as their previous
    definition is still available inside the kernel. Running
-   [`%%ipytest`][ipyest.ipytest] per default deletes any previously defined
+   [`%%ipytest`][ipytest.ipytest] per default deletes any previously defined
    tests. As an alternative the [`ipytest.clean_tests()`][ipytest.clean_tests]
    function allows to delete previously defined tests.
 2. Python's module system caches imports and therefore acts as a global state.
@@ -186,7 +186,7 @@ arguments to to pytest. For example calling the magic as
 ```
 
 is equivalent to passing `-qq` to pytest. See also the section ["How does it
-work"][#how-does-it-work] for further details.
+work"](#how-does-it-work) for further details.
 
 The keyword arguments passed to [`ipytest.run()`][ipytest.run] can be
 customized by including a comment of the form `# ipytest: arg1=value1,
