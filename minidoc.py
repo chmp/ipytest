@@ -145,6 +145,7 @@ class MinidocStart:
     object: str
     header: bool = True
     rename: Optional[str] = None
+    header_depth: Optional[int] = None
 
 
 class ObjectType(str, enum.Enum):
@@ -169,7 +170,7 @@ class MinidocEnd:
 
 
 def _inject_docs(lines: Iterable[str]) -> Iterable[str]:
-    current = None
+    current: Optional[MinidocStart] = None
     header_depth = 0
     in_code = False
 
@@ -203,7 +204,11 @@ def _inject_docs(lines: Iterable[str]) -> Iterable[str]:
                 yield from render_docs(
                     current.type,
                     current.object,
-                    header_depth,
+                    header_depth=(
+                        current.header_depth
+                        if current.header_depth is not None
+                        else header_depth + 1
+                    ),
                     include_header=current.header,
                     rename=current.rename,
                 )
@@ -228,8 +233,8 @@ def _inject_docs(lines: Iterable[str]) -> Iterable[str]:
 def render_docs(
     type: ObjectType,
     object_name: str,
-    header_depth: int,
     *,
+    header_depth: int,
     include_header: bool = True,
     rename: Optional[str] = None,
 ) -> Iterable[str]:
@@ -240,7 +245,7 @@ def render_docs(
         yield from render_module(
             render_name,
             module,
-            header_depth=header_depth + 1,
+            header_depth=header_depth,
             include_header=include_header,
         )
 
@@ -254,7 +259,7 @@ def render_docs(
             module,
             item_name,
             item,
-            header_depth=header_depth + 1,
+            header_depth=header_depth,
             include_header=include_header,
         )
 
@@ -299,9 +304,9 @@ def render_item(
     if include_header:
         yield _render_header(header, header_depth)
         yield ""
+        yield f"[{module_name}.{item_name}]: #{header_to_link(header)}"
+        yield ""
 
-    yield f"[{module_name}.{item_name}]: #{header_to_link(header)}"
-    yield ""
     yield from inspect.cleandoc(doc).splitlines()
     yield ""
 
