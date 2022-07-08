@@ -39,6 +39,10 @@ class sentinel:
     def __repr__(self):
         return f"<{self.name}>"
 
+    def unwrap(self, value, default):
+        """If `value` is the sentinel return the default else the value"""
+        return value if value is not self else default
+
 
 keep = sentinel("keep")
 default = sentinel("default")
@@ -75,10 +79,7 @@ def autoconfig(
     """
     args = collect_args()
     config(
-        **{
-            key: replace_with_default(default, args[key], defaults.get(key))
-            for key in current_config
-        }
+        **{key: default.unwrap(args[key], defaults.get(key)) for key in current_config}
     )
 
 
@@ -125,8 +126,7 @@ def config(
     """
     args = collect_args()
     new_config = {
-        key: replace_with_default(keep, args[key], current_config.get(key))
-        for key in current_config
+        key: keep.unwrap(args[key], current_config.get(key)) for key in current_config
     }
 
     if new_config["rewrite_asserts"] != current_config["rewrite_asserts"]:
@@ -233,10 +233,6 @@ def _deprecated_pytest_clean_magic(line, cell):
             raise e
 
     run(*shlex.split(line))
-
-
-def replace_with_default(sentinel, value, default):
-    return default if value is sentinel else value
 
 
 def collect_args():

@@ -237,9 +237,9 @@ The following settings are supported:
 The return code of the last pytest invocation.
 
 <!-- minidoc "function": "ipytest.run", "header_depth": 3 -->
-### `ipytest.run(*args, module=None, plugins=())`
+### `ipytest.run(*args, module=None, plugins=(), run_in_thread=<default>, raise_on_error=<default>, addopts=<default>, defopts=<default>, display_columns=<default>)`
 
-[ipytest.run]: #ipytestrunargs-modulenone-plugins
+[ipytest.run]: #ipytestrunargs-modulenone-plugins-run_in_threaddefault-raise_on_errordefault-addoptsdefault-defoptsdefault-display_columnsdefault
 
 Execute all tests in the passed module (defaults to `__main__`) with pytest.
 

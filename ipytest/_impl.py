@@ -18,10 +18,19 @@ import pytest
 
 from IPython import get_ipython
 
-from ._config import current_config, default_clean
+from ._config import current_config, default_clean, default
 
 
-def run(*args, module=None, plugins=()):
+def run(
+    *args,
+    module=None,
+    plugins=(),
+    run_in_thread=default,
+    raise_on_error=default,
+    addopts=default,
+    defopts=default,
+    display_columns=default,
+):
     """Execute all tests in the passed module (defaults to `__main__`) with pytest.
 
     **Parameters:**
@@ -35,17 +44,26 @@ def run(*args, module=None, plugins=()):
     """
     import ipytest
 
-    run = run_in_thread if current_config["run_in_thread"] else run_direct
+    run_in_thread = default.unwrap(run_in_thread, current_config["run_in_thread"])
+    raise_on_error = default.unwrap(raise_on_error, current_config["raise_on_error"])
+    addopts = default.unwrap(addopts, current_config["addopts"])
+    defopts = default.unwrap(defopts, current_config["defopts"])
+    display_columns = default.unwrap(display_columns, current_config["display_columns"])
+
+    run = run_func_in_thread if run_in_thread else run_func_direct
     exit_code = run(
         _run_impl,
         *args,
         module=module,
         plugins=plugins,
+        addopts=addopts,
+        defopts=defopts,
+        display_columns=display_columns,
     )
 
     ipytest.exit_code = exit_code
 
-    if current_config["raise_on_error"] is True and exit_code != 0:
+    if raise_on_error is True and exit_code != 0:
         raise Error(exit_code)
 
     return exit_code
@@ -151,25 +169,25 @@ def reload(*mods):
         importlib.reload(importlib.import_module(mod))
 
 
-def _run_impl(*args, module, plugins):
-    with _prepared_env(module) as filename:
-        full_args = _build_full_args(args, filename)
+def _run_impl(*args, module, plugins, addopts, defopts, display_columns):
+    with _prepared_env(module, display_columns=display_columns) as filename:
+        full_args = _build_full_args(args, filename, addopts=addopts, defopts=defopts)
         return pytest.main(full_args, plugins=[*plugins, FixProgramNamePlugin()])
 
 
-def _build_full_args(args, filename):
+def _build_full_args(args, filename, *, addopts, defopts):
     def _fmt(arg):
         return arg.format(MODULE=filename)
 
     return [
-        *(_fmt(arg) for arg in current_config["addopts"]),
+        *(_fmt(arg) for arg in addopts),
         *(_fmt(arg) for arg in args),
-        *([filename] if current_config["defopts"] else []),
+        *([filename] if defopts else []),
     ]
 
 
 @contextlib.contextmanager
-def _prepared_env(module):
+def _prepared_env(module, *, display_columns):
     if module is None:  # pragma: no cover
         import __main__ as module
 
@@ -193,7 +211,7 @@ def _prepared_env(module):
 
         with patch(module, "__file__", str(path)):
             with register_module(module, module_name):
-                with patched_columns():
+                with patched_columns(display_columns=display_columns):
                     yield str(path)
 
 
@@ -274,9 +292,7 @@ def register_module(obj, name):
 
 
 @contextlib.contextmanager
-def patched_columns():
-    display_columns = current_config["display_columns"]
-
+def patched_columns(*, display_columns):
     if not display_columns:
         yield
         return
@@ -294,11 +310,11 @@ def patched_columns():
         del os.environ["COLUMNS"]
 
 
-def run_direct(func, *args, **kwargs):
+def run_func_direct(func, *args, **kwargs):
     return func(*args, **kwargs)
 
 
-def run_in_thread(func, *args, **kwargs):
+def run_func_in_thread(func, *args, **kwargs):
     res = None
 
     def _thread():
