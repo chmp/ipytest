@@ -27,10 +27,6 @@ def run(*args, module=None, plugins=()):
     - `args`: additional commandline options passed to pytest
     - `module`: the module containing the tests. If not given, `__main__` will
       be used.
-    - `filename`: the filename of the file containing the tests. It has to be a
-      real file, e.g., a notebook name, since its existence will be checked by
-      pytest. If not given, the `__file__` attribute of the passed module will
-      be used.
     - `plugins`: additional plugins passed to pytest.
 
     **Returns**: the exit code of `pytest.main`.
