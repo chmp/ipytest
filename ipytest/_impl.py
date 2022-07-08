@@ -41,8 +41,8 @@ def run(
     - `plugins`: additional plugins passed to pytest.
 
     The following parameters override the config options set with
-    [`ipytest.config`][ipytest.config] or
-    [`ipytest.autoconfig`][ipytest.autoconfig].
+    [`ipytest.config()`][ipytest.config] or
+    [`ipytest.autoconfig()`][ipytest.autoconfig].
 
     - `run_in_thread`: if given, override the config option "run_in_thread".
     - `raise_on_error`: if given, override the config option "raise_on_error".
@@ -110,7 +110,7 @@ def pytest_magic(line, cell, module=None):
     is equivalent to passing `-qq` to pytest. See also the section ["How does it
     work"][#how-does-it-work] for further details.
 
-    The keyword arguments passed to [`ipytest.run`][ipytest.run] can be
+    The keyword arguments passed to [`ipytest.run()`][ipytest.run] can be
     customized by including a comment of the form `# ipytest: arg1=value1,
     arg=value2` in the cell source. For example:
 
@@ -154,8 +154,8 @@ def clean_tests(pattern=default, *, module=None):
     aims to simply this process.
 
     An effective pattern is to start with the cell containing tests with a call
-    to [`ipytest.clean_tests`][ipytest.clean_tests], then defined all test
-    cases, and finally call [`ipytest.run`][ipytest.run]. This way renaming
+    to [`ipytest.clean_tests()`][ipytest.clean_tests], then defined all test
+    cases, and finally call [`ipytest.run()`][ipytest.run]. This way renaming
     tests works as expected.
 
     **Parameters:**

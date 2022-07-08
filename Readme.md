@@ -46,8 +46,8 @@ usage](#extended-usage).
 
 **NOTE:** Some notebook implementations modify the core IPython package and
 magics may not work correctly (see [here][issue-47] or [here][issue-50]). In
-this case, using [`ipytest.run`][ipytest.run] and
-[`ipytest.clean_tests`][ipytest.clean_tests] directly should still work as
+this case, using [`ipytest.run()`][ipytest.run] and
+[`ipytest.clean_tests()`][ipytest.clean_tests] directly should still work as
 expected.
 
 [issue-47]: https://github.com/chmp/ipytest/issues/47
@@ -61,14 +61,14 @@ There are multiple sources of global state when using pytest inside the notebook
    unexpected results when test functions are renamed, as their previous
    definition is still available inside the kernel. Running
    [`%%ipytest`][ipyest.ipytest] per default deletes any previously defined
-   tests. As an alternative the [`clean_tests`][ipytest.clean_tests] function
-   allows to delete previously defined tests.
+   tests. As an alternative the [`ipytest.clean_tests()`][ipytest.clean_tests]
+   function allows to delete previously defined tests.
 2. Python's module system caches imports and therefore acts as a global state.
    To test the most recent version of any module, the module needs to be
-   reloaded. `ipytest` offers the [`reload`][ipytest.reload] function. The
-   `autoreload` extension of IPython may also help here. To test local packages,
-   it is advisable to install them as development packages, e.g., `pip install
-   -e .`.
+   reloaded. `ipytest` offers the [`ipytest.reload()`][ipytest.reload] function.
+   The `autoreload` extension of IPython may also help here. To test local
+   packages, it is advisable to install them as development packages, e.g., `pip
+   install -e .`.
 3. For async code, IPython will create an event loop in the current thread. This
    setup may interfere with async tests. To support these use cases, ipytest
    supports running tests in a separate thread. Simply setup ipytest via
@@ -88,7 +88,7 @@ defined in the current notebook session.  See the [reference](#reference) for a
 detailed list of available functionality.
 
 **NOTE:** In its default configuration [`%%ipytest`][ipytest.ipytest] and
-[`ipytest.run`][ipytest.run] will not raise an error, when tests fail. The
+[`ipytest.run()`][ipytest.run] will not raise an error, when tests fail. The
 reason is that having multiple tracebacks (the one from pytest and ipytest) may
 be confusing. To raise exceptions on test errors, e.g., to use ipytest inside a
 CI/CD context, use:
@@ -188,7 +188,7 @@ arguments to to pytest. For example calling the magic as
 is equivalent to passing `-qq` to pytest. See also the section ["How does it
 work"][#how-does-it-work] for further details.
 
-The keyword arguments passed to [`ipytest.run`][ipytest.run] can be
+The keyword arguments passed to [`ipytest.run()`][ipytest.run] can be
 customized by including a comment of the form `# ipytest: arg1=value1,
 arg=value2` in the cell source. For example:
 
@@ -262,8 +262,8 @@ Execute all tests in the passed module (defaults to `__main__`) with pytest.
 - `plugins`: additional plugins passed to pytest.
 
 The following parameters override the config options set with
-[`ipytest.config`][ipytest.config] or
-[`ipytest.autoconfig`][ipytest.autoconfig].
+[`ipytest.config()`][ipytest.config] or
+[`ipytest.autoconfig()`][ipytest.autoconfig].
 
 - `run_in_thread`: if given, override the config option "run_in_thread".
 - `raise_on_error`: if given, override the config option "raise_on_error".
@@ -287,8 +287,8 @@ the previous definitions will still be found if not deleted. This method
 aims to simply this process.
 
 An effective pattern is to start with the cell containing tests with a call
-to [`ipytest.clean_tests`][ipytest.clean_tests], then defined all test
-cases, and finally call [`ipytest.run`][ipytest.run]. This way renaming
+to [`ipytest.clean_tests()`][ipytest.clean_tests], then defined all test
+cases, and finally call [`ipytest.run()`][ipytest.run]. This way renaming
 tests works as expected.
 
 **Parameters:**
