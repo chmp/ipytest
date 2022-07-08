@@ -39,6 +39,11 @@ def run(
     - `module`: the module containing the tests. If not given, `__main__` will
       be used.
     - `plugins`: additional plugins passed to pytest.
+    - `run_in_thread`: if given, override the config option "run_in_thread".
+    - `raise_on_error`: if given, override the config option "raise_on_error".
+    - `addopts`: if given, override the config option "addopts".
+    - `defopts`: if given, override the config option "defopts".
+    - `display_columns`: if given, override the config option "display_columns".
 
     **Returns**: the exit code of `pytest.main`.
     """
