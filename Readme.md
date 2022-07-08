@@ -168,27 +168,37 @@ See [`ipytest.config`][ipytest.config] for details.
 [ipytest.ipytest]: #ipytest-
 
 <!-- minidoc "function": "ipytest._impl.pytest_magic", "header": false, "header_depth": 3 -->
-IPython magic to execute pytest.
+IPython magic to first execute the cell, then execute `ipytest.run()`.
 
-It first executes the cell, then executes `ipytest.run()`. Any arguments
-passed on the magic line be passed on to pytest. It cleans any previously
-found tests, i.e., only tests defined in the current cell are executed. To
-disable this behavior, use `ipytest.config(clean=False)`. To register the
-magics, run `ipytest.autoconfig()` or `ipytest.config(magics=True)` first.
+**Note:** the magics are only available after running `ipytest.autoconfig()`
+or `ipytest.config(magics=True)`.
 
-Additional arguments can be passed to pytest. See the section "How does it
-work" in te docs for specifics.
+It cleans any previously found tests, i.e., only tests defined in the
+current cell are executed. To disable this behavior, use
+`ipytest.config(clean=False)`.
 
-For example:
+Any arguments passed on the magic line are interpreted as command line
+arguments to to pytest. For example calling the magic as
 
 ```python
 %%ipytest -qq
-
-
-def test_example():
-    ...
-
 ```
+
+is equivalent to passing `-qq` to pytest. See also the section "How does it
+work" in the docs for further details.
+
+The keyword arguments passed to [`ipytest.run`][ipytest.run] can be
+customized by including a comment of the form `# ipytest: arg1=value1,
+arg=value2` in the cell source. For example:
+
+```python
+%%ipytest {MODULE}::test1
+# ipytest: defopts=False
+```
+
+is equivalent to `ipytest.run("{MODULE}::test1", defopts=False)`. In this
+case, it deactivates default arguments and then instructs pytest to only
+execute `test1`.
 
 <!-- minidoc -->
 
