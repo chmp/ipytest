@@ -64,7 +64,28 @@ class Error(RuntimeError):
 
 
 def pytest_magic(line, cell):
-    """IPython magic function running pytest"""
+    """IPython magic to execute pytest.
+
+    It first executes the cell, then executes `ipytest.run()`. Any arguments
+    passed on the magic line be passed on to pytest. It cleans any previously
+    found tests, i.e., only tests defined in the current cell are executed. To
+    disable this behavior, use `ipytest.config(clean=False)`. To register the
+    magics, run `ipytest.autoconfig()` or `ipytest.config(magics=True)` first.
+
+    Additional arguments can be passed to pytest. See the section "How does it
+    work" in te docs for specifics.
+
+    For example:
+
+    ```python
+    %%ipytest -qq
+
+
+    def test_example():
+        ...
+
+    ```
+    """
     if current_config["clean"] is not False:
         clean_tests(current_config["clean"])
 

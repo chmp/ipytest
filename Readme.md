@@ -167,15 +167,19 @@ See [`ipytest.config`][ipytest.config] for details.
 
 [ipytest.ipytest]: #ipytest-
 
-IPython magic that first executes the cell, then executes `ipytest.run()`. Any
-arguments passed on the magic line be passed on to pytest. It cleans any
-previously found tests, i.e., only tests defined in the current cell are
-executed. To disable this behavior, use `ipytest.config(clean=False)`. To
-register the magics, run `ipytest.autoconfig()` or `ipytest.config(magics=True)`
-first.
+<!-- minidoc "function": "ipytest._impl.pytest_magic", "header": false -->
+[ipytest._impl.pytest_magic]: #ipytest_implpytest_magicline-cell
 
-Additional arguments can be passed to pytest. See the section "How does it work"
-for specifics.
+IPython magic to execute pytest.
+
+It first executes the cell, then executes `ipytest.run()`. Any arguments
+passed on the magic line be passed on to pytest. It cleans any previously
+found tests, i.e., only tests defined in the current cell are executed. To
+disable this behavior, use `ipytest.config(clean=False)`. To register the
+magics, run `ipytest.autoconfig()` or `ipytest.config(magics=True)` first.
+
+Additional arguments can be passed to pytest. See the section "How does it
+work" in te docs for specifics.
 
 For example:
 
@@ -187,6 +191,8 @@ def test_example():
     ...
 
 ```
+
+<!-- minidoc -->
 
 <!-- minidoc "function": "ipytest.config" -->
 #### `ipytest.config(rewrite_asserts=<keep>, magics=<keep>, clean=<keep>, addopts=<keep>, run_in_thread=<keep>, defopts=<keep>, display_columns=<keep>, raise_on_error=<keep>)`
