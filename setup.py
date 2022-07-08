@@ -5,7 +5,7 @@ from setuptools import setup
 
 setup(
     name="ipytest",
-    version="0.12.0",
+    version="0.13.0a1",
     description="Unit tests in IPython notebooks.",
     long_description=pathlib.Path("Readme.md").read_text(),
     long_description_content_type="text/markdown",
