@@ -141,7 +141,7 @@ following steps:
 | [`reload`][ipytest.reload]
 | [`Error`][ipytest.Error]
 
-<!-- minidoc "function": "ipytest.autoconfig" -->
+<!-- minidoc "function": "ipytest.autoconfig", "header_depth": 3 -->
 ### `ipytest.autoconfig(rewrite_asserts=<default>, magics=<default>, clean=<default>, addopts=<default>, run_in_thread=<default>, defopts=<default>, display_columns=<default>, raise_on_error=<default>)`
 
 [ipytest.autoconfig]: #ipytestautoconfigrewrite_assertsdefault-magicsdefault-cleandefault-addoptsdefault-run_in_threaddefault-defoptsdefault-display_columnsdefault-raise_on_errordefault
@@ -167,7 +167,7 @@ See [`ipytest.config`][ipytest.config] for details.
 
 [ipytest.ipytest]: #ipytest-
 
-<!-- minidoc "function": "ipytest._impl.pytest_magic", "header": false -->
+<!-- minidoc "function": "ipytest._impl.pytest_magic", "header": false, "header_depth": 3 -->
 [ipytest._impl.pytest_magic]: #ipytest_implpytest_magicline-cell
 
 IPython magic to execute pytest.
@@ -194,8 +194,8 @@ def test_example():
 
 <!-- minidoc -->
 
-<!-- minidoc "function": "ipytest.config" -->
-#### `ipytest.config(rewrite_asserts=<keep>, magics=<keep>, clean=<keep>, addopts=<keep>, run_in_thread=<keep>, defopts=<keep>, display_columns=<keep>, raise_on_error=<keep>)`
+<!-- minidoc "function": "ipytest.config", "header_depth": 3 -->
+### `ipytest.config(rewrite_asserts=<keep>, magics=<keep>, clean=<keep>, addopts=<keep>, run_in_thread=<keep>, defopts=<keep>, display_columns=<keep>, raise_on_error=<keep>)`
 
 [ipytest.config]: #ipytestconfigrewrite_assertskeep-magicskeep-cleankeep-addoptskeep-run_in_threadkeep-defoptskeep-display_columnskeep-raise_on_errorkeep
 
@@ -238,8 +238,8 @@ The following settings are supported:
 
 The return code of the last pytest invocation.
 
-<!-- minidoc "function": "ipytest.run" -->
-#### `ipytest.run(*args, module=None, plugins=())`
+<!-- minidoc "function": "ipytest.run", "header_depth": 3 -->
+### `ipytest.run(*args, module=None, plugins=())`
 
 [ipytest.run]: #ipytestrunargs-modulenone-plugins
 
@@ -250,17 +250,13 @@ Execute all tests in the passed module (defaults to `__main__`) with pytest.
 - `args`: additional commandline options passed to pytest
 - `module`: the module containing the tests. If not given, `__main__` will
   be used.
-- `filename`: the filename of the file containing the tests. It has to be a
-  real file, e.g., a notebook name, since its existence will be checked by
-  pytest. If not given, the `__file__` attribute of the passed module will
-  be used.
 - `plugins`: additional plugins passed to pytest.
 
 **Returns**: the exit code of `pytest.main`.
 
 <!-- minidoc -->
-<!-- minidoc "function": "ipytest.clean_tests" -->
-#### `ipytest.clean_tests(pattern='[Tt]est*', items=None)`
+<!-- minidoc "function": "ipytest.clean_tests", "header_depth": 3 -->
+### `ipytest.clean_tests(pattern='[Tt]est*', items=None)`
 
 [ipytest.clean_tests]: #ipytestclean_testspatternttest-itemsnone
 
@@ -282,8 +278,8 @@ This way renaming tests works as expected.
     globals object is determined from the call stack.
 
 <!-- minidoc -->
-<!-- minidoc "function": "ipytest.reload" -->
-#### `ipytest.reload(*mods)`
+<!-- minidoc "function": "ipytest.reload", "header_depth": 3 -->
+### `ipytest.reload(*mods)`
 
 [ipytest.reload]: #ipytestreloadmods
 
@@ -299,8 +295,8 @@ reload("ipytest._util", "ipytest")
 ```
 
 <!-- minidoc -->
-<!-- minidoc "class": "ipytest.Error" -->
-#### `ipytest.Error(exit_code)`
+<!-- minidoc "class": "ipytest.Error", "header_depth": 3 -->
+### `ipytest.Error(exit_code)`
 
 [ipytest.Error]: #ipytesterrorexit_code
 
