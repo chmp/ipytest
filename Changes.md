@@ -3,7 +3,7 @@
 Note: development is tracked on the [`develop` branch](https://github.com/chmp/ipytest/tree/develop).
 
 - `develop`:
-    - Use markdown for module documentation 
+    - Use markdown for module documentation
 - `0.12.0`:
     - Re-add the `raise_on_error` config option
     - Return the `exit_code` from `ipyest.run()`
