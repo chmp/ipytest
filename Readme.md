@@ -168,14 +168,15 @@ See [`ipytest.config`][ipytest.config] for details.
 [ipytest.ipytest]: #ipytest-
 
 <!-- minidoc "function": "ipytest._impl.pytest_magic", "header": false, "header_depth": 3 -->
-IPython magic to first execute the cell, then execute `ipytest.run()`.
+IPython magic to first execute the cell, then execute [`ipytest.run()`][ipytest.run].
 
-**Note:** the magics are only available after running `ipytest.autoconfig()`
-or `ipytest.config(magics=True)`.
+**Note:** the magics are only available after running
+[`ipytest.autoconfig()`][ipytest.autoconfig] or
+[`ipytest.config(magics=True)`][ipytest.config].
 
 It cleans any previously found tests, i.e., only tests defined in the
 current cell are executed. To disable this behavior, use
-`ipytest.config(clean=False)`.
+[`ipytest.config(clean=False)`][ipytest.config].
 
 Any arguments passed on the magic line are interpreted as command line
 arguments to to pytest. For example calling the magic as
@@ -184,8 +185,8 @@ arguments to to pytest. For example calling the magic as
 %%ipytest -qq
 ```
 
-is equivalent to passing `-qq` to pytest. See also the section "How does it
-work" in the docs for further details.
+is equivalent to passing `-qq` to pytest. See also the section ["How does it
+work"][#how-does-it-work] for further details.
 
 The keyword arguments passed to [`ipytest.run`][ipytest.run] can be
 customized by including a comment of the form `# ipytest: arg1=value1,
@@ -259,6 +260,11 @@ Execute all tests in the passed module (defaults to `__main__`) with pytest.
 - `module`: the module containing the tests. If not given, `__main__` will
   be used.
 - `plugins`: additional plugins passed to pytest.
+
+The following parameters override the config options set with
+[`ipytest.config`][ipytest.config] or
+[`ipytest.autoconfig`][ipytest.autoconfig].
+
 - `run_in_thread`: if given, override the config option "run_in_thread".
 - `raise_on_error`: if given, override the config option "raise_on_error".
 - `addopts`: if given, override the config option "addopts".
@@ -269,9 +275,9 @@ Execute all tests in the passed module (defaults to `__main__`) with pytest.
 
 <!-- minidoc -->
 <!-- minidoc "function": "ipytest.clean_tests", "header_depth": 3 -->
-### `ipytest.clean_tests(pattern='[Tt]est*', *, module=None)`
+### `ipytest.clean_tests(pattern=<default>, *, module=None)`
 
-[ipytest.clean_tests]: #ipytestclean_testspatternttest--modulenone
+[ipytest.clean_tests]: #ipytestclean_testspatterndefault--modulenone
 
 Delete tests with names matching the given pattern.
 
@@ -281,12 +287,14 @@ the previous definitions will still be found if not deleted. This method
 aims to simply this process.
 
 An effective pattern is to start with the cell containing tests with a call
-to `clean_tests`, then defined all test cases, and finally call `run_tests`.
-This way renaming tests works as expected.
+to [`ipytest.clean_tests`][ipytest.clean_tests], then defined all test
+cases, and finally call [`ipytest.run`][ipytest.run]. This way renaming
+tests works as expected.
 
 **Parameters:**
 
-- `pattern`: a glob pattern used to match the tests to delete.
+- `pattern`: a glob pattern used to match the tests to delete. If not given,
+  the `"clean"` config option is used.
 - `items`: the globals object containing the tests. If `None` is given, the
     globals object is determined from the call stack.
 
@@ -304,7 +312,7 @@ notebooks.
 Usage:
 
 ```python
-reload("ipytest._util", "ipytest")
+ipytest.reload("ipytest._util", "ipytest")
 ```
 
 <!-- minidoc -->
