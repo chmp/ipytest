@@ -4,11 +4,13 @@ import io
 import os.path
 import types
 
+from types import ModuleType
+
 import pytest
 
 import ipytest
 
-from ipytest._impl import RewriteAssertTransformer
+from ipytest._impl import RewriteAssertTransformer, eval_run_kwargs
 
 
 @pytest.mark.parametrize(
@@ -98,3 +100,50 @@ def test_program_name():
     assert "error" in res
     assert "%%ipytest" in res
     assert "ipykernel_launcher.py" not in res
+
+
+@pytest.mark.parametrize(
+    "cell, expected",
+    [
+        pytest.param("", {}),
+        pytest.param("def test():\n    assert True", {}),
+        pytest.param(
+            "# ipytest: defopts=True\ndef test():\n    ....", {"defopts": True}
+        ),
+        pytest.param("# ipytest: defopts=True", {"defopts": True}),
+        pytest.param(
+            "# ipytest: defopts=True, clean=True", {"defopts": True, "clean": True}
+        ),
+        pytest.param(
+            "# ipytest: defopts =  True, clean  =  True",
+            {"defopts": True, "clean": True},
+        ),
+    ],
+)
+def test_eval_run_kwargs(cell, expected):
+    assert eval_run_kwargs(cell) == expected
+
+
+@pytest.mark.parametrize("value", [True, False])
+def test_eval_run_kwargs__module(value):
+    dummy_module = ModuleType("dummy_module")
+    dummy_module.defopts = value
+
+    assert eval_run_kwargs("# ipytest: defopts =  defopts", module=dummy_module) == {
+        "defopts": value,
+        "module": dummy_module,
+    }
+
+
+def test_eval_run_kwargs__module_override():
+    dummy_module = ModuleType("dummy_module")
+    assert eval_run_kwargs("# ipytest: module=None", module=dummy_module) == {
+        "module": None,
+    }
+
+
+def test_eval_run_kwargs__module_no_override():
+    dummy_module = ModuleType("dummy_module")
+    assert eval_run_kwargs("# ipytest: module=None", module=dummy_module) == {
+        "module": None,
+    }

@@ -11,6 +11,8 @@ import sys
 import tempfile
 import threading
 
+from typing import Any, Dict
+
 import packaging.version
 import pytest
 
@@ -59,7 +61,7 @@ class Error(RuntimeError):
         return f"ipytest failed with exit_code {self.args[0]}"
 
 
-def pytest_magic(line, cell):
+def pytest_magic(line, cell, module=None):
     """IPython magic to execute pytest.
 
     It first executes the cell, then executes `ipytest.run()`. Any arguments
@@ -82,6 +84,9 @@ def pytest_magic(line, cell):
 
     ```
     """
+    run_args = shlex.split(line)
+    run_kwargs = eval_run_kwargs(cell, module=module)
+
     if current_config["clean"] is not False:
         clean_tests(current_config["clean"])
 
@@ -99,7 +104,7 @@ def pytest_magic(line, cell):
         else:
             raise e
 
-    run(*shlex.split(line))
+    run(*run_args, **run_kwargs)
 
 
 def clean_tests(pattern=default_clean, items=None):
@@ -310,3 +315,40 @@ def run_in_thread(func, *args, **kwargs):
 
 def is_valid_module_name(name):
     return all(c not in name for c in ".- ")
+
+
+RUN_OPTIONS_MARKER = "# ipytest:"
+
+
+def eval_run_kwargs(cell: str, module=None) -> Dict[str, Any]:
+    """Parse the `ipytest:` comment inside a cell
+
+    If the cell does not start with `# ipytest:` and empty dict is returned.
+    Otherwise, the rest of the line is evaluated as keyword args. Any references
+    to variables are evaluated to the module object. If not given it defaults to
+    `__main__`.
+
+    If the module is given and not overwritten inside the comment, it is also
+    returned as keyword argument.
+    """
+    if module is not None:
+        eval_module = module
+
+    else:
+        import __main__ as eval_module
+
+    lines = cell.splitlines()
+    if not lines:
+        return {}
+
+    first_line = lines[0]
+    if not first_line.startswith(RUN_OPTIONS_MARKER):
+        return {}
+
+    run_options = first_line[len(RUN_OPTIONS_MARKER) :]
+    kwargs = eval(f"dict({run_options!s})", eval_module.__dict__, eval_module.__dict__)
+
+    if "module" not in kwargs and module is not None:
+        kwargs["module"] = module
+
+    return kwargs
