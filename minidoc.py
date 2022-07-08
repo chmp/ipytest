@@ -304,9 +304,9 @@ def render_item(
     if include_header:
         yield _render_header(header, header_depth)
         yield ""
+        yield f"[{module_name}.{item_name}]: #{header_to_link(header)}"
+        yield ""
 
-    yield f"[{module_name}.{item_name}]: #{header_to_link(header)}"
-    yield ""
     yield from inspect.cleandoc(doc).splitlines()
     yield ""
 

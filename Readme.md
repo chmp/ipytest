@@ -168,8 +168,6 @@ See [`ipytest.config`][ipytest.config] for details.
 [ipytest.ipytest]: #ipytest-
 
 <!-- minidoc "function": "ipytest._impl.pytest_magic", "header": false, "header_depth": 3 -->
-[ipytest._impl.pytest_magic]: #ipytest_implpytest_magicline-cell
-
 IPython magic to execute pytest.
 
 It first executes the cell, then executes `ipytest.run()`. Any arguments
