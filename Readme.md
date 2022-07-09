@@ -235,7 +235,7 @@ The following settings are supported:
   with `pytest_asyncio` since it starts a separate event loop
 * `defopts` (default: `"auto"`): either `"auto"`, `True` or `False`
   * if `"auto"`, `ipytest` will add the current notebook module to the
-    command line arguments, if no PyTest node ids that reference the
+    command line arguments, if no pytest node ids that reference the
     notebook are provided by the user
   * If `True`, ipytest will add the current module to the arguments passed
     to pytest
