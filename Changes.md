@@ -18,6 +18,8 @@ Note: development is tracked on the [`develop` branch](https://github.com/chmp/i
     - Updated documentation (updated doc strings for run, ipytest magic,
       expanded example notebook)
     - Fix bug for `--deselect {MODULE}::test`
+    - Disable variable expansion in magic to simplify using `{test}` shorthands
+      in notebooks
 - `0.12.0`:
     - Re-add the `raise_on_error` config option
     - Return the `exit_code` from `ipyest.run()`
