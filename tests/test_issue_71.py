@@ -50,3 +50,13 @@ def test_run_defopts__auto_magic__deselect(ipytest_entry_point):
         module_source,
     )
     assert exit_code == 0
+
+
+def test_run_defopts__auto_magic__deselect(run_cell_magic):
+    """Test defopts="auto" with --deselect ..."""
+    exit_code = run_cell_magic(
+        "--deselect {MODULE}::test2",
+        module_source,
+        module=types.ModuleType("dummy_module"),
+    )
+    assert exit_code == 0
