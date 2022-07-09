@@ -115,10 +115,11 @@ def config(
       separate thread. This way of running is required when testing async code
       with `pytest_asyncio` since it starts a separate event loop
     * `defopts` (default: `auto`): if `"auto"`, `ipytest` will add the current
-      notebook module to the command line arguments, if no PyTest node ids are
-      provided by the user. Ff `True`, ipytest will add the current module to
-      the arguments passed to pytest. If `False` only the arguments given and
-      `adopts` are passed. Such a setup may be helpful to customize the test
+      notebook module to the command line arguments, if no PyTest node ids that
+      reference the notebook are provided by the user. If `True`, ipytest will
+      add the current module to the arguments passed to pytest. If `False` only
+      the arguments given and `adopts` are passed. Such a setup may be helpful
+      to customize the test
       selection.
     * `display_columns` (default: `100`): if not `False`, configure Pytest to
       use the given number of columns for its output. This option will

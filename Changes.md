@@ -4,7 +4,7 @@ Note: development is tracked on the [`develop` branch](https://github.com/chmp/i
 
 - `develop`:
     - Add `defopts="auto"`, which only adds the current notebook to the PyTest
-      arguments, if no other node is selected.
+      arguments, if no other node id that references the notebook is specified
     - Allow to specify all keyword arguments of `ipytest.run` also in
       `%%ipytest` by including an initial comment of the form `# ipytest:
       arg1=value1, arg2=value`

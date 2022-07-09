@@ -109,7 +109,9 @@ ways to configure this behavior:
 - `%%ipytest` allows to specify additional arguments in the same line
 - `ipytest.config(defopts=False)` or `ipytest.autoconfig(defopts=False)` will
   instruct `ipytest` to not pass the current module filename. It can still be
-  passed manually by adding `{MODULE}` to the command line.
+  passed manually by adding `{MODULE}` to the command line. The default value
+  `defopts="auto"`, adds `{MODULE}` if no other PyTest node id is found in the
+  arguments
 
 The arguments are formatted using Python's standard string formatting.
 Currently, only the `{MODULE}` variable is understood. It is replaced with the
@@ -230,10 +232,11 @@ The following settings are supported:
   separate thread. This way of running is required when testing async code
   with `pytest_asyncio` since it starts a separate event loop
 * `defopts` (default: `auto`): if `"auto"`, `ipytest` will add the current
-  notebook module to the command line arguments, if no PyTest node ids are
-  provided by the user. Ff `True`, ipytest will add the current module to
-  the arguments passed to pytest. If `False` only the arguments given and
-  `adopts` are passed. Such a setup may be helpful to customize the test
+  notebook module to the command line arguments, if no PyTest node ids that
+  reference the notebook are provided by the user. If `True`, ipytest will
+  add the current module to the arguments passed to pytest. If `False` only
+  the arguments given and `adopts` are passed. Such a setup may be helpful
+  to customize the test
   selection.
 * `display_columns` (default: `100`): if not `False`, configure Pytest to
   use the given number of columns for its output. This option will

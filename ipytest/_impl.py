@@ -209,15 +209,13 @@ def _build_full_args(args, filename, *, addopts, defopts):
     def _fmt(arg):
         return arg.format(MODULE=filename)
 
-    addopts = [_fmt(arg) for arg in addopts]
-    args = [_fmt(arg) for arg in args]
+    all_args = [*addopts, *args]
 
     if defopts == "auto":
-        defopts = all(arg.startswith("-") for arg in (*addopts, *args))
+        defopts = all(not is_notebook_node_id(arg) for arg in all_args)
 
     return [
-        *addopts,
-        *args,
+        *(_fmt(arg) for arg in all_args),
         *([filename] if defopts else []),
     ]
 
@@ -400,3 +398,7 @@ def eval_run_kwargs(cell: str, module=None) -> Dict[str, Any]:
         kwargs["module"] = module
 
     return kwargs
+
+
+def is_notebook_node_id(arg: str) -> bool:
+    return not arg.startswith("-") and arg.startswith("{MODULE}")

@@ -45,3 +45,13 @@ def test_run_defopts__auto_magic(run_cell_magic):
         module=types.ModuleType("dummy_module"),
     )
     assert exit_code == 0
+
+
+def test_run_defopts__auto_magic_filter(run_cell_magic):
+    """Make sure defopts="auto" also works with -k ..."""
+    exit_code = run_cell_magic(
+        "-k test1",
+        module_source,
+        module=types.ModuleType("dummy_module"),
+    )
+    assert exit_code == 0
