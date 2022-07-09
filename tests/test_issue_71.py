@@ -28,3 +28,20 @@ def test_run_defopts__magic(run_cell_magic):
         module=types.ModuleType("dummy_module"),
     )
     assert exit_code == 0
+
+
+def test_run_defopts__auto_run():
+    module = types.ModuleType("dummy_module")
+    exec(module_source, module.__dict__, module.__dict__)
+
+    exit_code = ipytest.run("{MODULE}::test1", module=module)
+    assert exit_code == 0
+
+
+def test_run_defopts__auto_magic(run_cell_magic):
+    exit_code = run_cell_magic(
+        "{MODULE}::test1",
+        module_source,
+        module=types.ModuleType("dummy_module"),
+    )
+    assert exit_code == 0

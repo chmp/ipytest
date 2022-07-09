@@ -2,7 +2,9 @@
 
 Note: development is tracked on the [`develop` branch](https://github.com/chmp/ipytest/tree/develop).
 
-- `0.13.0a1`:
+- `develop`:
+    - Add `defopts="auto"`, which only adds the current notebook to the PyTest
+      arguments, if no other node is selected.
     - Allow to specify all keyword arguments of `ipytest.run` also in
       `%%ipytest` by including an initial comment of the form `# ipytest:
       arg1=value1, arg2=value`

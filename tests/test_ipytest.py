@@ -144,8 +144,7 @@ def test_eval_run_kwargs__module_override():
     }
 
 
-def test_eval_run_kwargs__module_no_override():
+@pytest.mark.parametrize("cell", ["", "\n", "\ndef test():\n    assert True"])
+def test_eval_run_kwargs__module(cell):
     dummy_module = ModuleType("dummy_module")
-    assert eval_run_kwargs("# ipytest: module=None", module=dummy_module) == {
-        "module": None,
-    }
+    assert eval_run_kwargs(cell, module=dummy_module) == {"module": dummy_module}

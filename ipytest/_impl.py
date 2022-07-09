@@ -60,6 +60,9 @@ def run(
     defopts = default.unwrap(defopts, current_config["defopts"])
     display_columns = default.unwrap(display_columns, current_config["display_columns"])
 
+    if module is None:
+        import __main__ as module
+
     run = run_func_in_thread if run_in_thread else run_func_direct
     exit_code = run(
         _run_impl,
@@ -206,18 +209,21 @@ def _build_full_args(args, filename, *, addopts, defopts):
     def _fmt(arg):
         return arg.format(MODULE=filename)
 
+    addopts = [_fmt(arg) for arg in addopts]
+    args = [_fmt(arg) for arg in args]
+
+    if defopts == "auto":
+        defopts = all(arg.startswith("-") for arg in (*addopts, *args))
+
     return [
-        *(_fmt(arg) for arg in addopts),
-        *(_fmt(arg) for arg in args),
+        *addopts,
+        *args,
         *([filename] if defopts else []),
     ]
 
 
 @contextlib.contextmanager
 def _prepared_env(module, *, display_columns):
-    if module is None:  # pragma: no cover
-        import __main__ as module
-
     with tempfile.NamedTemporaryFile(dir=".", suffix=".py") as f:
         path = pathlib.Path(f.name)
         module_name = path.stem
@@ -381,11 +387,11 @@ def eval_run_kwargs(cell: str, module=None) -> Dict[str, Any]:
 
     lines = cell.splitlines()
     if not lines:
-        return {}
+        return {"module": module} if module is not None else {}
 
     first_line = lines[0]
     if not first_line.startswith(RUN_OPTIONS_MARKER):
-        return {}
+        return {"module": module} if module is not None else {}
 
     run_options = first_line[len(RUN_OPTIONS_MARKER) :]
     kwargs = eval(f"dict({run_options!s})", eval_module.__dict__, eval_module.__dict__)
