@@ -39,6 +39,7 @@ def test_run_defopts__auto_run():
 
 
 def test_run_defopts__auto_magic(run_cell_magic):
+    """Test defopts="auto" with explicit node id"""
     exit_code = run_cell_magic(
         "{MODULE}::test1",
         module_source,
@@ -47,10 +48,20 @@ def test_run_defopts__auto_magic(run_cell_magic):
     assert exit_code == 0
 
 
-def test_run_defopts__auto_magic_filter(run_cell_magic):
-    """Make sure defopts="auto" also works with -k ..."""
+def test_run_defopts__auto_magic__filter(run_cell_magic):
+    """Test defopts="auto" with -k ..."""
     exit_code = run_cell_magic(
         "-k test1",
+        module_source,
+        module=types.ModuleType("dummy_module"),
+    )
+    assert exit_code == 0
+
+
+def test_run_defopts__auto_magic__deselect(run_cell_magic):
+    """Test defopts="auto" with --deselect ..."""
+    exit_code = run_cell_magic(
+        "--deselect {MODULE}::test2",
         module_source,
         module=types.ModuleType("dummy_module"),
     )

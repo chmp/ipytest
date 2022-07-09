@@ -11,7 +11,7 @@ import sys
 import tempfile
 import threading
 
-from typing import Any, Dict, Sequence
+from typing import Any, Dict, Optional, Sequence
 
 import packaging.version
 import pytest
@@ -206,8 +206,11 @@ def _run_impl(*args, module, plugins, addopts, defopts, display_columns):
 
 
 def _build_full_args(args, filename, *, addopts, defopts):
+    # ensure --deselect works (see also: https://github.com/pytest-dev/pytest/issues/6751)
+    basename = os.path.basename(filename)
+
     def _fmt(arg):
-        return arg.format(MODULE=filename)
+        return arg.format(MODULE=basename)
 
     all_args = [*addopts, *args]
 
@@ -403,8 +406,13 @@ def eval_run_kwargs(cell: str, module=None) -> Dict[str, Any]:
 def eval_defopts_auto(args: Sequence[str]) -> bool:
     """Parse the arguments and determine whether to add the notebook"""
 
-    def is_notebook_node_id(arg: str) -> bool:
-        return not arg.startswith("-") and arg.startswith("{MODULE}")
+    def is_notebook_node_id(prev: Optional[str], arg: str) -> bool:
+        return (
+            prev not in {"-k", "--deselect"}
+            and not arg.startswith("-")
+            and arg.startswith("{MODULE}")
+        )
 
-    # TODO: add more restrictive checks for well-known pytest args?
-    return all(not is_notebook_node_id(arg) for arg in args)
+    return all(
+        not is_notebook_node_id(prev, arg) for prev, arg in zip([None, *args], args)
+    )
