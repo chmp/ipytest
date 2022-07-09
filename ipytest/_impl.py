@@ -11,7 +11,7 @@ import sys
 import tempfile
 import threading
 
-from typing import Any, Dict
+from typing import Any, Dict, Sequence
 
 import packaging.version
 import pytest
@@ -212,7 +212,7 @@ def _build_full_args(args, filename, *, addopts, defopts):
     all_args = [*addopts, *args]
 
     if defopts == "auto":
-        defopts = all(not is_notebook_node_id(arg) for arg in all_args)
+        defopts = eval_defopts_auto(all_args)
 
     return [
         *(_fmt(arg) for arg in all_args),
@@ -400,5 +400,11 @@ def eval_run_kwargs(cell: str, module=None) -> Dict[str, Any]:
     return kwargs
 
 
-def is_notebook_node_id(arg: str) -> bool:
-    return not arg.startswith("-") and arg.startswith("{MODULE}")
+def eval_defopts_auto(args: Sequence[str]) -> bool:
+    """Parse the arguments and determine whether to add the notebook"""
+
+    def is_notebook_node_id(arg: str) -> bool:
+        return not arg.startswith("-") and arg.startswith("{MODULE}")
+
+    # TODO: add more restrictive checks for well-known pytest args?
+    return all(not is_notebook_node_id(arg) for arg in args)

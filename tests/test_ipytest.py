@@ -10,7 +10,7 @@ import pytest
 
 import ipytest
 
-from ipytest._impl import RewriteAssertTransformer, eval_run_kwargs, is_notebook_node_id
+from ipytest._impl import RewriteAssertTransformer, eval_run_kwargs, eval_defopts_auto
 
 
 @pytest.mark.parametrize(
@@ -150,11 +150,15 @@ def test_eval_run_kwargs__module(cell):
     assert eval_run_kwargs(cell, module=dummy_module) == {"module": dummy_module}
 
 
-@pytest.mark.parametrize("arg", ["{MODULE}", "{MODULE}::test1"])
-def test_is_node_id__true(arg):
-    assert is_notebook_node_id(arg) is True
-
-
-@pytest.mark.parametrize("arg", ["-k", "test1", "-ktest1", "./tests"])
-def test_is_node_id__false(arg):
-    assert is_notebook_node_id(arg) is False
+@pytest.mark.parametrize(
+    "args, defopts",
+    [
+        pytest.param(["{MODULE}"], False),
+        pytest.param(["{MODULE}::test1"], False),
+        pytest.param(["-k", "test1"], True),
+        pytest.param(["-ktest1"], True),
+        pytest.param(["./tests"], True),
+    ],
+)
+def test_eval_defopts_auto__true(args, defopts):
+    assert eval_defopts_auto(args) is defopts
