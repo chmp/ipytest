@@ -13,56 +13,40 @@ def test2():
 """
 
 
-def test_run_defopts__run():
-    module = types.ModuleType("dummy_module")
-    exec(module_source, module.__dict__, module.__dict__)
-
-    exit_code = ipytest.run("{MODULE}::test1", module=module, defopts=False)
-    assert exit_code == 0
-
-
-def test_run_defopts__magic(run_cell_magic):
-    exit_code = run_cell_magic(
+def test_run_defopts(ipytest_entry_point):
+    exit_code = ipytest_entry_point(
         "{MODULE}::test1",
-        "# ipytest: defopts=False\n\n" + module_source,
-        module=types.ModuleType("dummy_module"),
+        "defopts=False",
+        module_source,
     )
     assert exit_code == 0
 
 
-def test_run_defopts__auto_run():
-    module = types.ModuleType("dummy_module")
-    exec(module_source, module.__dict__, module.__dict__)
-
-    exit_code = ipytest.run("{MODULE}::test1", module=module)
-    assert exit_code == 0
-
-
-def test_run_defopts__auto_magic(run_cell_magic):
+def test_run_defopts__auto_magic(ipytest_entry_point):
     """Test defopts="auto" with explicit node id"""
-    exit_code = run_cell_magic(
+    exit_code = ipytest_entry_point(
         "{MODULE}::test1",
+        "",
         module_source,
-        module=types.ModuleType("dummy_module"),
     )
     assert exit_code == 0
 
 
-def test_run_defopts__auto_magic__filter(run_cell_magic):
+def test_run_defopts__auto_magic__filter(ipytest_entry_point):
     """Test defopts="auto" with -k ..."""
-    exit_code = run_cell_magic(
+    exit_code = ipytest_entry_point(
         "-k test1",
+        "",
         module_source,
-        module=types.ModuleType("dummy_module"),
     )
     assert exit_code == 0
 
 
-def test_run_defopts__auto_magic__deselect(run_cell_magic):
+def test_run_defopts__auto_magic__deselect(ipytest_entry_point):
     """Test defopts="auto" with --deselect ..."""
-    exit_code = run_cell_magic(
+    exit_code = ipytest_entry_point(
         "--deselect {MODULE}::test2",
+        "",
         module_source,
-        module=types.ModuleType("dummy_module"),
     )
     assert exit_code == 0
