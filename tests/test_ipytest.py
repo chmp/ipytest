@@ -10,7 +10,12 @@ import pytest
 
 import ipytest
 
-from ipytest._impl import RewriteAssertTransformer, eval_run_kwargs, eval_defopts_auto
+from ipytest._impl import (
+    RewriteAssertTransformer,
+    eval_run_kwargs,
+    eval_defopts_auto,
+    ArgMapping,
+)
 
 
 @pytest.mark.parametrize(
@@ -153,12 +158,32 @@ def test_eval_run_kwargs__module(cell):
 @pytest.mark.parametrize(
     "args, defopts",
     [
-        pytest.param(["{MODULE}"], False),
-        pytest.param(["{MODULE}::test1"], False),
+        pytest.param(["tmp_foo.py"], False),
+        pytest.param(["tmp_foo.py::test1"], False),
         pytest.param(["-k", "test1"], True),
         pytest.param(["-ktest1"], True),
         pytest.param(["./tests"], True),
     ],
 )
 def test_eval_defopts_auto__true(args, defopts):
-    assert eval_defopts_auto(args) is defopts
+    assert eval_defopts_auto(args, {"MODULE": "tmp_foo.py"}) is defopts
+
+
+@pytest.mark.parametrize(
+    "key, expected",
+    [
+        pytest.param("MODULE", "tmp_foo.py"),
+        pytest.param("test1", "tmp_foo.py::test1"),
+        pytest.param("TEST_CASE", "tmp_foo.py::TEST_CASE"),
+    ],
+)
+def test_arg_mapping(key, expected):
+    arg_mapping = ArgMapping(MODULE="tmp_foo.py")
+    assert arg_mapping[key] == expected
+
+
+def test_arg_mapping__reserved_key():
+    arg_mapping = ArgMapping(MODULE="tmp_foo.py")
+
+    with pytest.raises(KeyError):
+        arg_mapping["DUMMY"]

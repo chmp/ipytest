@@ -11,7 +11,7 @@ import sys
 import tempfile
 import threading
 
-from typing import Any, Dict, Optional, Sequence
+from typing import Any, Dict, Mapping, Optional, Sequence
 
 import packaging.version
 import pytest
@@ -206,21 +206,36 @@ def _run_impl(*args, module, plugins, addopts, defopts, display_columns):
 
 
 def _build_full_args(args, filename, *, addopts, defopts):
-    # ensure --deselect works (see also: https://github.com/pytest-dev/pytest/issues/6751)
-    basename = os.path.basename(filename)
+    arg_mapping = ArgMapping(
+        # use basename to ensure --deselect works
+        # (see also: https://github.com/pytest-dev/pytest/issues/6751)
+        MODULE=os.path.basename(filename),
+    )
 
     def _fmt(arg):
-        return arg.format(MODULE=basename)
+        return arg.format_map(arg_mapping)
 
-    all_args = [*addopts, *args]
+    all_args = [
+        *(_fmt(arg) for arg in addopts),
+        *(_fmt(arg) for arg in args),
+    ]
 
     if defopts == "auto":
-        defopts = eval_defopts_auto(all_args)
+        defopts = eval_defopts_auto(all_args, arg_mapping)
 
-    return [
-        *(_fmt(arg) for arg in all_args),
-        *([filename] if defopts else []),
-    ]
+    return [*all_args, *([filename] if defopts else [])]
+
+
+class ArgMapping(dict):
+    def __missing__(self, key):
+        if not (key.isalpha() and key.isupper()):
+            return f"{self['MODULE']}::{key}"
+
+        raise KeyError(
+            f"Unknown format key {key!r} (known keys: {list(self)}). To "
+            f"create the node id for a test with all uppercase characters use "
+            f"'{{MODULE}}::{key}'."
+        )
 
 
 @contextlib.contextmanager
@@ -403,14 +418,16 @@ def eval_run_kwargs(cell: str, module=None) -> Dict[str, Any]:
     return kwargs
 
 
-def eval_defopts_auto(args: Sequence[str]) -> bool:
+def eval_defopts_auto(args: Sequence[str], arg_mapping: Mapping[str, str]) -> bool:
     """Parse the arguments and determine whether to add the notebook"""
+
+    module_name = arg_mapping["MODULE"]
 
     def is_notebook_node_id(prev: Optional[str], arg: str) -> bool:
         return (
             prev not in {"-k", "--deselect"}
             and not arg.startswith("-")
-            and arg.startswith("{MODULE}")
+            and arg.startswith(module_name)
         )
 
     return all(
