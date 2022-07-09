@@ -148,6 +148,11 @@ def pytest_magic(line, cell, module=None):
     run(*run_args, **run_kwargs)
 
 
+# NOTE equivalent to @no_var_expand but does not require an IPython import
+# See also: IPython.core.magic.no_var_expand
+pytest_magic._ipython_magic_no_var_expand = True
+
+
 def clean_tests(pattern=default, *, module=None):
     """Delete tests with names matching the given pattern.
 
