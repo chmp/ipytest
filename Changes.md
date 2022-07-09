@@ -2,17 +2,24 @@
 
 Note: development is tracked on the [`develop` branch](https://github.com/chmp/ipytest/tree/develop).
 
-- `0.13.0a1`:
-    - Allow to specify all keyword arguments of `ipytest.run` also in
-      `%%ipytest` by including an initial comment of the form `# ipytest:
-      arg1=value1, arg2=value`
+- `develop`:
+    - Add `defopts="auto"`, which only adds the current notebook to the PyTest
+      arguments, if no other node id that references the notebook is specified
+    - Add shorthands to generate node ids for tests using `{test_example}` as an
+      argument will expand to `{MODULE}::test_example`
     - Allow to override `addopts`, `defopts`, `run_in_thread`, `raise_on_error`,
       `display_columns` in `ipytest.run` (this change also applies to
       `%%ipytest` with the due to the previous change)
+    - Allow to specify all keyword arguments of `ipytest.run` also in
+      `%%ipytest` by including an initial comment of the form `# ipytest:
+      arg1=value1, arg2=value`
     - `ipytest.clean()` now expects a module as its argument
     - Use markdown for module documentation
     - Updated documentation (updated doc strings for run, ipytest magic,
       expanded example notebook)
+    - Fix bug for `--deselect {MODULE}::test`
+    - Disable variable expansion in magic to simplify using `{test}` shorthands
+      in notebooks
 - `0.12.0`:
     - Re-add the `raise_on_error` config option
     - Return the `exit_code` from `ipyest.run()`

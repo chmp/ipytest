@@ -11,7 +11,7 @@ defaults = dict(
     clean=default_clean,
     addopts=("-q", "--color=yes"),
     run_in_thread=False,
-    defopts=True,
+    defopts="auto",
     display_columns=100,
     raise_on_error=False,
 )
@@ -22,7 +22,7 @@ current_config = dict(
     clean=default_clean,
     addopts=(),
     run_in_thread=False,
-    defopts=True,
+    defopts="auto",
     display_columns=100,
     raise_on_error=False,
 )
@@ -114,15 +114,19 @@ def config(
     * `run_in_thread` (default: `False`): if `True`, pytest will be run a
       separate thread. This way of running is required when testing async code
       with `pytest_asyncio` since it starts a separate event loop
-    * `defopts` (default: `True`): if `True`, ipytest will add the current
-      module to the arguments passed to pytest. If `False` only the arguments
-      given and `adopts` are passed. Such a setup may be helpful to customize
-      the test selection
+    * `defopts` (default: `auto`): if `"auto"`, `ipytest` will add the current
+      notebook module to the command line arguments, if no PyTest node ids that
+      reference the notebook are provided by the user. If `True`, ipytest will
+      add the current module to the arguments passed to pytest. If `False` only
+      the arguments given and `adopts` are passed. Such a setup may be helpful
+      to customize the test
+      selection.
     * `display_columns` (default: `100`): if not `False`, configure Pytest to
       use the given number of columns for its output. This option will
       temporarily override the `COLUMNS` environment variable.
-    * `raise_on_error` (default `False` ): if `True`, `ipytest.run` and
-      `%%ipytest` will raise an `ipytest.Error` if pytest fails.
+    * `raise_on_error` (default `False` ): if `True`,
+      [`ipytest.run`][ipytest.run] and [`%%ipytest`][ipytest.ipytest] will raise
+      an `ipytest.Error` if pytest fails.
     """
     args = collect_args()
     new_config = {

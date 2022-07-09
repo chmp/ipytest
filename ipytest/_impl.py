@@ -11,7 +11,7 @@ import sys
 import tempfile
 import threading
 
-from typing import Any, Dict
+from typing import Any, Dict, Mapping, Optional, Sequence
 
 import packaging.version
 import pytest
@@ -59,6 +59,9 @@ def run(
     addopts = default.unwrap(addopts, current_config["addopts"])
     defopts = default.unwrap(defopts, current_config["defopts"])
     display_columns = default.unwrap(display_columns, current_config["display_columns"])
+
+    if module is None:
+        import __main__ as module
 
     run = run_func_in_thread if run_in_thread else run_func_direct
     exit_code = run(
@@ -145,6 +148,11 @@ def pytest_magic(line, cell, module=None):
     run(*run_args, **run_kwargs)
 
 
+# NOTE equivalent to @no_var_expand but does not require an IPython import
+# See also: IPython.core.magic.no_var_expand
+pytest_magic._ipython_magic_no_var_expand = True
+
+
 def clean_tests(pattern=default, *, module=None):
     """Delete tests with names matching the given pattern.
 
@@ -203,21 +211,40 @@ def _run_impl(*args, module, plugins, addopts, defopts, display_columns):
 
 
 def _build_full_args(args, filename, *, addopts, defopts):
-    def _fmt(arg):
-        return arg.format(MODULE=filename)
+    arg_mapping = ArgMapping(
+        # use basename to ensure --deselect works
+        # (see also: https://github.com/pytest-dev/pytest/issues/6751)
+        MODULE=os.path.basename(filename),
+    )
 
-    return [
+    def _fmt(arg):
+        return arg.format_map(arg_mapping)
+
+    all_args = [
         *(_fmt(arg) for arg in addopts),
         *(_fmt(arg) for arg in args),
-        *([filename] if defopts else []),
     ]
+
+    if defopts == "auto":
+        defopts = eval_defopts_auto(all_args, arg_mapping)
+
+    return [*all_args, *([filename] if defopts else [])]
+
+
+class ArgMapping(dict):
+    def __missing__(self, key):
+        if not (key.isalpha() and key.isupper()):
+            return f"{self['MODULE']}::{key}"
+
+        raise KeyError(
+            f"Unknown format key {key!r} (known keys: {list(self)}). To "
+            f"create the node id for a test with all uppercase characters use "
+            f"'{{MODULE}}::{key}'."
+        )
 
 
 @contextlib.contextmanager
 def _prepared_env(module, *, display_columns):
-    if module is None:  # pragma: no cover
-        import __main__ as module
-
     with tempfile.NamedTemporaryFile(dir=".", suffix=".py") as f:
         path = pathlib.Path(f.name)
         module_name = path.stem
@@ -381,11 +408,11 @@ def eval_run_kwargs(cell: str, module=None) -> Dict[str, Any]:
 
     lines = cell.splitlines()
     if not lines:
-        return {}
+        return {"module": module} if module is not None else {}
 
     first_line = lines[0]
     if not first_line.startswith(RUN_OPTIONS_MARKER):
-        return {}
+        return {"module": module} if module is not None else {}
 
     run_options = first_line[len(RUN_OPTIONS_MARKER) :]
     kwargs = eval(f"dict({run_options!s})", eval_module.__dict__, eval_module.__dict__)
@@ -394,3 +421,20 @@ def eval_run_kwargs(cell: str, module=None) -> Dict[str, Any]:
         kwargs["module"] = module
 
     return kwargs
+
+
+def eval_defopts_auto(args: Sequence[str], arg_mapping: Mapping[str, str]) -> bool:
+    """Parse the arguments and determine whether to add the notebook"""
+
+    module_name = arg_mapping["MODULE"]
+
+    def is_notebook_node_id(prev: Optional[str], arg: str) -> bool:
+        return (
+            prev not in {"-k", "--deselect"}
+            and not arg.startswith("-")
+            and arg.startswith(module_name)
+        )
+
+    return all(
+        not is_notebook_node_id(prev, arg) for prev, arg in zip([None, *args], args)
+    )
