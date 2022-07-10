@@ -16,8 +16,6 @@ from typing import Any, Dict, Mapping, Optional, Sequence
 import packaging.version
 import pytest
 
-from IPython import get_ipython
-
 from ._config import current_config, default
 
 
@@ -126,6 +124,8 @@ def pytest_magic(line, cell, module=None):
     case, it deactivates default arguments and then instructs pytest to only
     execute `test1`.
     """
+    from IPython import get_ipython
+
     run_args = shlex.split(line)
     run_kwargs = eval_run_kwargs(cell, module=module)
 
