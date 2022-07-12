@@ -256,9 +256,9 @@ The following settings are supported:
 The return code of the last pytest invocation.
 
 <!-- minidoc "function": "ipytest.run", "header_depth": 3 -->
-### `ipytest.run(*args, module=None, plugins=(), run_in_thread=<default>, raise_on_error=<default>, addopts=<default>, defopts=<default>, display_columns=<default>)`
+### `ipytest.run(*args, module=None, plugins=())`
 
-[ipytest.run]: #ipytestrunargs-modulenone-plugins-run_in_threaddefault-raise_on_errordefault-addoptsdefault-defoptsdefault-display_columnsdefault
+[ipytest.run]: #ipytestrunargs-modulenone-plugins
 
 Execute all tests in the passed module (defaults to `__main__`) with pytest.
 
@@ -269,23 +269,13 @@ Execute all tests in the passed module (defaults to `__main__`) with pytest.
   be used.
 - `plugins`: additional plugins passed to pytest.
 
-The following parameters override the config options set with
-[`ipytest.config()`][ipytest.config] or
-[`ipytest.autoconfig()`][ipytest.autoconfig].
-
-- `run_in_thread`: if given, override the config option "run_in_thread".
-- `raise_on_error`: if given, override the config option "raise_on_error".
-- `addopts`: if given, override the config option "addopts".
-- `defopts`: if given, override the config option "defopts".
-- `display_columns`: if given, override the config option "display_columns".
-
 **Returns**: the exit code of `pytest.main`.
 
 <!-- minidoc -->
 <!-- minidoc "function": "ipytest.clean_tests", "header_depth": 3 -->
-### `ipytest.clean_tests(pattern=<default>, *, module=None)`
+### `ipytest.clean_tests(pattern=<default>, *, items=None)`
 
-[ipytest.clean_tests]: #ipytestclean_testspatterndefault--modulenone
+[ipytest.clean_tests]: #ipytestclean_testspatterndefault--itemsnone
 
 Delete tests with names matching the given pattern.
 

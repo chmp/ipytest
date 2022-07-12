@@ -11,7 +11,7 @@ import sys
 import tempfile
 import threading
 
-from typing import Any, Dict, Mapping, Optional, Sequence
+from typing import Any, Dict, Mapping, Optional, Sequence, Union
 
 import packaging.version
 import pytest
@@ -23,11 +23,6 @@ def run(
     *args,
     module=None,
     plugins=(),
-    run_in_thread=default,
-    raise_on_error=default,
-    addopts=default,
-    defopts=default,
-    display_columns=default,
 ):
     """Execute all tests in the passed module (defaults to `__main__`) with pytest.
 
@@ -38,46 +33,16 @@ def run(
       be used.
     - `plugins`: additional plugins passed to pytest.
 
-    The following parameters override the config options set with
-    [`ipytest.config()`][ipytest.config] or
-    [`ipytest.autoconfig()`][ipytest.autoconfig].
-
-    - `run_in_thread`: if given, override the config option "run_in_thread".
-    - `raise_on_error`: if given, override the config option "raise_on_error".
-    - `addopts`: if given, override the config option "addopts".
-    - `defopts`: if given, override the config option "defopts".
-    - `display_columns`: if given, override the config option "display_columns".
-
     **Returns**: the exit code of `pytest.main`.
     """
-    import ipytest
+    return Session(module).main(args, plugins)
 
-    run_in_thread = default.unwrap(run_in_thread, current_config["run_in_thread"])
-    raise_on_error = default.unwrap(raise_on_error, current_config["raise_on_error"])
-    addopts = default.unwrap(addopts, current_config["addopts"])
-    defopts = default.unwrap(defopts, current_config["defopts"])
-    display_columns = default.unwrap(display_columns, current_config["display_columns"])
 
-    if module is None:
-        import __main__ as module
-
-    run = run_func_in_thread if run_in_thread else run_func_direct
-    exit_code = run(
-        _run_impl,
-        *args,
-        module=module,
-        plugins=plugins,
-        addopts=addopts,
-        defopts=defopts,
-        display_columns=display_columns,
-    )
-
-    ipytest.exit_code = exit_code
-
-    if raise_on_error is True and exit_code != 0:
-        raise Error(exit_code)
-
-    return exit_code
+def main(
+    args: Optional[Sequence[str]] = None,
+    plugins: Optional[Sequence[object]] = None,
+) -> Union[int, pytest.ExitCode]:
+    return Session().main(args, plugins)
 
 
 class Error(RuntimeError):
@@ -124,12 +89,22 @@ def pytest_magic(line, cell, module=None):
     case, it deactivates default arguments and then instructs pytest to only
     execute `test1`.
     """
-    from IPython import get_ipython
 
     run_args = shlex.split(line)
     run_kwargs = eval_run_kwargs(cell, module=module)
 
-    clean_tests(module=run_kwargs.get("module"))
+    clean(module=run_kwargs.get("module"))
+    _ipython_run_cell(cell)
+    Session(**run_kwargs).main(run_args)
+
+
+# NOTE equivalent to @no_var_expand but does not require an IPython import
+# See also: IPython.core.magic.no_var_expand
+pytest_magic._ipython_magic_no_var_expand = True
+
+
+def _ipython_run_cell(cell):
+    from IPython import get_ipython
 
     try:
         get_ipython().run_cell(cell)
@@ -145,15 +120,12 @@ def pytest_magic(line, cell, module=None):
         else:
             raise e
 
-    run(*run_args, **run_kwargs)
+
+def clean(*, pattern=default, module=None):
+    clean_tests(pattern=pattern, items=vars(module) if module is not None else None)
 
 
-# NOTE equivalent to @no_var_expand but does not require an IPython import
-# See also: IPython.core.magic.no_var_expand
-pytest_magic._ipython_magic_no_var_expand = True
-
-
-def clean_tests(pattern=default, *, module=None):
+def clean_tests(pattern=default, *, items=None):
     """Delete tests with names matching the given pattern.
 
     In IPython the results of all evaluations are kept in global variables
@@ -178,10 +150,11 @@ def clean_tests(pattern=default, *, module=None):
     if pattern is False:
         return
 
-    if module is None:
+    if items is None:
         import __main__ as module
 
-    items = vars(module)
+        items = vars(module)
+
     to_delete = [key for key in items.keys() if fnmatch.fnmatchcase(key, pattern)]
 
     for key in to_delete:
@@ -204,31 +177,160 @@ def reload(*mods):
         importlib.reload(importlib.import_module(mod))
 
 
-def _run_impl(*args, module, plugins, addopts, defopts, display_columns):
-    with _prepared_env(module, display_columns=display_columns) as filename:
-        full_args = _build_full_args(args, filename, addopts=addopts, defopts=defopts)
-        return pytest.main(full_args, plugins=[*plugins, FixProgramNamePlugin()])
+class Session:
+    """A Session to run pytest with access to a temporary module
 
+    The following parameters override the config options set with
+    [`ipytest.config()`][ipytest.config] or
+    [`ipytest.autoconfig()`][ipytest.autoconfig]:
 
-def _build_full_args(args, filename, *, addopts, defopts):
-    arg_mapping = ArgMapping(
-        # use basename to ensure --deselect works
-        # (see also: https://github.com/pytest-dev/pytest/issues/6751)
-        MODULE=os.path.basename(filename),
-    )
+    - `run_in_thread`: if given, override the config option "run_in_thread".
+    - `raise_on_error`: if given, override the config option "raise_on_error".
+    - `addopts`: if given, override the config option "addopts".
+    - `defopts`: if given, override the config option "defopts".
+    - `display_columns`: if given, override the config option "display_columns".
 
-    def _fmt(arg):
-        return arg.format_map(arg_mapping)
+    Inside an active session the file `self.module_path` can be used inside
+    pytest to to the current notebook. For example, pytest can be manually
+    executed via:
 
-    all_args = [
-        *(_fmt(arg) for arg in addopts),
-        *(_fmt(arg) for arg in args),
-    ]
+    ```python
+    with ipytest.Session() as sess:
+        pytest.main([str(sess.module_path)])
+    ```
+    """
 
-    if defopts == "auto":
-        defopts = eval_defopts_auto(all_args, arg_mapping)
+    def __init__(
+        self,
+        module=None,
+        *,
+        run_in_thread=default,
+        raise_on_error=default,
+        addopts=default,
+        defopts=default,
+        display_columns=default,
+    ):
+        if module is None:
+            import __main__ as module
 
-    return [*all_args, *([filename] if defopts else [])]
+        self.module = module
+        self.run_in_thread = default.unwrap(
+            run_in_thread, current_config["run_in_thread"]
+        )
+        self.raise_on_error = default.unwrap(
+            raise_on_error, current_config["raise_on_error"]
+        )
+        self.addopts = default.unwrap(addopts, current_config["addopts"])
+        self.defopts = default.unwrap(defopts, current_config["defopts"])
+        self.display_columns = default.unwrap(
+            display_columns, current_config["display_columns"]
+        )
+
+        self._context = None
+        self._module_path = None
+
+    def __enter__(self):
+        if self._context is not None:
+            raise RuntimeError(
+                "Session is not reentrant: cannot use a session in nested " "contexts."
+            )
+
+        self._context = _prepared_env(self.module, display_columns=self.display_columns)
+        self._module_path = self._context.__enter__()
+        return self
+
+    def __exit__(self, exc_type, exc, tb):
+        if self._context is None:
+            raise RuntimeError("Cannot close a closed session")
+
+        res = self._context.__exit__(exc_type, exc, tb)
+        self._context = None
+        self._module_path = None
+        return res
+
+    def main(
+        self,
+        args: Optional[Sequence[str]] = None,
+        plugins: Optional[Sequence[object]] = None,
+    ):
+        with _maybe_enter(self):
+            exit_code = self._run(
+                pytest.main,
+                self.build_args(args),
+                self.build_plugins(plugins),
+            )
+
+        self.handle_exit_code(exit_code)
+        return exit_code
+
+    def build_args(self, args: Optional[Sequence[str]] = None) -> Sequence[str]:
+        arg_mapping = ArgMapping(
+            # use basename to ensure --deselect works
+            # (see also: https://github.com/pytest-dev/pytest/issues/6751)
+            MODULE=self.module_path.name,
+        )
+
+        def _fmt(arg):
+            return arg.format_map(arg_mapping)
+
+        all_args = [_fmt(arg) for arg in self.addopts]
+
+        if args is not None:
+            all_args.extend(_fmt(arg) for arg in args)
+
+        if (self.defopts is True) or (
+            self.defopts == "auto" and eval_defopts_auto(all_args, arg_mapping)
+        ):
+            all_args.append(_fmt("{MODULE}"))
+
+        return all_args
+
+    def build_plugins(
+        self, plugins: Optional[Sequence[object]] = None
+    ) -> Sequence[object]:
+        return [
+            *(plugins if plugins is not None else ()),
+            FixProgramNamePlugin(),
+        ]
+
+    def handle_exit_code(self, exit_code):
+        import ipytest
+
+        ipytest.exit_code = exit_code
+
+        if self.raise_on_error is True and exit_code != 0:
+            raise Error(exit_code)
+
+    def _run(self, func, *args, **kwargs):
+        if not self.run_in_thread:
+            return func(*args, **kwargs)
+
+        res = None
+
+        def _thread():
+            nonlocal res
+            res = func(*args, **kwargs)
+
+        t = threading.Thread(target=_thread)
+        t.start()
+        t.join()
+
+        return res
+
+    @property
+    def is_active(self):
+        return self._context is not None
+
+    @property
+    def module_name(self):
+        return self.module_path.stem
+
+    @property
+    def module_path(self):
+        if self._module_path is None:
+            raise AttributeError("module_path")
+
+        return self._module_path
 
 
 class ArgMapping(dict):
@@ -241,6 +343,16 @@ class ArgMapping(dict):
             f"create the node id for a test with all uppercase characters use "
             f"'{{MODULE}}::{key}'."
         )
+
+
+@contextlib.contextmanager
+def _maybe_enter(ctx):
+    if ctx.is_active:
+        yield
+
+    else:
+        with ctx:
+            yield
 
 
 @contextlib.contextmanager
@@ -266,7 +378,7 @@ def _prepared_env(module, *, display_columns):
         with patch(module, "__file__", str(path)):
             with register_module(module, module_name):
                 with patched_columns(display_columns=display_columns):
-                    yield str(path)
+                    yield path
 
 
 class RewriteAssertTransformer(ast.NodeTransformer):
@@ -362,24 +474,6 @@ def patched_columns(*, display_columns):
 
     else:
         del os.environ["COLUMNS"]
-
-
-def run_func_direct(func, *args, **kwargs):
-    return func(*args, **kwargs)
-
-
-def run_func_in_thread(func, *args, **kwargs):
-    res = None
-
-    def _thread():
-        nonlocal res
-        res = func(*args, **kwargs)
-
-    t = threading.Thread(target=_thread)
-    t.start()
-    t.join()
-
-    return res
 
 
 def is_valid_module_name(name):

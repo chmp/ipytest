@@ -21,7 +21,7 @@ from ipytest._impl import (
 @pytest.mark.parametrize(
     "spec",
     [
-        # any key that maps to true is expected to be removed by clean_tests
+        # any key that maps to true is expected to be removed by clean
         {"test": True, "foo": False},
         {"test_clean": True, "foo": False},
         {"Test": True, "hello": False},
@@ -38,7 +38,7 @@ def test_clean(spec):
     module = types.ModuleType("module")
     vars(module).update(spec)
 
-    ipytest.clean_tests(module=module)
+    ipytest.clean(module=module)
 
     assert set(vars(module)) & set(spec) == expected
 

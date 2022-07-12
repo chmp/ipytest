@@ -21,7 +21,7 @@ def ipytest_entry_point(request, run_cell_magic, scoped_config):
             run_args = shlex.split(run_args)
             run_kwargs = eval("dict(" + run_kwargs + ")")
 
-            return ipytest.run(*run_args, module=module, **run_kwargs)
+            return ipytest.Session(module=module, **run_kwargs).main(run_args)
 
         return run_wrapper
 

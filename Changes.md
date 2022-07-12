@@ -7,12 +7,10 @@ Note: development is tracked on the [`develop` branch](https://github.com/chmp/i
       arguments, if no other node id that references the notebook is specified
     - Add shorthands to generate node ids for tests using `{test_example}` as an
       argument will expand to `{MODULE}::test_example`
-    - Allow to override `addopts`, `defopts`, `run_in_thread`, `raise_on_error`,
-      `display_columns` in `ipytest.run` (this change also applies to
-      `%%ipytest` with the due to the previous change)
-    - Allow to specify all keyword arguments of `ipytest.run` also in
-      `%%ipytest` by including an initial comment of the form `# ipytest:
-      arg1=value1, arg2=value`
+    - Add Session API to allow more control how pytest is executed
+    - Allow to customize the session in `%%ipytest` by including an initial
+      comment of the form `# ipytest: arg1=value1, arg2=value`
+    - Add main function with the same signature as `pytest.main`
     - `ipytest.clean()` now expects a module as its argument
     - Use markdown for module documentation
     - Updated documentation (updated doc strings for run, ipytest magic,
