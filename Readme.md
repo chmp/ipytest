@@ -357,6 +357,8 @@ output of previous runs. These packages include:
 
 - [nbval](https://github.com/computationalmodelling/nbval) is actively
   maintained. It is also used in the integration tests of `ipytest`.
+- [pytest_exploratory](https://github.com/nokia/pytest-exploratory) offers
+  magics to interactively use control a pytest session inside notebooks.
 - [pytest-ipynb](https://github.com/zonca/pytest-ipynb) seems to be no longer
   maintained as the latest commit was on March 2016. .
 - ...
