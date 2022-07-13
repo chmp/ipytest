@@ -186,7 +186,7 @@ current cell are executed. To disable this behavior, use
 [`ipytest.config(clean=False)`][ipytest.config].
 
 Any arguments passed on the magic line are interpreted as command line
-arguments to to pytest. For example calling the magic as
+arguments to pytest. For example calling the magic as
 
 ```python
 %%ipytest -qq
@@ -263,13 +263,39 @@ The return code of the last pytest invocation.
 
 [ipytest.main]: #ipytestmainargs-optionalsequencestr--none-plugins-optionalsequenceobject--none---unionint-_pytestconfigexitcode
 
+A wrapper around `pytest.main` that registers the current notebook.
+
+**Parameters:**
+
+- `args`: additional command line options passed to pytest
+- `plugins`: additional plugins passed to pytest.
+
+**Returns**: the exit code of `pytest.main`.
 
 <!-- minidoc -->
 <!-- minidoc "function": "ipytest.clean", "header_depth": 3 -->
-### `ipytest.clean(*, pattern=<default>, module=None)`
+### `ipytest.clean(*, pattern: str = <default>, module: Optional[module] = None)`
 
-[ipytest.clean]: #ipytestclean-patterndefault-modulenone
+[ipytest.clean]: #ipytestclean-pattern-str--default-module-optionalmodule--none
 
+Delete tests defined in the notebook scope.
+
+In IPython the results of all evaluations are kept in global variables
+unless explicitly deleted. This behavior implies that when tests are renamed
+the previous definitions will still be found if not deleted. This method
+aims to simply this process.
+
+An effective pattern is to start with the cell containing tests with a call
+to [`ipytest.clean()`][ipytest.clean], then define all test cases, and
+finally call [`ipytest.run()`][ipytest.run]. This way renaming tests works
+as expected.
+
+**Parameters:**
+
+- `pattern`: a glob pattern used to match the tests to delete. If not given,
+  the `"clean"` config option is used.
+- `module`: the module to delete the tests from. If `None` is given, the
+  current notebook context (`__main__`) is used.
 
 <!-- minidoc -->
 <!-- minidoc "function": "ipytest.reload", "header_depth": 3 -->
@@ -307,7 +333,7 @@ The following parameters override the config options set with
 - `display_columns`: if given, override the config option "display_columns".
 
 Inside an active session the file `self.module_path` can be used inside
-pytest to to the current notebook. For example, pytest can be manually
+pytest to refer to the current notebook. For example, pytest can be manually
 executed via:
 
 ```python
@@ -325,15 +351,15 @@ Error raised by ipytest on test failure
 
 <!-- minidoc -->
 <!-- minidoc "function": "ipytest.run", "header_depth": 3 -->
-### `ipytest.run(*args, module=None, plugins=())`
+### `ipytest.run(*args, module: Optional[module] = None, plugins: Sequence[object] = ()) -> Union[int, _pytest.config.ExitCode]`
 
-[ipytest.run]: #ipytestrunargs-modulenone-plugins
+[ipytest.run]: #ipytestrunargs-module-optionalmodule--none-plugins-sequenceobject-----unionint-_pytestconfigexitcode
 
 Execute all tests in the passed module (defaults to `__main__`) with pytest.
 
 **Parameters:**
 
-- `args`: additional commandline options passed to pytest
+- `args`: additional command line options passed to pytest
 - `module`: the module containing the tests. If not given, `__main__` will
   be used.
 - `plugins`: additional plugins passed to pytest.
@@ -342,9 +368,9 @@ Execute all tests in the passed module (defaults to `__main__`) with pytest.
 
 <!-- minidoc -->
 <!-- minidoc "function": "ipytest.clean_tests", "header_depth": 3 -->
-### `ipytest.clean_tests(pattern=<default>, *, items=None)`
+### `ipytest.clean_tests(pattern: str = <default>, *, items: Dict[str, Any] = None)`
 
-[ipytest.clean_tests]: #ipytestclean_testspatterndefault--itemsnone
+[ipytest.clean_tests]: #ipytestclean_testspattern-str--default--items-dictstr-any--none
 
 Delete tests with names matching the given pattern.
 
@@ -354,7 +380,7 @@ the previous definitions will still be found if not deleted. This method
 aims to simply this process.
 
 An effective pattern is to start with the cell containing tests with a call
-to [`ipytest.clean_tests()`][ipytest.clean_tests], then defined all test
+to [`ipytest.clean_tests()`][ipytest.clean_tests], then define all test
 cases, and finally call [`ipytest.run()`][ipytest.run]. This way renaming
 tests works as expected.
 
@@ -363,7 +389,7 @@ tests works as expected.
 - `pattern`: a glob pattern used to match the tests to delete. If not given,
   the `"clean"` config option is used.
 - `items`: the globals object containing the tests. If `None` is given, the
-    globals object is determined from the call stack.
+  globals of the current notebook context `__main__` is used.
 
 <!-- minidoc -->
 

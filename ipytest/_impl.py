@@ -10,6 +10,7 @@ import shlex
 import sys
 import tempfile
 import threading
+from types import ModuleType
 
 from typing import Any, Dict, Mapping, Optional, Sequence, Union
 
@@ -20,15 +21,15 @@ from ._config import current_config, default
 
 
 def run(
-    *args,
-    module=None,
-    plugins=(),
-):
+    *args: str,
+    module: Optional[ModuleType] = None,
+    plugins: Sequence[object] = (),
+) -> Union[int, pytest.ExitCode]:
     """Execute all tests in the passed module (defaults to `__main__`) with pytest.
 
     **Parameters:**
 
-    - `args`: additional commandline options passed to pytest
+    - `args`: additional command line options passed to pytest
     - `module`: the module containing the tests. If not given, `__main__` will
       be used.
     - `plugins`: additional plugins passed to pytest.
@@ -42,6 +43,15 @@ def main(
     args: Optional[Sequence[str]] = None,
     plugins: Optional[Sequence[object]] = None,
 ) -> Union[int, pytest.ExitCode]:
+    """A wrapper around `pytest.main` that registers the current notebook.
+
+    **Parameters:**
+
+    - `args`: additional command line options passed to pytest
+    - `plugins`: additional plugins passed to pytest.
+
+    **Returns**: the exit code of `pytest.main`.
+    """
     return Session().main(args, plugins)
 
 
@@ -55,7 +65,7 @@ class Error(RuntimeError):
         return f"ipytest failed with exit_code {self.args[0]}"
 
 
-def pytest_magic(line, cell, module=None):
+def pytest_magic(line: str, cell: str, module: Optional[ModuleType] = None):
     """IPython magic to first execute the cell, then execute [`ipytest.run()`][ipytest.run].
 
     **Note:** the magics are only available after running
@@ -67,7 +77,7 @@ def pytest_magic(line, cell, module=None):
     [`ipytest.config(clean=False)`][ipytest.config].
 
     Any arguments passed on the magic line are interpreted as command line
-    arguments to to pytest. For example calling the magic as
+    arguments to pytest. For example calling the magic as
 
     ```python
     %%ipytest -qq
@@ -121,11 +131,30 @@ def _ipython_run_cell(cell):
             raise e
 
 
-def clean(*, pattern=default, module=None):
+def clean(*, pattern: str = default, module: Optional[ModuleType] = None):
+    """Delete tests defined in the notebook scope.
+
+    In IPython the results of all evaluations are kept in global variables
+    unless explicitly deleted. This behavior implies that when tests are renamed
+    the previous definitions will still be found if not deleted. This method
+    aims to simply this process.
+
+    An effective pattern is to start with the cell containing tests with a call
+    to [`ipytest.clean()`][ipytest.clean], then define all test cases, and
+    finally call [`ipytest.run()`][ipytest.run]. This way renaming tests works
+    as expected.
+
+    **Parameters:**
+
+    - `pattern`: a glob pattern used to match the tests to delete. If not given,
+      the `"clean"` config option is used.
+    - `module`: the module to delete the tests from. If `None` is given, the
+      current notebook context (`__main__`) is used.
+    """
     clean_tests(pattern=pattern, items=vars(module) if module is not None else None)
 
 
-def clean_tests(pattern=default, *, items=None):
+def clean_tests(pattern: str = default, *, items: Dict[str, Any] = None):
     """Delete tests with names matching the given pattern.
 
     In IPython the results of all evaluations are kept in global variables
@@ -134,7 +163,7 @@ def clean_tests(pattern=default, *, items=None):
     aims to simply this process.
 
     An effective pattern is to start with the cell containing tests with a call
-    to [`ipytest.clean_tests()`][ipytest.clean_tests], then defined all test
+    to [`ipytest.clean_tests()`][ipytest.clean_tests], then define all test
     cases, and finally call [`ipytest.run()`][ipytest.run]. This way renaming
     tests works as expected.
 
@@ -143,7 +172,7 @@ def clean_tests(pattern=default, *, items=None):
     - `pattern`: a glob pattern used to match the tests to delete. If not given,
       the `"clean"` config option is used.
     - `items`: the globals object containing the tests. If `None` is given, the
-        globals object is determined from the call stack.
+      globals of the current notebook context `__main__` is used.
     """
     pattern = default.unwrap(pattern, current_config["clean"])
 
@@ -161,7 +190,7 @@ def clean_tests(pattern=default, *, items=None):
         del items[key]
 
 
-def reload(*mods):
+def reload(*mods: str):
     """Reload all modules passed as strings.
 
     This function may be useful, when mixing code in external modules and
@@ -191,7 +220,7 @@ class Session:
     - `display_columns`: if given, override the config option "display_columns".
 
     Inside an active session the file `self.module_path` can be used inside
-    pytest to to the current notebook. For example, pytest can be manually
+    pytest to refer to the current notebook. For example, pytest can be manually
     executed via:
 
     ```python
