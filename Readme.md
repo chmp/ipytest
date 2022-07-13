@@ -140,10 +140,13 @@ following steps:
 | [`%%ipytest`][ipytest.ipytest]
 | [`config`][ipytest.config]
 | [`exit_code`][ipytest.exit_code]
+| [`main`][ipytest.main]
+| [`clean`][ipytest.clean]
+| [`reload`][ipytest.reload]
+| [`Session`][ipytest.Session]
+| [`Error`][ipytest.Error]
 | [`run`][ipytest.run]
 | [`clean_tests`][ipytest.clean_tests]
-| [`reload`][ipytest.reload]
-| [`Error`][ipytest.Error]
 
 <!-- minidoc "function": "ipytest.autoconfig", "header_depth": 3 -->
 ### `ipytest.autoconfig(rewrite_asserts=<default>, magics=<default>, clean=<default>, addopts=<default>, run_in_thread=<default>, defopts=<default>, display_columns=<default>, raise_on_error=<default>)`
@@ -255,6 +258,72 @@ The following settings are supported:
 
 The return code of the last pytest invocation.
 
+<!-- minidoc "function": "ipytest.main", "header_depth": 3 -->
+### `ipytest.main(args: Optional[Sequence[str]] = None, plugins: Optional[Sequence[object]] = None) -> Union[int, _pytest.config.ExitCode]`
+
+[ipytest.main]: #ipytestmainargs-optionalsequencestr--none-plugins-optionalsequenceobject--none---unionint-_pytestconfigexitcode
+
+
+<!-- minidoc -->
+<!-- minidoc "function": "ipytest.clean", "header_depth": 3 -->
+### `ipytest.clean(*, pattern=<default>, module=None)`
+
+[ipytest.clean]: #ipytestclean-patterndefault-modulenone
+
+
+<!-- minidoc -->
+<!-- minidoc "function": "ipytest.reload", "header_depth": 3 -->
+### `ipytest.reload(*mods)`
+
+[ipytest.reload]: #ipytestreloadmods
+
+Reload all modules passed as strings.
+
+This function may be useful, when mixing code in external modules and
+notebooks.
+
+Usage:
+
+```python
+ipytest.reload("ipytest._util", "ipytest")
+```
+
+<!-- minidoc -->
+<!-- minidoc "class": "ipytest.Session", "header_depth": 3 -->
+### `ipytest.Session(module=None, *, run_in_thread=<default>, raise_on_error=<default>, addopts=<default>, defopts=<default>, display_columns=<default>)`
+
+[ipytest.Session]: #ipytestsessionmodulenone--run_in_threaddefault-raise_on_errordefault-addoptsdefault-defoptsdefault-display_columnsdefault
+
+A Session to run pytest with access to a temporary module
+
+The following parameters override the config options set with
+[`ipytest.config()`][ipytest.config] or
+[`ipytest.autoconfig()`][ipytest.autoconfig]:
+
+- `run_in_thread`: if given, override the config option "run_in_thread".
+- `raise_on_error`: if given, override the config option "raise_on_error".
+- `addopts`: if given, override the config option "addopts".
+- `defopts`: if given, override the config option "defopts".
+- `display_columns`: if given, override the config option "display_columns".
+
+Inside an active session the file `self.module_path` can be used inside
+pytest to to the current notebook. For example, pytest can be manually
+executed via:
+
+```python
+with ipytest.Session() as sess:
+    pytest.main([str(sess.module_path)])
+```
+
+<!-- minidoc -->
+<!-- minidoc "class": "ipytest.Error", "header_depth": 3 -->
+### `ipytest.Error(exit_code)`
+
+[ipytest.Error]: #ipytesterrorexit_code
+
+Error raised by ipytest on test failure
+
+<!-- minidoc -->
 <!-- minidoc "function": "ipytest.run", "header_depth": 3 -->
 ### `ipytest.run(*args, module=None, plugins=())`
 
@@ -295,31 +364,6 @@ tests works as expected.
   the `"clean"` config option is used.
 - `items`: the globals object containing the tests. If `None` is given, the
     globals object is determined from the call stack.
-
-<!-- minidoc -->
-<!-- minidoc "function": "ipytest.reload", "header_depth": 3 -->
-### `ipytest.reload(*mods)`
-
-[ipytest.reload]: #ipytestreloadmods
-
-Reload all modules passed as strings.
-
-This function may be useful, when mixing code in external modules and
-notebooks.
-
-Usage:
-
-```python
-ipytest.reload("ipytest._util", "ipytest")
-```
-
-<!-- minidoc -->
-<!-- minidoc "class": "ipytest.Error", "header_depth": 3 -->
-### `ipytest.Error(exit_code)`
-
-[ipytest.Error]: #ipytesterrorexit_code
-
-Error raised by ipytest on test failure
 
 <!-- minidoc -->
 
