@@ -12,6 +12,5 @@ __all__ = [
     "clean",
     "clean_tests",
     "reload",
-    "running_as_test",
     "Error",
 ]

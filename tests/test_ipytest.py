@@ -187,3 +187,8 @@ def test_arg_mapping__reserved_key():
 
     with pytest.raises(KeyError):
         arg_mapping["DUMMY"]
+
+
+@pytest.mark.parametrize("name", ipytest.__all__)
+def test_all_objects_in_all_can_be_imported(name):
+    assert hasattr(ipytest, name)
