@@ -129,7 +129,7 @@ def pytest_magic(line, cell, module=None):
     run_args = shlex.split(line)
     run_kwargs = eval_run_kwargs(cell, module=module)
 
-    clean_tests(module=run_kwargs.get("module"))
+    clean(module=run_kwargs.get("module"))
 
     try:
         get_ipython().run_cell(cell)
@@ -139,7 +139,7 @@ def pytest_magic(line, cell, module=None):
             raise RuntimeError(
                 "The ipytest magic cannot evaluate the cell. Most likely you "
                 "are running a modified ipython version. Consider using "
-                "`ipytest.run` and `ipytest.clean_tests` directly."
+                "`ipytest.run` and `ipytest.clean` directly."
             ) from e
 
         else:
@@ -153,7 +153,7 @@ def pytest_magic(line, cell, module=None):
 pytest_magic._ipython_magic_no_var_expand = True
 
 
-def clean_tests(pattern=default, *, module=None):
+def clean(pattern=default, *, module=None):
     """Delete tests with names matching the given pattern.
 
     In IPython the results of all evaluations are kept in global variables
@@ -162,9 +162,9 @@ def clean_tests(pattern=default, *, module=None):
     aims to simply this process.
 
     An effective pattern is to start with the cell containing tests with a call
-    to [`ipytest.clean_tests()`][ipytest.clean_tests], then defined all test
-    cases, and finally call [`ipytest.run()`][ipytest.run]. This way renaming
-    tests works as expected.
+    to [`ipytest.clean()`][ipytest.clean], then defined all test cases, and
+    finally call [`ipytest.run()`][ipytest.run]. This way renaming tests works
+    as expected.
 
     **Parameters:**
 
@@ -186,6 +186,14 @@ def clean_tests(pattern=default, *, module=None):
 
     for key in to_delete:
         del items[key]
+
+
+def clean_tests(pattern=default, *, module=None):
+    print(
+        "ipytest.clean_tests is deprecated in favor of ipytest.clean",
+        file=sys.stderr,
+    )
+    clean(pattern, module=module)
 
 
 def reload(*mods):

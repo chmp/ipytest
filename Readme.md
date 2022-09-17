@@ -47,8 +47,7 @@ usage](#extended-usage).
 **NOTE:** Some notebook implementations modify the core IPython package and
 magics may not work correctly (see [here][issue-47] or [here][issue-50]). In
 this case, using [`ipytest.run()`][ipytest.run] and
-[`ipytest.clean_tests()`][ipytest.clean_tests] directly should still work as
-expected.
+[`ipytest.clean()`][ipytest.clean] directly should still work as expected.
 
 [issue-47]: https://github.com/chmp/ipytest/issues/47
 [issue-50]: https://github.com/chmp/ipytest/issues/50
@@ -61,7 +60,7 @@ There are multiple sources of global state when using pytest inside the notebook
    unexpected results when test functions are renamed, as their previous
    definition is still available inside the kernel. Running
    [`%%ipytest`][ipytest.ipytest] per default deletes any previously defined
-   tests. As an alternative the [`ipytest.clean_tests()`][ipytest.clean_tests]
+   tests. As an alternative the [`ipytest.clean()`][ipytest.clean]
    function allows to delete previously defined tests.
 2. Python's module system caches imports and therefore acts as a global state.
    To test the most recent version of any module, the module needs to be
@@ -141,7 +140,7 @@ following steps:
 | [`config`][ipytest.config]
 | [`exit_code`][ipytest.exit_code]
 | [`run`][ipytest.run]
-| [`clean_tests`][ipytest.clean_tests]
+| [`clean`][ipytest.clean]
 | [`reload`][ipytest.reload]
 | [`Error`][ipytest.Error]
 
@@ -282,10 +281,10 @@ The following parameters override the config options set with
 **Returns**: the exit code of `pytest.main`.
 
 <!-- minidoc -->
-<!-- minidoc "function": "ipytest.clean_tests", "header_depth": 3 -->
-### `ipytest.clean_tests(pattern=<default>, *, module=None)`
+<!-- minidoc "function": "ipytest.clean", "header_depth": 3 -->
+### `ipytest.clean(pattern=<default>, *, module=None)`
 
-[ipytest.clean_tests]: #ipytestclean_testspatterndefault--modulenone
+[ipytest.clean]: #ipytestcleanpatterndefault--modulenone
 
 Delete tests with names matching the given pattern.
 
@@ -295,9 +294,9 @@ the previous definitions will still be found if not deleted. This method
 aims to simply this process.
 
 An effective pattern is to start with the cell containing tests with a call
-to [`ipytest.clean_tests()`][ipytest.clean_tests], then defined all test
-cases, and finally call [`ipytest.run()`][ipytest.run]. This way renaming
-tests works as expected.
+to [`ipytest.clean()`][ipytest.clean], then defined all test cases, and
+finally call [`ipytest.run()`][ipytest.run]. This way renaming tests works
+as expected.
 
 **Parameters:**
 

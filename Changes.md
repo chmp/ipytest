@@ -3,6 +3,7 @@
 Note: development is tracked on the [`develop` branch](https://github.com/chmp/ipytest/tree/develop).
 
 - `develop`:
+    - Rename `clean_tests` to `clean` and deprecate `clean_tests`.
     - Add `defopts="auto"`, which only adds the current notebook to the PyTest
       arguments, if no other node id that references the notebook is specified
     - Add shorthands to generate node ids for tests using `{test_example}` as an
