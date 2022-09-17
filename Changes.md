@@ -8,8 +8,7 @@ Note: development is tracked on the [`develop` branch](https://github.com/chmp/i
     - Add shorthands to generate node ids for tests using `{test_example}` as an
       argument will expand to `{MODULE}::test_example`
     - Allow to override `addopts`, `defopts`, `run_in_thread`, `raise_on_error`,
-      `display_columns` in `ipytest.run` (this change also applies to
-      `%%ipytest` with the due to the previous change)
+      `display_columns` in `ipytest.run`
     - Allow to specify all keyword arguments of `ipytest.run` also in
       `%%ipytest` by including an initial comment of the form `# ipytest:
       arg1=value1, arg2=value`
