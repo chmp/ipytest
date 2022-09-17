@@ -8,8 +8,8 @@ import os
 import pathlib
 import shlex
 import sys
-import tempfile
 import threading
+import uuid
 
 from typing import Any, Dict, Mapping, Optional, Sequence
 
@@ -17,6 +17,8 @@ import packaging.version
 import pytest
 
 from ._config import current_config, default
+
+RANDOM_MODULE_PATH_RETRIES = 10
 
 
 def run(
@@ -253,8 +255,7 @@ class ArgMapping(dict):
 
 @contextlib.contextmanager
 def _prepared_env(module, *, display_columns):
-    with tempfile.NamedTemporaryFile(dir=".", suffix=".py") as f:
-        path = pathlib.Path(f.name)
+    with random_module_path() as path:
         module_name = path.stem
 
         if not is_valid_module_name(module_name):
@@ -338,6 +339,35 @@ def patch(obj, attr, val):
 
         else:
             setattr(obj, attr, prev_val)
+
+
+@contextlib.contextmanager
+def random_module_path():
+    filename = getattr(random_module_path, "_filename", None)
+
+    if filename is None:
+        for _ in range(RANDOM_MODULE_PATH_RETRIES):
+            filename = f"t_{uuid.uuid4().hex}.py"
+
+            if pathlib.Path(filename).exists():
+                continue
+
+            setattr(random_module_path, "_filename", filename)
+            break
+
+        else:
+            raise RuntimeError("Internal error: Could not generate a module filename")
+
+    path = pathlib.Path(filename)
+    if path.exists():
+        raise RuntimeError(f"Module filename {filename} does already exist")
+    path.write_text("")
+
+    try:
+        yield path
+
+    finally:
+        path.unlink()
 
 
 @contextlib.contextmanager
