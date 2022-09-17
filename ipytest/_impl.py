@@ -8,8 +8,8 @@ import os
 import pathlib
 import shlex
 import sys
-import tempfile
 import threading
+import uuid
 
 from typing import Any, Dict, Mapping, Optional, Sequence
 
@@ -17,6 +17,8 @@ import packaging.version
 import pytest
 
 from ._config import current_config, default
+
+RANDOM_MODULE_PATH_RETRIES = 10
 
 
 def run(
@@ -129,7 +131,7 @@ def pytest_magic(line, cell, module=None):
     run_args = shlex.split(line)
     run_kwargs = eval_run_kwargs(cell, module=module)
 
-    clean_tests(module=run_kwargs.get("module"))
+    clean(module=run_kwargs.get("module"))
 
     try:
         get_ipython().run_cell(cell)
@@ -139,7 +141,7 @@ def pytest_magic(line, cell, module=None):
             raise RuntimeError(
                 "The ipytest magic cannot evaluate the cell. Most likely you "
                 "are running a modified ipython version. Consider using "
-                "`ipytest.run` and `ipytest.clean_tests` directly."
+                "`ipytest.run` and `ipytest.clean` directly."
             ) from e
 
         else:
@@ -153,7 +155,7 @@ def pytest_magic(line, cell, module=None):
 pytest_magic._ipython_magic_no_var_expand = True
 
 
-def clean_tests(pattern=default, *, module=None):
+def clean(pattern=default, *, module=None):
     """Delete tests with names matching the given pattern.
 
     In IPython the results of all evaluations are kept in global variables
@@ -162,9 +164,9 @@ def clean_tests(pattern=default, *, module=None):
     aims to simply this process.
 
     An effective pattern is to start with the cell containing tests with a call
-    to [`ipytest.clean_tests()`][ipytest.clean_tests], then defined all test
-    cases, and finally call [`ipytest.run()`][ipytest.run]. This way renaming
-    tests works as expected.
+    to [`ipytest.clean()`][ipytest.clean], then defined all test cases, and
+    finally call [`ipytest.run()`][ipytest.run]. This way renaming tests works
+    as expected.
 
     **Parameters:**
 
@@ -186,6 +188,14 @@ def clean_tests(pattern=default, *, module=None):
 
     for key in to_delete:
         del items[key]
+
+
+def clean_tests(pattern=default, *, module=None):
+    print(
+        "ipytest.clean_tests is deprecated in favor of ipytest.clean",
+        file=sys.stderr,
+    )
+    clean(pattern, module=module)
 
 
 def reload(*mods):
@@ -245,8 +255,7 @@ class ArgMapping(dict):
 
 @contextlib.contextmanager
 def _prepared_env(module, *, display_columns):
-    with tempfile.NamedTemporaryFile(dir=".", suffix=".py") as f:
-        path = pathlib.Path(f.name)
+    with random_module_path() as path:
         module_name = path.stem
 
         if not is_valid_module_name(module_name):
@@ -330,6 +339,35 @@ def patch(obj, attr, val):
 
         else:
             setattr(obj, attr, prev_val)
+
+
+@contextlib.contextmanager
+def random_module_path():
+    filename = getattr(random_module_path, "_filename", None)
+
+    if filename is None:
+        for _ in range(RANDOM_MODULE_PATH_RETRIES):
+            filename = f"t_{uuid.uuid4().hex}.py"
+
+            if pathlib.Path(filename).exists():
+                continue
+
+            setattr(random_module_path, "_filename", filename)
+            break
+
+        else:
+            raise RuntimeError("Internal error: Could not generate a module filename")
+
+    path = pathlib.Path(filename)
+    if path.exists():
+        raise RuntimeError(f"Module filename {filename} does already exist")
+    path.write_text("")
+
+    try:
+        yield path
+
+    finally:
+        path.unlink()
 
 
 @contextlib.contextmanager
