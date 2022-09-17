@@ -361,18 +361,17 @@ python make.py release
 ## Related packages
 
 `ipytest` is designed to enable running tests within an interactive notebook
-session. There are also other packages that aim to use notebooks as tests
-themselves, for example by comparing the output of running all cells to the
-output of previous runs. These packages include:
+session. There are also other packages that aim to use test full notebooks:
+these packages run the notebook and compare the output of cells to the output of
+previous runs. These packages include:
 
-- [nbval](https://github.com/computationalmodelling/nbval) is actively
-  maintained. It is also used in the integration tests of `ipytest`.
-- [pytest-ipynb](https://github.com/zonca/pytest-ipynb) seems to be no longer
-  maintained as the latest commit was on March 2016. .
+- [nbval](https://github.com/computationalmodelling/nbval)
+- [nbmake](https://github.com/treebeardtech/nbmake)
+- [pytest-ipynb](https://github.com/zonca/pytest-ipynb) is no longer
+  maintained
 - ...
 
 Please create an issue, if I missed a packaged or mischaracterized any package.
-
 
 ## License
 
