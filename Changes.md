@@ -3,6 +3,8 @@
 Note: development is tracked on the [`develop` branch](https://github.com/chmp/ipytest/tree/develop).
 
 - `develop`:
+    - Fix the random module name during each notebook session to allow `--ff`
+      and similar options to work correctly.
     - Rename `clean_tests` to `clean` and deprecate `clean_tests`.
     - Add `defopts="auto"`, which only adds the current notebook to the PyTest
       arguments, if no other node id that references the notebook is specified
