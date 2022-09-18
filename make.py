@@ -10,7 +10,7 @@ import minidoc
 self_path = pathlib.Path(__file__).parent.resolve()
 
 _md = lambda effect: lambda f: [f, effect(f)][0]
-_ps = lambda o: vars(o).setdefault("__chmp__", {})
+_ps = lambda o: vars(o).setdefault("__make__", {})
 _as = lambda o: _ps(o).setdefault("__args__", [])
 cmd = lambda **kw: _md(lambda f: _ps(f).update(kw))
 arg = lambda *a, **k: _md(lambda f: _as(f).insert(0, (a, k)))
@@ -26,8 +26,7 @@ def precommit():
 
 @cmd()
 def release():
-    run(sys.executable, "setup.py", "bdist_wheel")
-    run(sys.executable, "setup.py", "sdist", "--formats=gztar")
+    python("build", "-s", "-w", ".")
 
     self_path = pathlib.Path(__file__).parent.resolve()
     dist_path = self_path / "dist"
@@ -54,7 +53,6 @@ def format():
         "ipytest",
         "tests",
         "Example.ipynb",
-        "setup.py",
         "make.py",
         "minidoc.py",
     )
@@ -78,28 +76,18 @@ def integration():
 
 @cmd()
 def compile_requirements():
-    res = python(
+    python(
         "piptools",
         "compile",
         "--upgrade",
         "--no-annotate",
         "--no-header",
+        "--generate-hashes",
+        "--output-file",
+        "requirements-dev.txt",
         "requirements-dev.in",
-        capture_output=True,
+        "pyproject.toml",
     )
-    reqs = res.stderr.decode("utf8")
-    reqs = replace_absolute_requirements(reqs)
-    pathlib.Path("requirements-dev.txt").write_text(reqs)
-
-
-def replace_absolute_requirements(requirements):
-    requirements = requirements.splitlines()
-
-    for i in range(len(requirements)):
-        if requirements[i].startswith("-e"):
-            requirements[i] = "-e ."
-
-    return "\n".join(requirements)
 
 
 def parse_file_version(p):
@@ -123,26 +111,23 @@ def main():
     subparsers = parser.add_subparsers()
 
     for func in globals().values():
-        if not hasattr(func, "__chmp__"):
-            continue
+        if (desc := getattr(func, "__make__", None)) is not None:
+            desc = dict(func.__make__)
+            name = desc.pop("name", func.__name__.replace("_", "-"))
+            args = desc.pop("__args__", [])
 
-        desc = dict(func.__chmp__)
-        name = desc.pop("name", func.__name__.replace("_", "-"))
-        args = desc.pop("__args__", [])
+            subparser = subparsers.add_parser(name, **desc)
+            subparser.set_defaults(__main__=func)
 
-        subparser = subparsers.add_parser(name, **desc)
-        subparser.set_defaults(__main__=func)
-
-        for arg_args, arg_kwargs in args:
-            subparser.add_argument(*arg_args, **arg_kwargs)
+            for arg_args, arg_kwargs in args:
+                subparser.add_argument(*arg_args, **arg_kwargs)
 
     args = vars(parser.parse_args())
+    if (func := args.pop("__main__", None)) is not None:
+        return func(**args)
 
-    if "__main__" not in args:
+    else:
         return parser.print_help()
-
-    func = args.pop("__main__")
-    return func(**args)
 
 
 if __name__ == "__main__":
