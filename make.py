@@ -111,26 +111,23 @@ def main():
     subparsers = parser.add_subparsers()
 
     for func in globals().values():
-        if not hasattr(func, "__make__"):
-            continue
+        if (desc := getattr(func, "__make__", None)) is not None:
+            desc = dict(func.__make__)
+            name = desc.pop("name", func.__name__.replace("_", "-"))
+            args = desc.pop("__args__", [])
 
-        desc = dict(func.__make__)
-        name = desc.pop("name", func.__name__.replace("_", "-"))
-        args = desc.pop("__args__", [])
+            subparser = subparsers.add_parser(name, **desc)
+            subparser.set_defaults(__main__=func)
 
-        subparser = subparsers.add_parser(name, **desc)
-        subparser.set_defaults(__main__=func)
-
-        for arg_args, arg_kwargs in args:
-            subparser.add_argument(*arg_args, **arg_kwargs)
+            for arg_args, arg_kwargs in args:
+                subparser.add_argument(*arg_args, **arg_kwargs)
 
     args = vars(parser.parse_args())
+    if (func := args.pop("__main__", None)) is not None:
+        return func(**args)
 
-    if "__main__" not in args:
+    else:
         return parser.print_help()
-
-    func = args.pop("__main__")
-    return func(**args)
 
 
 if __name__ == "__main__":
