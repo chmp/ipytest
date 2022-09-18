@@ -3,6 +3,7 @@
 Note: development is tracked on the [`develop` branch](https://github.com/chmp/ipytest/tree/develop).
 
 - `develop`:
+    - Migrated to `pyproject.toml`
     - Fix the random module name during each notebook session to allow `--ff`
       and similar options to work correctly.
     - Rename `clean_tests` to `clean` and deprecate `clean_tests`.
