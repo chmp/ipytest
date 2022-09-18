@@ -1,10 +1,6 @@
-pip-tools
-black[jupyter] 
-wheel
-twine
-chmp
-docutils
+black[jupyter]
+build
 nbval
+pip-tools
 pytest-asyncio
-
--e .
+twine
