@@ -226,6 +226,7 @@ def force_reload(*include: str, modules: Optional[Dict[str, ModuleType]] = None)
 
     ```python
     ipytest.force_reload("my_package")
+    from my_package.submodule import my_function
     ```
     """
     if modules is None:
