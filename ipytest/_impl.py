@@ -10,6 +10,7 @@ import threading
 import uuid
 
 from typing import Any, Dict, Mapping, Optional, Sequence
+from types import ModuleType
 
 import packaging.version
 import pytest
@@ -212,11 +213,14 @@ def reload(*mods):
         importlib.reload(importlib.import_module(mod))
 
 
-def force_reload(*include, modules=None):
+def force_reload(*include: str, modules: Optional[Dict[str, ModuleType]] = None):
     """Ensure following imports of the listed modules reload the code from disk
 
-    The given modules or any of their submodules are removed from the
-    `sys.modules`. When imported, they are loaded from disk.
+    The given modules and their submodules are removed from `sys.modules`.
+    Next time the modules are imported, they are loaded from disk.
+
+    If given, the parameter `modules` should be a dictionary of modules to use
+    instead of `sys.modules`.
 
     Usage:
 
