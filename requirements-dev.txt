@@ -233,9 +233,6 @@ idna==3.4 \
 importlib-metadata==5.0.0 \
     --hash=sha256:da31db32b304314d044d3c12c79bd59e307889b287ad12ff387b3500835fc2ab \
     --hash=sha256:ddb0e35065e8938f867ed4928d0ae5bf2a53b7773871bfe6bcc7e4fcdc7dea43
-importlib-resources==5.10.0 \
-    --hash=sha256:c01b1b94210d9849f286b86bb51bcea7cd56dde0600d8db721d7b81330711668 \
-    --hash=sha256:ee17ec648f85480d523596ce49eae8ead87d5631ae1551f913c0100b5edd3437
 iniconfig==1.1.1 \
     --hash=sha256:011e24c64b7f47f6ebd835bb12a743f2fbe9a26d4cecaa7f53bc4f35ee9da8b3 \
     --hash=sha256:bc3af051d7d14b2ee5ef9969666def0cd1a000e121eaea580d4a313df4b37f32
@@ -263,9 +260,9 @@ jupyter-client==7.4.4 \
 jupyter-core==4.11.2 \
     --hash=sha256:3815e80ec5272c0c19aad087a0d2775df2852cfca8f5a17069e99c9350cecff8 \
     --hash=sha256:c2909b9bc7dca75560a6c5ae78c34fd305ede31cd864da3c0d0bb2ed89aa9337
-keyring==23.10.0 \
-    --hash=sha256:373e29a1bda7f42247c0db0fa13026c770fa8ff995a7475769357e48743761df \
-    --hash=sha256:6f457494bb207053c97443656e92ebcc4e2957c5c529028d9eaf4daf40a94483
+keyring==23.11.0 \
+    --hash=sha256:3dd30011d555f1345dec2c262f0153f2f0ca6bca041fb1dc4588349bb4c0ac1e \
+    --hash=sha256:ad192263e2cdd5f12875dedc2da13534359a7e760e77f8d04b50968a821c2361
 matplotlib-inline==0.1.6 \
     --hash=sha256:f1f41aab5328aa5aaea9b16d083b128102f8712542f819fe7e6a420ff581b311 \
     --hash=sha256:f887e5f10ba98e8d2b150ddcf4702c1e5f8b3a20005eb0f74bfdbd360ee6f304
@@ -308,9 +305,6 @@ pip-tools==6.9.0 \
 pkginfo==1.8.3 \
     --hash=sha256:848865108ec99d4901b2f7e84058b6e7660aae8ae10164e015a6dcf5b242a594 \
     --hash=sha256:a84da4318dd86f870a9447a8c98340aa06216bfc6f2b7bdc4b8766984ae1867c
-pkgutil-resolve-name==1.3.10 \
-    --hash=sha256:357d6c9e6a755653cfd78893817c0853af365dd51ec97f3d358a819373bbd174 \
-    --hash=sha256:ca27cc078d25c5ad71a9de0a7a330146c4e014c2462d9af19c6b828280649c5e
 platformdirs==2.5.2 \
     --hash=sha256:027d8e83a2d7de06bbac4e5ef7e023c02b863d7ea5d079477e722bb41ab25788 \
     --hash=sha256:58c8abb07dcb441e6ee4b11d8df0ac856038f944ab98b7be6b27b2a3c7feef19
