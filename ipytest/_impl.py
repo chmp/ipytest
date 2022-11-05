@@ -10,6 +10,7 @@ import threading
 import uuid
 
 from typing import Any, Dict, Mapping, Optional, Sequence
+from types import ModuleType
 
 import packaging.version
 import pytest
@@ -210,6 +211,37 @@ def reload(*mods):
     """
     for mod in mods:
         importlib.reload(importlib.import_module(mod))
+
+
+def force_reload(*include: str, modules: Optional[Dict[str, ModuleType]] = None):
+    """Ensure following imports of the listed modules reload the code from disk
+
+    The given modules and their submodules are removed from `sys.modules`.
+    Next time the modules are imported, they are loaded from disk.
+
+    If given, the parameter `modules` should be a dictionary of modules to use
+    instead of `sys.modules`.
+
+    Usage:
+
+    ```python
+    ipytest.force_reload("my_package")
+    ```
+    """
+    if modules is None:
+        modules = sys.modules
+
+    include_exact = set(include)
+    include_prefixes = tuple(name + "." for name in include)
+
+    to_delete = [
+        name
+        for name in modules
+        if (name in include_exact or name.startswith(include_prefixes))
+    ]
+
+    for name in to_delete:
+        modules.pop(name, None)
 
 
 def _run_impl(*args, module, plugins, addopts, defopts, display_columns):

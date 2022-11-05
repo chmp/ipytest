@@ -1,5 +1,5 @@
 from ._config import config, autoconfig
-from ._impl import clean, clean_tests, reload, run, Error
+from ._impl import clean, clean_tests, force_reload, reload, run, Error
 
 # the pytest exit code
 exit_code = None
@@ -11,6 +11,7 @@ __all__ = [
     "config",
     "clean",
     "clean_tests",
+    "force_reload",
     "reload",
     "Error",
 ]
