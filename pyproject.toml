@@ -1,6 +1,6 @@
 [project]
 name = "ipytest"
-version = "0.13.0a3"
+version = "0.13.0"
 
 authors = [{ name = "Christopher Prohm", email = "mail@cprohm.de" }]
 
