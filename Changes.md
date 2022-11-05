@@ -17,6 +17,8 @@ Note: development is tracked on the [`develop` branch](https://github.com/chmp/i
       `%%ipytest` by including an initial comment of the form `# ipytest:
       arg1=value1, arg2=value`
     - `ipytest.clean()` now expects a module as its argument
+    - Add `ipytest.force_reload`. It is simpler to use than the current `reload`
+      function for reloading modules during development
     - Use markdown for module documentation
     - Updated documentation (updated doc strings for run, ipytest magic,
       expanded example notebook)

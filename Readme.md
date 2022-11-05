@@ -306,20 +306,23 @@ as expected.
     globals object is determined from the call stack.
 
 <!-- minidoc -->
-<!-- minidoc "function": "ipytest.reload", "header_depth": 3 -->
-### `ipytest.reload(*mods)`
+<!-- minidoc "function": "ipytest.force_reload", "header_depth": 3 -->
+### `ipytest.force_reload(*include, modules: Optional[Dict[str, module]] = None)`
 
-[ipytest.reload]: #ipytestreloadmods
+[ipytest.force_reload]: #ipytestforce_reloadinclude-modules-optionaldictstr-module--none
 
-Reload all modules passed as strings.
+Ensure following imports of the listed modules reload the code from disk
 
-This function may be useful, when mixing code in external modules and
-notebooks.
+The given modules and their submodules are removed from `sys.modules`.
+Next time the modules are imported, they are loaded from disk.
+
+If given, the parameter `modules` should be a dictionary of modules to use
+instead of `sys.modules`.
 
 Usage:
 
 ```python
-ipytest.reload("ipytest._util", "ipytest")
+ipytest.force_reload("my_package")
 ```
 
 <!-- minidoc -->
