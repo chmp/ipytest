@@ -64,10 +64,10 @@ There are multiple sources of global state when using pytest inside the notebook
    function allows to delete previously defined tests.
 2. Python's module system caches imports and therefore acts as a global state.
    To test the most recent version of any module, the module needs to be
-   reloaded. `ipytest` offers the [`ipytest.reload()`][ipytest.reload] function.
-   The `autoreload` extension of IPython may also help here. To test local
-   packages, it is advisable to install them as development packages, e.g., `pip
-   install -e .`.
+   reloaded. `ipytest` offers the
+   [`ipytest.force_reload()`][ipytest.force_reload] function. The `autoreload`
+   extension of IPython may also help here. To test local packages, it is
+   advisable to install them as development packages, e.g., `pip install -e .`.
 3. For async code, IPython will create an event loop in the current thread. This
    setup may interfere with async tests. To support these use cases, ipytest
    supports running tests in a separate thread. Simply setup ipytest via
@@ -109,8 +109,8 @@ ways to configure this behavior:
 - `ipytest.config(defopts=False)` or `ipytest.autoconfig(defopts=False)` will
   instruct `ipytest` to not pass the current module filename. It can still be
   passed manually by adding `{MODULE}` to the command line. The default value
-  `defopts="auto"`, adds `{MODULE}` if no other PyTest node id is found in the
-  arguments
+  `defopts="auto"`, adds `{MODULE}` if no other PyTest node id is found among
+  the arguments
 
 The arguments are formatted using Python's standard string formatting.
 Currently, only the `{MODULE}` variable is understood. It is replaced with the
@@ -141,7 +141,7 @@ following steps:
 | [`exit_code`][ipytest.exit_code]
 | [`run`][ipytest.run]
 | [`clean`][ipytest.clean]
-| [`reload`][ipytest.reload]
+| [`force_reload`][ipytest.force_reload]
 | [`Error`][ipytest.Error]
 
 <!-- minidoc "function": "ipytest.autoconfig", "header_depth": 3 -->
@@ -323,6 +323,7 @@ Usage:
 
 ```python
 ipytest.force_reload("my_package")
+from my_package.submodule import my_function
 ```
 
 <!-- minidoc -->
