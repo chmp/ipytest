@@ -212,6 +212,34 @@ def reload(*mods):
         importlib.reload(importlib.import_module(mod))
 
 
+def force_reload(*include, modules=None):
+    """Ensure following imports of the listed modules reload the code from disk
+
+    The given modules or any of their submodules are removed from the
+    `sys.modules`. When imported, they are loaded from disk.
+
+    Usage:
+
+    ```python
+    ipytest.force_reload("my_package")
+    ```
+    """
+    if modules is None:
+        modules = sys.modules
+
+    include_exact = set(include)
+    include_prefixes = tuple(name + "." for name in include)
+
+    to_delete = [
+        name
+        for name in modules
+        if (name in include_exact or name.startswith(include_prefixes))
+    ]
+
+    for name in to_delete:
+        modules.pop(name, None)
+
+
 def _run_impl(*args, module, plugins, addopts, defopts, display_columns):
     with _prepared_env(module, display_columns=display_columns) as filename:
         full_args = _build_full_args(args, filename, addopts=addopts, defopts=defopts)
