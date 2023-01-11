@@ -100,7 +100,7 @@ ipytest.autoconfig(raise_on_error=True)
 filename that is associated with the notebook is passed. There are a number of
 ways to configure this behavior:
 
-- `ipytest.config(addopts=...)` or `ipytest.autconfig(addopts=...)` allow to
+- `ipytest.config(addopts=...)` or `ipytest.autoconfig(addopts=...)` allow to
   specify a list of strings that are added to the command line. For example,
   `ipytest.autoconfig(addopts=["-x", "--pdb"])` will attach the debugger on the
   first test failure and not run further tests.
