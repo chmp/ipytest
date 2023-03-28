@@ -354,7 +354,7 @@ Please create an issue, if I missed a packaged or mischaracterized any package.
 
 ```
 The MIT License (MIT)
-Copyright (c) 2015 - 2022 Christopher Prohm
+Copyright (c) 2015 - 2023 Christopher Prohm
 
 Permission is hereby granted, free of charge, to any person obtaining a
 copy of this software and associated documentation files (the "Software"),
