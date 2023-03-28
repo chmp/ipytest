@@ -2,10 +2,7 @@ import types
 
 import pytest
 
-import ipytest
-
 # NOTE: if test selection works, only test1 is executed. Otherwise also test2 is
-# executed and exit_code != 0
 module_source = """
 def test1():
     assert True

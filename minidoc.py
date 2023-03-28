@@ -38,7 +38,6 @@ import json
 import pathlib
 import re
 import typing
-
 from inspect import Parameter
 from typing import Any, Iterable, List, Optional, Tuple, Union, cast
 
@@ -192,7 +191,7 @@ def _inject_docs(lines: Iterable[str]) -> Iterable[str]:
             if current is not None:
                 raise ValueError(
                     "minidoc: detected documentation start while inside a"
-                    f" documentation block (line: {idx + 1})"
+                    f" documentation block (line: {idx + 1})",
                 )
 
             else:
@@ -219,7 +218,7 @@ def _inject_docs(lines: Iterable[str]) -> Iterable[str]:
             else:
                 raise ValueError(
                     "minidoc: detected documentation end without start (line"
-                    f" {idx + 1})"
+                    f" {idx + 1})",
                 )
 
         elif isinstance(ty, Header) and current is None:
@@ -268,7 +267,11 @@ def render_docs(
 
 
 def render_module(
-    module_name: str, module: Any, *, header_depth: int, include_header: bool = True
+    module_name: str,
+    module: Any,
+    *,
+    header_depth: int,
+    include_header: bool = True,
 ):
     if include_header:
         yield _render_header(f"`{module_name}`", header_depth)
@@ -314,7 +317,11 @@ def render_item(
 
 
 def render_members(
-    module_name: str, module: Any, item_name: str, item: Any, header_depth: int
+    module_name: str,
+    module: Any,
+    item_name: str,
+    item: Any,
+    header_depth: int,
 ) -> Iterable[str]:
     for member_name, member in getattr(item, "__dict__", {}).items():
         is_documented = (
@@ -484,7 +491,7 @@ def format_signature(func: Any) -> str:
                 and param.annotation is not Parameter.empty
             ):
                 parts.append(
-                    f"{param.name}: {format_annotation(param.annotation)} = {param.default!r}"
+                    f"{param.name}: {format_annotation(param.annotation)} = {param.default!r}",
                 )
 
         elif param.kind in {Parameter.VAR_POSITIONAL}:
@@ -498,8 +505,7 @@ def format_signature(func: Any) -> str:
     if sig.return_annotation is Parameter.empty:
         return args
 
-    else:
-        return f"{args} -> {format_annotation(sig.return_annotation)}"
+    return f"{args} -> {format_annotation(sig.return_annotation)}"
 
 
 def format_annotation(obj: Any) -> str:
@@ -510,33 +516,32 @@ def format_annotation(obj: Any) -> str:
     if origin is typing.Union and len(args) == 2 and args[1] is type(None):
         return f"Optional[{format_annotation(args[0])}]"
 
-    elif origin in _known_typing_origins:
+    if origin in _known_typing_origins:
         origin_name = _known_typing_origins[origin]
         formatted_args = ", ".join(format_annotation(arg) for arg in args)
 
         return f"{origin_name}[{formatted_args}]"
 
-    elif isinstance(obj, typing.TypeVar):
+    if isinstance(obj, typing.TypeVar):
         return str(obj)
 
-    elif isinstance(obj, collections.abc.Hashable) and obj in _known_objects:
+    if isinstance(obj, collections.abc.Hashable) and obj in _known_objects:
         return _known_objects[obj]
 
-    elif isinstance(obj, list):
+    if isinstance(obj, list):
         return "[{}]".format(", ".join(format_annotation(item) for item in obj))
 
-    elif (
+    if (
         hasattr(obj, "__module__")
         and hasattr(obj, "__name__")
         and obj.__module__ != "builtins"
     ):
         return f"{obj.__module__}.{obj.__name__}"
 
-    elif hasattr(obj, "__name__"):
+    if hasattr(obj, "__name__"):
         return str(obj.__name__)
 
-    else:
-        return str(obj)
+    return str(obj)
 
 
 _known_typing_origins = {

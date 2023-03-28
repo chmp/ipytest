@@ -28,3 +28,19 @@ repository = "https://github.com/chmp/ipytest"
 
 [tool.setuptools]
 packages = ["ipytest"]
+
+[tool.ruff]
+select = [
+    "E",
+    "F",
+    "I",
+    "COM",
+    "C4",
+    "PT",
+    "Q",
+    "RET",
+    "SIM",
+    "ERA",
+    "RUF",
+]
+ignore = ["E501", "SIM117"]
