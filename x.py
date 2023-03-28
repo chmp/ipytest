@@ -1,3 +1,4 @@
+# ruff: noqa
 import argparse
 import pathlib
 import subprocess
@@ -19,6 +20,7 @@ arg = lambda *a, **k: _md(lambda f: _as(f).insert(0, (a, k)))
 @cmd()
 def precommit():
     format()
+    lint()
     docs()
     test()
     integration()
@@ -53,9 +55,14 @@ def format():
         "ipytest",
         "tests",
         "Example.ipynb",
-        "make.py",
+        "x.py",
         "minidoc.py",
     )
+
+
+@cmd()
+def lint():
+    python("ruff", self_path)
 
 
 @cmd()
@@ -79,6 +86,7 @@ def compile_requirements():
     python(
         "piptools",
         "compile",
+        "--resolver=backtracking",
         "--upgrade",
         "--no-annotate",
         "--no-header",
