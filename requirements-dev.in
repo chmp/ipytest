@@ -3,4 +3,5 @@ build
 nbval
 pip-tools
 pytest-asyncio
+ruff
 twine
