@@ -46,12 +46,12 @@ __all__ = ["update_docs", "update_docs_lines", "update_docs_str"]
 
 def update_docs(path: Union[str, pathlib.Path]):
     """Update the documentation section inside a file"""
-    with open(path, "rt") as fobj:
+    with open(path, "rt", newline="\n") as fobj:
         lines = list(fobj)
 
     lines = update_docs_lines(lines)
 
-    with open(path, "wt") as fobj:
+    with open(path, "wt", newline="\n") as fobj:
         for line in lines:
             fobj.write(f"{line.rstrip()}\n")
 
