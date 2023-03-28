@@ -320,7 +320,7 @@ python x.py test
 python x.py integration
 ```
 
-Before commit execute `python make.py precommit` to update the documentation,
+Before committing, execute `python x.py precommit` to update the documentation,
 format the code, and run tests.
 
 To create a new release execute:
