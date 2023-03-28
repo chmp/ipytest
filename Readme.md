@@ -3,7 +3,6 @@
 [PyPI](https://pypi.org/project/ipytest)
 | [Usage](#usage)
 | [Global state](#global-state)
-| [Extended Usage](#extended-usage)
 | [How does it work?](#how-does-it-work)
 | [Changes](Changes.md)
 | [Reference](#reference)
@@ -15,23 +14,22 @@
 `ipytest` aims to give access to the full `pytest` experience to make it easy to
 transfer tests out of notebooks into separate test files.
 
-Installation:
+## Usage
+
+Install `ipytest` by running
 
 ```bash
 pip install ipytest
 ```
 
-## Usage
-
-For usage see the [**example notebook**](./Example.ipynb) or the
-[reference](#reference) below. The suggested way to import `ipytest` is:
+The suggested way to import `ipytest` is
 
 ```python
 import ipytest
 ipytest.autoconfig()
 ```
 
-Afterwards in a *new* cell, tests can be executed as in:
+Afterwards in a *new* cell, tests can be executed as in
 
 ```python
 %%ipytest -qq
@@ -41,8 +39,8 @@ def test_example():
 ```
 
 This command will first delete any previously defined tests, execute the cell
-and then run pytest. For further details on how to use `ipytest` see [**example
-notebook**](./Example.ipynb).
+and then run pytest. For further details on how to use `ipytest` see the
+[**example notebook**](./Example.ipynb) or the [reference](#reference) below.
 
 ## Global state
 
