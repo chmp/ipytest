@@ -1,31 +1,31 @@
 """Add syntatic sugar for configuration"""
 import inspect
-import warnings
 import sys
+import warnings
 
 default_clean = "[Tt]est*"
 
-defaults = dict(
-    rewrite_asserts=True,
-    magics=True,
-    clean=default_clean,
-    addopts=("-q", "--color=yes"),
-    run_in_thread=False,
-    defopts="auto",
-    display_columns=100,
-    raise_on_error=False,
-)
+defaults = {
+    "rewrite_asserts": True,
+    "magics": True,
+    "clean": default_clean,
+    "addopts": ("-q", "--color=yes"),
+    "run_in_thread": False,
+    "defopts": "auto",
+    "display_columns": 100,
+    "raise_on_error": False,
+}
 
-current_config = dict(
-    rewrite_asserts=False,
-    magics=False,
-    clean=default_clean,
-    addopts=(),
-    run_in_thread=False,
-    defopts="auto",
-    display_columns=100,
-    raise_on_error=False,
-)
+current_config = {
+    "rewrite_asserts": False,
+    "magics": False,
+    "clean": default_clean,
+    "addopts": (),
+    "run_in_thread": False,
+    "defopts": "auto",
+    "display_columns": 100,
+    "raise_on_error": False,
+}
 
 _rewrite_transformer = None
 
@@ -79,7 +79,7 @@ def autoconfig(
     """
     args = collect_args()
     config(
-        **{key: default.unwrap(args[key], defaults.get(key)) for key in current_config}
+        **{key: default.unwrap(args[key], defaults.get(key)) for key in current_config},
     )
 
 
@@ -121,7 +121,7 @@ def config(
       * If `True`, ipytest will add the current module to the arguments passed
         to pytest
       * If `False` only the arguments given and `adopts` are passed to pytest
-    * `display_columns` (default: `100`): if not `False`, configure Pytest to
+    * `display_columns` (default: `100`): if not `False`, configure pytest to
       use the given number of columns for its output. This option will
       temporarily override the `COLUMNS` environment variable.
     * `raise_on_error` (default `False` ): if `True`,
@@ -147,6 +147,7 @@ def configure_rewrite_asserts(enable):
     global _rewrite_transformer
 
     from IPython import get_ipython
+
     from ._impl import RewriteAssertTransformer
 
     shell = get_ipython()
@@ -164,6 +165,7 @@ def configure_rewrite_asserts(enable):
 
 def configure_magics(enable):
     from IPython import get_ipython
+
     from ._impl import pytest_magic
 
     if enable:
@@ -171,7 +173,9 @@ def configure_magics(enable):
         shell.register_magic_function(pytest_magic, "cell", "ipytest")
         shell.register_magic_function(_deprecated_pytest_magic, "cell", "run_pytest")
         shell.register_magic_function(
-            _deprecated_pytest_clean_magic, "cell", "run_pytest[clean]"
+            _deprecated_pytest_clean_magic,
+            "cell",
+            "run_pytest[clean]",
         )
 
     else:
@@ -187,7 +191,9 @@ def _deprecated_pytest_magic(line, cell):
         file=sys.stderr,
     )
     import shlex
+
     from IPython import get_ipython
+
     from ._impl import run
 
     try:
@@ -198,11 +204,10 @@ def _deprecated_pytest_magic(line, cell):
             raise RuntimeError(
                 "The ipytest magic cannot evaluate the cell. Most likely you "
                 "are running a modified ipython version. Consider using "
-                "`ipytest.run` and `ipytest.clean_tests` directly."
+                "`ipytest.run` and `ipytest.clean_tests` directly.",
             ) from e
 
-        else:
-            raise e
+        raise e
 
     run(*shlex.split(line))
 
@@ -216,7 +221,9 @@ def _deprecated_pytest_clean_magic(line, cell):
         file=sys.stderr,
     )
     import shlex
+
     from IPython import get_ipython
+
     from ._impl import clean_tests, run
 
     if current_config["clean"] is not False:
@@ -230,11 +237,10 @@ def _deprecated_pytest_clean_magic(line, cell):
             raise RuntimeError(
                 "The ipytest magic cannot evaluate the cell. Most likely you "
                 "are running a modified ipython version. Consider using "
-                "`ipytest.run` and `ipytest.clean_tests` directly."
+                "`ipytest.run` and `ipytest.clean_tests` directly.",
             ) from e
 
-        else:
-            raise e
+        raise e
 
     run(*shlex.split(line))
 

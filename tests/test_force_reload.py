@@ -4,7 +4,7 @@ import ipytest
 
 
 @pytest.mark.parametrize(
-    "include, expected",
+    ("include", "expected"),
     [
         ("foo", ()),
         ("foo.bar", ("foo", "foo.baz")),

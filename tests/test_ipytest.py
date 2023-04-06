@@ -3,18 +3,16 @@ import contextlib
 import io
 import os.path
 import types
-
 from types import ModuleType
 
 import pytest
 
 import ipytest
-
 from ipytest._impl import (
-    RewriteAssertTransformer,
-    eval_run_kwargs,
-    eval_defopts_auto,
     ArgMapping,
+    RewriteAssertTransformer,
+    eval_defopts_auto,
+    eval_run_kwargs,
 )
 
 
@@ -58,7 +56,7 @@ def fake_module(__name__, **items):
 
 
 def test_fixtures():
-    @pytest.fixture
+    @pytest.fixture()
     def my_fixture():
         return 42
 
@@ -110,16 +108,18 @@ def test_program_name():
 
 
 @pytest.mark.parametrize(
-    "cell, expected",
+    ("cell", "expected"),
     [
         pytest.param("", {}),
         pytest.param("def test():\n    assert True", {}),
         pytest.param(
-            "# ipytest: defopts=True\ndef test():\n    ....", {"defopts": True}
+            "# ipytest: defopts=True\ndef test():\n    ....",
+            {"defopts": True},
         ),
         pytest.param("# ipytest: defopts=True", {"defopts": True}),
         pytest.param(
-            "# ipytest: defopts=True, clean=True", {"defopts": True, "clean": True}
+            "# ipytest: defopts=True, clean=True",
+            {"defopts": True, "clean": True},
         ),
         pytest.param(
             "# ipytest: defopts =  True, clean  =  True",
@@ -150,13 +150,13 @@ def test_eval_run_kwargs__module_override():
 
 
 @pytest.mark.parametrize("cell", ["", "\n", "\ndef test():\n    assert True"])
-def test_eval_run_kwargs__module(cell):
+def test_eval_run_kwargs__module_2(cell):
     dummy_module = ModuleType("dummy_module")
     assert eval_run_kwargs(cell, module=dummy_module) == {"module": dummy_module}
 
 
 @pytest.mark.parametrize(
-    "args, defopts",
+    ("args", "defopts"),
     [
         pytest.param(["tmp_foo.py"], False),
         pytest.param(["tmp_foo.py::test1"], False),
@@ -170,7 +170,7 @@ def test_eval_defopts_auto__true(args, defopts):
 
 
 @pytest.mark.parametrize(
-    "key, expected",
+    ("key", "expected"),
     [
         pytest.param("MODULE", "tmp_foo.py"),
         pytest.param("test1", "tmp_foo.py::test1"),
