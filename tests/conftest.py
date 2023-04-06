@@ -1,12 +1,12 @@
-import unittest.mock
 import inspect
-import types
 import shlex
+import types
+import unittest.mock
 
 import pytest
 
-import ipytest._impl
 import ipytest._config
+import ipytest._impl
 
 
 @pytest.fixture(params=["func", "magic"])
@@ -25,7 +25,7 @@ def ipytest_entry_point(request, run_cell_magic, scoped_config):
 
         return run_wrapper
 
-    elif request.param == "magic":
+    if request.param == "magic":
 
         def magic_wrapper(run_args, run_kwargs, source):
             return run_cell_magic(
@@ -36,11 +36,10 @@ def ipytest_entry_point(request, run_cell_magic, scoped_config):
 
         return magic_wrapper
 
-    else:
-        raise ValueError(f"Unknown entry point mode {request.param}")
+    raise ValueError(f"Unknown entry point mode {request.param}")
 
 
-@pytest.fixture
+@pytest.fixture()
 def run_cell_magic(mock_ipython):
     """A wrapper around ipytest to simplify executing the cell magic"""
 
@@ -56,7 +55,7 @@ def run_cell_magic(mock_ipython):
 
 
 # NOTE: do not set autouse=True to not interfere with notebook tests
-@pytest.fixture
+@pytest.fixture()
 def scoped_config():
     """A fixture to reset the config at the end of the test"""
     original_config = ipytest._config.current_config.copy()
@@ -70,12 +69,12 @@ def scoped_config():
 
 
 # NOTE: do not set autouse=True to not interfere with notebook tests
-@pytest.fixture
+@pytest.fixture()
 def mock_ipython():
     """Register a fake IPython implementation during the test"""
     ipython = MockIPython()
 
-    with unittest.mock.patch("IPython.get_ipython", lambda: ipython):
+    with unittest.mock.patch("IPython.get_ipython", return_value=ipython):
         yield ipython
 
 

@@ -1,5 +1,5 @@
-from ._config import config, autoconfig
-from ._impl import clean, clean_tests, force_reload, reload, run, Error
+from ._config import autoconfig, config
+from ._impl import Error, clean, clean_tests, force_reload, reload, run
 
 # the pytest exit code
 exit_code = None
