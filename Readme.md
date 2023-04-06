@@ -11,8 +11,8 @@
 | [License](#license)
 
 `ipytest` allows you to run [Pytest](https://pytest.org) in Jupyter notebooks.
-`ipytest` aims to give access to the full `pytest` experience to make it easy to
-transfer tests out of notebooks into separate test files.
+`ipytest` aims to give access to the full `pytest` experience and to make it
+easy to transfer tests out of notebooks into separate test files.
 
 ## Usage
 
