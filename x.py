@@ -1,5 +1,6 @@
 # ruff: noqa
 import argparse
+import functools as ft
 import pathlib
 import subprocess
 import sys
@@ -33,8 +34,12 @@ def release():
     self_path = pathlib.Path(__file__).parent.resolve()
     dist_path = self_path / "dist"
 
-    max_wheel = max(dist_path.glob("*.whl"), key=parse_file_version)
-    max_sdist = max(dist_path.glob("*.tar.gz"), key=parse_file_version)
+    max_wheel = max(
+        dist_path.glob("*.whl"), key=ft.partial(parse_file_version, suffix=".whl")
+    )
+    max_sdist = max(
+        dist_path.glob("*.tar.gz"), key=ft.partial(parse_file_version, suffix=".tar.gz")
+    )
 
     print(f"Upload {[max_wheel.name, max_sdist.name]}?")
 
@@ -98,8 +103,11 @@ def compile_requirements():
     )
 
 
-def parse_file_version(p):
-    return version.parse(p.stem)
+def parse_file_version(p, suffix):
+    assert p.name.endswith(suffix)
+
+    _, version_part, *_ = p.name[: -len(suffix)].split("-")
+    return version.parse(version_part)
 
 
 def python(*args, **kwargs):
