@@ -337,12 +337,23 @@ class RewriteAssertTransformer(ast.NodeTransformer):
 
         pytest_version = get_pytest_version()
         if pytest_version.release[0] >= 5:
+            # get the currently executing code from ipython?
             # TODO: re-create a pseudo code to include the asserts?
             rewrite_asserts(node, b"")
 
         else:
             rewrite_asserts(node)
+
+        self._custom_fix_locations(node)
+
         return node
+
+    @staticmethod
+    def _custom_fix_locations(node):
+        assert isinstance(node, ast.Module)
+        for item in node.body:
+            if hasattr(item, "end_lineno") and item.end_lineno is None:
+                item.end_lineno = item.lineno
 
 
 class FixProgramNamePlugin:
