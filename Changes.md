@@ -2,7 +2,9 @@
 
 Note: development is tracked on the [`develop` branch](https://github.com/chmp/ipytest/tree/develop).
 
-## `develop`
+## `0.13.1`
+
+Updated readme and doc strings.
 
 ## `0.13.0`
 
