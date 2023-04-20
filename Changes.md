@@ -2,7 +2,12 @@
 
 Note: development is tracked on the [`develop` branch](https://github.com/chmp/ipytest/tree/develop).
 
-## `develop`
+## `0.13.1`
+
+- Updated readme and doc strings.
+- Fix assertion rewriting for python==3.11 ([issue][issue-93])
+
+[issue-93]: https://github.com/chmp/ipytest/issues/93
 
 ## `0.13.0`
 

@@ -75,7 +75,7 @@ def integration():
     python(
         "pytest",
         "--nbval-lax",
-        "--current-env",
+        "--nbval-current-env",
         "Example.ipynb",
         *pathlib.Path("tests").glob("Test*.ipynb"),
     )
@@ -108,6 +108,7 @@ def python(*args, **kwargs):
 
 def run(*args, **kwargs):
     kwargs.setdefault("check", True)
+    kwargs.setdefault("cwd", str(self_path))
 
     args = [str(arg) for arg in args]
     print("::", " ".join(args))
