@@ -350,10 +350,10 @@ class RewriteAssertTransformer(ast.NodeTransformer):
 
     @staticmethod
     def _custom_fix_locations(node):
-        assert isinstance(node, ast.Module)
-        for item in node.body:
-            if hasattr(item, "end_lineno") and item.end_lineno is None:
-                item.end_lineno = item.lineno
+        if isinstance(node, ast.Module):
+            for item in node.body:
+                if hasattr(item, "end_lineno") and item.end_lineno is None:
+                    item.end_lineno = item.lineno
 
 
 class FixProgramNamePlugin:
