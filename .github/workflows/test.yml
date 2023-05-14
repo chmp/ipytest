@@ -10,8 +10,7 @@
         "ready_for_review",
         "synchronize"
       ]
-    },
-    "push": {}
+    }
   },
   "jobs": {
     "build": {
