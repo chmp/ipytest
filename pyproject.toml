@@ -1,12 +1,16 @@
-[project]
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry]
 name = "ipytest"
 version = "0.13.2b0"
 
-authors = [{ name = "Christopher Prohm", email = "mail@cprohm.de" }]
+authors = ["Christopher Prohm <mail@cprohm.de>"]
 
 description = "Unit tests in IPython notebooks"
 readme = "Readme.md"
-license = {text = "MIT"}
+license = "MIT"
 
 classifiers = [
     "Development Status :: 4 - Beta",
@@ -16,12 +20,21 @@ classifiers = [
     "Programming Language :: Python :: 3",
 ]
 
-requires-python = ">=3.6"
-dependencies = [
-    "packaging", 
-    "ipython", 
-    "pytest>=5.4"
-]
+[tool.poetry.dependencies]
+python = ">=3.7, <4"
+
+packaging = "*"
+ipython = "*"
+pytest = ">=5.4"
+
+[tool.poetry.group.dev]
+optional = true
+
+[tool.poetry.group.dev.dependencies]
+black = {extras = ["jupyter"], version = "^23.3.0"}
+nbval = "^0.10.0"
+ruff = "^0.0.267"
+pytest-asyncio = "^0.21.0"
 
 [project.urls]
 repository = "https://github.com/chmp/ipytest"
