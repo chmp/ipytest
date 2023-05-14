@@ -1,8 +1,0 @@
-black[jupyter]
-build
-jupyterlab
-nbval
-pip-tools
-pytest-asyncio
-ruff
-twine

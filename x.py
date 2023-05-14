@@ -88,18 +88,13 @@ def integration():
 
 @cmd()
 def compile_requirements():
-    python(
-        "piptools",
-        "compile",
-        "--resolver=backtracking",
-        "--upgrade",
-        "--no-annotate",
-        "--no-header",
-        "--generate-hashes",
-        "--output-file",
-        "requirements-dev.txt",
-        "requirements-dev.in",
-        "pyproject.toml",
+    run(
+        "poetry",
+        "export",
+        "-f",
+        "requirements.txt",
+        "--output",
+        "requirements-dev.txt" "--with=dev",
     )
 
 
