@@ -94,7 +94,8 @@ def compile_requirements():
         "-f",
         "requirements.txt",
         "--output",
-        "requirements-dev.txt" "--with=dev",
+        "requirements-dev.txt",
+        "--with=dev",
     )
 
 
