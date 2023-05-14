@@ -33,6 +33,9 @@ black[jupyter]==23.3.0 ; python_version >= "3.7" and python_version < "4" \
     --hash=sha256:e198cf27888ad6f4ff331ca1c48ffc038848ea9f031a3b40ba36aced7e22f2c8 \
     --hash=sha256:ec751418022185b0c1bb7d7736e6933d40bbb14c14a0abcf9123d1b159f98dd4 \
     --hash=sha256:f0bd2f4a58d6666500542b26354978218a9babcdc972722f4bf90779524515f3
+build==0.10.0 ; python_version >= "3.7" and python_version < "4" \
+    --hash=sha256:af266720050a66c893a6096a2f410989eeac74ff9a68ba194b3f6473e8e26171 \
+    --hash=sha256:d5b71264afdb5951d6704482aac78de887c80691c52b88a9ad195983ca2c9269
 cffi==1.15.1 ; python_version >= "3.7" and python_version < "4" and implementation_name == "pypy" \
     --hash=sha256:00a9ed42e88df81ffae7a8ab6d9356b371399b91dbdf0c3cb1e84c03a13aceb5 \
     --hash=sha256:03425bdae262c76aad70202debd780501fabeaca237cdfddc008987c0e0f59ef \
@@ -101,7 +104,7 @@ cffi==1.15.1 ; python_version >= "3.7" and python_version < "4" and implementati
 click==8.1.3 ; python_version >= "3.7" and python_version < "4" \
     --hash=sha256:7682dc8afb30297001674575ea00d1814d808d6a36af415a82bd481d37ba7b8e \
     --hash=sha256:bb4d8133cb15a609f44e8213d9b391b0809795062913b383c62be0ee95b1db48
-colorama==0.4.6 ; python_version >= "3.7" and python_version < "4" and sys_platform == "win32" or python_version >= "3.7" and python_version < "4" and platform_system == "Windows" \
+colorama==0.4.6 ; python_version >= "3.7" and python_version < "4" and sys_platform == "win32" or python_version >= "3.7" and python_version < "4" and os_name == "nt" or python_version >= "3.7" and python_version < "4" and platform_system == "Windows" \
     --hash=sha256:08695f5cb7ed6e0531a20572697297273c47b8cae5a63ffc6d6ed5c201be6e44 \
     --hash=sha256:4f1d9991f5acc0ca119f9d443620b77f9d6b33703e51011c16baf57afb285fc6
 coverage==7.2.5 ; python_version >= "3.7" and python_version < "4" \
@@ -280,6 +283,9 @@ pycparser==2.21 ; python_version >= "3.7" and python_version < "4" and implement
 pygments==2.15.1 ; python_version >= "3.7" and python_version < "4" \
     --hash=sha256:8ace4d3c1dd481894b2005f560ead0f9f19ee64fe983366be1a21e171d12775c \
     --hash=sha256:db2db3deb4b4179f399a09054b023b6a586b76499d36965813c71aa8ed7b5fd1
+pyproject-hooks==1.0.0 ; python_version >= "3.7" and python_version < "4" \
+    --hash=sha256:283c11acd6b928d2f6a7c73fa0d01cb2bdc5f07c57a2eeb6e83d5e56b97976f8 \
+    --hash=sha256:f271b298b97f5955d53fb12b72c1fb1948c22c1a6b70b315c54cedaca0264ef5
 pyrsistent==0.19.3 ; python_version >= "3.7" and python_version < "4" \
     --hash=sha256:016ad1afadf318eb7911baa24b049909f7f3bb2c5b1ed7b6a8f21db21ea3faa8 \
     --hash=sha256:1a2994773706bbb4995c31a97bc94f1418314923bd1048c6d964837040376440 \
