@@ -31,11 +31,11 @@
         {
           "name": "Tests",
           "run": "pytest"
-        }
+        },
         {
           "name": "Integration tests",
           "run": "pytest --nbval-lax --nbval-current-env Example.ipynb tests/Test*.ipynb"
-        }
+        },
         {
           "name": "Publish package distributions to PyPI",
           "uses": "pypa/gh-action-pypi-publish@release/v1"
