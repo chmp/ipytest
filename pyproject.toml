@@ -12,6 +12,8 @@ description = "Unit tests in IPython notebooks"
 readme = "Readme.md"
 license = "MIT"
 
+include = ["License.md"]
+
 classifiers = [
     "Development Status :: 4 - Beta",
     "Intended Audience :: Developers",
