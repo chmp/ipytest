@@ -2,6 +2,10 @@
 
 Note: development is tracked on the [`develop` branch](https://github.com/chmp/ipytest/tree/develop).
 
+## `0.13.3` 
+
+- Include License.md file in sdist for condaforge
+
 ## `0.13.2`
 
 - Fix assertion rewriting for python==3.11 ([issue][issue-93])
