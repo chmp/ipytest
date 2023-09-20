@@ -9,7 +9,7 @@ import ipytest._config
 import ipytest._impl
 
 
-@pytest.fixture
+@pytest.fixture()
 def value_from_conftest():
     return 42
 
