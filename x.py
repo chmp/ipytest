@@ -1,5 +1,3 @@
-# ruff: noqa
-import argparse
 import functools as ft
 import pathlib
 import subprocess
@@ -9,13 +7,12 @@ from packaging import version
 
 import minidoc
 
-self_path = pathlib.Path(__file__).parent.resolve()
+# ruff: noqa: E401, E731
+__effect = lambda effect: lambda func: [func, effect(func.__dict__)][0]
+cmd = lambda **kw: __effect(lambda d: d.setdefault("@cmd", {}).update(kw))
+arg = lambda *a, **kw: __effect(lambda d: d.setdefault("@arg", []).append((a, kw)))
 
-_md = lambda effect: lambda f: [f, effect(f)][0]
-_ps = lambda o: vars(o).setdefault("__make__", {})
-_as = lambda o: _ps(o).setdefault("__args__", [])
-cmd = lambda **kw: _md(lambda f: _ps(f).update(kw))
-arg = lambda *a, **k: _md(lambda f: _as(f).insert(0, (a, k)))
+self_path = pathlib.Path(__file__).parent.resolve()
 
 
 @cmd()
@@ -31,14 +28,15 @@ def precommit():
 def release():
     python("build", "-s", "-w", ".")
 
-    self_path = pathlib.Path(__file__).parent.resolve()
     dist_path = self_path / "dist"
 
     max_wheel = max(
-        dist_path.glob("*.whl"), key=ft.partial(parse_file_version, suffix=".whl")
+        dist_path.glob("*.whl"),
+        key=ft.partial(parse_file_version, suffix=".whl"),
     )
     max_sdist = max(
-        dist_path.glob("*.tar.gz"), key=ft.partial(parse_file_version, suffix=".tar.gz")
+        dist_path.glob("*.tar.gz"),
+        key=ft.partial(parse_file_version, suffix=".tar.gz"),
     )
 
     print(f"Upload {[max_wheel.name, max_sdist.name]}?")
@@ -56,7 +54,8 @@ def docs():
 @cmd()
 def format():
     python(
-        "black",
+        "ruff",
+        "format",
         "ipytest",
         "tests",
         "Example.ipynb",
@@ -67,7 +66,7 @@ def format():
 
 @cmd()
 def lint():
-    python("ruff", self_path)
+    python("ruff", "check", self_path)
 
 
 @cmd()
@@ -88,6 +87,7 @@ def integration():
 
 @cmd()
 def compile_requirements():
+    run("poetry", "lock")
     run(
         "poetry",
         "export",
@@ -119,29 +119,10 @@ def run(*args, **kwargs):
     return subprocess.run(args, **kwargs)
 
 
-def main():
-    parser = argparse.ArgumentParser()
-    subparsers = parser.add_subparsers()
-
-    for func in globals().values():
-        if (desc := getattr(func, "__make__", None)) is not None:
-            desc = dict(func.__make__)
-            name = desc.pop("name", func.__name__.replace("_", "-"))
-            args = desc.pop("__args__", [])
-
-            subparser = subparsers.add_parser(name, **desc)
-            subparser.set_defaults(__main__=func)
-
-            for arg_args, arg_kwargs in args:
-                subparser.add_argument(*arg_args, **arg_kwargs)
-
-    args = vars(parser.parse_args())
-    if (func := args.pop("__main__", None)) is not None:
-        return func(**args)
-
-    else:
-        return parser.print_help()
-
-
 if __name__ == "__main__":
-    main()
+    _sps = (_p := __import__("argparse").ArgumentParser()).add_subparsers()
+    for _f in (f for f in list(globals().values()) if hasattr(f, "@cmd")):
+        _sp = _sps.add_parser(_f.__name__.replace("_", "-"), **getattr(_f, "@cmd"))
+        _sp.set_defaults(_=_f)
+        [_sp.add_argument(*a, **kw) for a, kw in reversed(getattr(_f, "@arg", []))]
+    (_a := vars(_p.parse_args())).pop("_", _p.print_help)(**_a)
