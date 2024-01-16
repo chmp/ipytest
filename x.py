@@ -1,18 +1,9 @@
-import functools as ft
-import pathlib
-import subprocess
-import sys
-
-from packaging import version
-
-import minidoc
-
 # ruff: noqa: E401, E731
 __effect = lambda effect: lambda func: [func, effect(func.__dict__)][0]
 cmd = lambda **kw: __effect(lambda d: d.setdefault("@cmd", {}).update(kw))
 arg = lambda *a, **kw: __effect(lambda d: d.setdefault("@arg", []).append((a, kw)))
 
-self_path = pathlib.Path(__file__).parent.resolve()
+self_path = __import__("pathlib").Path(__file__).parent.resolve()
 
 
 @cmd()
@@ -26,102 +17,89 @@ def precommit():
 
 @cmd()
 def release():
-    python("build", "-s", "-w", ".")
+    _sh(f"{python} -m build -s -w .")
 
     dist_path = self_path / "dist"
 
     max_wheel = max(
         dist_path.glob("*.whl"),
-        key=ft.partial(parse_file_version, suffix=".whl"),
+        key=lambda p: parse_file_version(p, suffix=".whl"),
     )
     max_sdist = max(
         dist_path.glob("*.tar.gz"),
-        key=ft.partial(parse_file_version, suffix=".tar.gz"),
+        key=lambda p: parse_file_version(p, suffix=".tar.gz"),
     )
 
     print(f"Upload {[max_wheel.name, max_sdist.name]}?")
 
     if input("[yN] ") == "y":
-        run("twine", "upload", "-u", "__token__", max_wheel, max_sdist)
+        _sh(f"{python} -m twine upload -u __token__ {_q(max_wheel)} {_q(max_sdist)}")
 
 
 @cmd()
 def docs():
+    import minidoc
+
     print("Update documentation")
     minidoc.update_docs(self_path / "Readme.md")
 
 
 @cmd()
 def format():
-    python(
-        "ruff",
-        "format",
-        "ipytest",
-        "tests",
-        "Example.ipynb",
-        "x.py",
-        "minidoc.py",
-    )
+    _sh(f"{python} -m ruff format ipytest tests Example.ipynb x.py minidoc.py")
 
 
 @cmd()
 def lint():
-    python("ruff", "check", self_path)
+    _sh(f"{python} -m ruff check {_q(self_path)}")
 
 
 @cmd()
 def test():
-    python("pytest", "tests")
+    _sh(f"{python} -m pytest tests")
 
 
 @cmd()
 def integration():
-    python(
-        "pytest",
-        "--nbval-lax",
-        "--nbval-current-env",
+    notebooks = [
         "Example.ipynb",
         *(
             p
-            for p in pathlib.Path("tests").glob("**/Test*.ipynb")
+            for p in self_path.joinpath("tests").glob("**/Test*.ipynb")
             if ".ipynb_checkpoints" not in p.parts
         ),
+    ]
+
+    _sh(
+        f"{python} -m pytest --nbval-lax --nbval-current-env "
+        f"{' '.join(_q(p) for p in notebooks)}"
     )
 
 
 @cmd()
 def compile_requirements():
-    run("poetry", "lock")
-    run(
-        "poetry",
-        "export",
-        "-f",
-        "requirements.txt",
-        "--output",
-        "requirements-dev.txt",
-        "--with=dev",
+    _sh(f"{python} -m poetry lock")
+    _sh(
+        f"{python} -m poetry export --with=dev "
+        "-f requirements.txt --output requirements-dev.txt"
     )
 
 
 def parse_file_version(p, suffix):
+    from packaging import version
+
     assert p.name.endswith(suffix)
 
     _, version_part, *_ = p.name[: -len(suffix)].split("-")
     return version.parse(version_part)
 
 
-def python(*args, **kwargs):
-    return run(sys.executable, "-m", *args, **kwargs)
-
-
-def run(*args, **kwargs):
-    kwargs.setdefault("check", True)
-    kwargs.setdefault("cwd", str(self_path))
-
-    args = [str(arg) for arg in args]
-    print("::", " ".join(args))
-    return subprocess.run(args, **kwargs)
-
+_sh = lambda c, **kw: __import__("subprocess").run(
+    [args := __import__("shlex").split(c.replace("\n", " ")), print("::", *args)][0],
+    **{"check": True, "cwd": self_path, "encoding": "utf-8", **kw},
+)
+_q = lambda arg: __import__("shlex").quote(str(arg))
+python = _q(__import__("sys").executable)
 
 if __name__ == "__main__":
     _sps = (_p := __import__("argparse").ArgumentParser()).add_subparsers()
