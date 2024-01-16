@@ -374,9 +374,9 @@ iniconfig==2.0.0 ; python_version >= "3.8" and python_version < "4" \
 installer==0.7.0 ; python_version >= "3.8" and python_version < "4.0" \
     --hash=sha256:05d1933f0a5ba7d8d6296bb6d5018e7c94fa473ceb10cf198a92ccea19c27b53 \
     --hash=sha256:a26d3e3116289bb08216e0d0f7d925fcef0b0194eedfa0c944bcaaa106c4b631
-ipykernel==6.28.0 ; python_version >= "3.8" and python_version < "4" \
-    --hash=sha256:69c11403d26de69df02225916f916b37ea4b9af417da0a8c827f84328d88e5f3 \
-    --hash=sha256:c6e9a9c63a7f4095c0a22a79f765f079f9ec7be4f2430a898ddea889e8665661
+ipykernel==6.29.0 ; python_version >= "3.8" and python_version < "4" \
+    --hash=sha256:076663ca68492576f051e4af7720d33f34383e655f2be0d544c8b1c9de915b2f \
+    --hash=sha256:b5dd3013cab7b330df712891c96cd1ab868c27a7159e606f762015e9bf8ceb3f
 ipython==8.12.3 ; python_version >= "3.8" and python_version < "4" \
     --hash=sha256:3910c4b54543c2ad73d06579aa771041b7d5707b033bd488669b4cf544e3b363 \
     --hash=sha256:b0340d46a933d27c657b211a329d0be23793c36595acf9e6ef4164bc01a1804c
@@ -392,9 +392,9 @@ jeepney==0.8.0 ; python_version >= "3.8" and python_version < "4.0" and sys_plat
 jsonschema-specifications==2023.12.1 ; python_version >= "3.8" and python_version < "4" \
     --hash=sha256:48a76787b3e70f5ed53f1160d2b81f586e4ca6d1548c5de7085d1682674764cc \
     --hash=sha256:87e4fdf3a94858b8a2ba2778d9ba57d8a9cafca7c7489c46ba0d30a8bc6a9c3c
-jsonschema==4.20.0 ; python_version >= "3.8" and python_version < "4" \
-    --hash=sha256:4f614fd46d8d61258610998997743ec5492a648b33cf478c1ddc23ed4598a5fa \
-    --hash=sha256:ed6231f0429ecf966f5bc8dfef245998220549cbbcf140f913b7464c52c3b6b3
+jsonschema==4.21.0 ; python_version >= "3.8" and python_version < "4" \
+    --hash=sha256:3ba18e27f7491ea4a1b22edce00fb820eec968d397feb3f9cb61d5894bb38167 \
+    --hash=sha256:70a09719d375c0a2874571b363c8a24be7df8071b80c9aa76bc4551e7297c63c
 jupyter-client==8.6.0 ; python_version >= "3.8" and python_version < "4" \
     --hash=sha256:0642244bb83b4764ae60d07e010e15f0e2d275ec4e918a8f7b80fbbef3ca60c7 \
     --hash=sha256:909c474dbe62582ae62b758bca86d6518c85234bdee2d908c778db6d72f39d99
