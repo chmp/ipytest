@@ -24,7 +24,7 @@
         },
         {
           "name": "Check format",
-          "run": "python -m black --check ."
+          "run": "python -m ruff format --check ."
         },
         {
           "name": "Check lints",
