@@ -2,7 +2,13 @@
 
 Note: development is tracked on the [`develop` branch](https://github.com/chmp/ipytest/tree/develop).
 
-## `0.13.3` 
+## `0.14.0`
+
+- Removed support for Python 3.7 since reached its end of life
+- Updated the dev-requirements
+- Remove deprecated API (`ipytest.clean_tests`, `%%pytest`, `%%pytest[clean]`)
+
+## `0.13.3`
 
 - Include License.md file in sdist for condaforge
 
