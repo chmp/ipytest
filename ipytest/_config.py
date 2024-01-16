@@ -1,6 +1,5 @@
 """Add syntatic sugar for configuration"""
 import inspect
-import sys
 import warnings
 
 default_clean = "[Tt]est*"
@@ -166,83 +165,13 @@ def configure_rewrite_asserts(enable):
 def configure_magics(enable):
     from IPython import get_ipython
 
-    from ._impl import pytest_magic
+    from ._impl import ipytest_magic
 
     if enable:
-        shell = get_ipython()
-        shell.register_magic_function(pytest_magic, "cell", "ipytest")
-        shell.register_magic_function(_deprecated_pytest_magic, "cell", "run_pytest")
-        shell.register_magic_function(
-            _deprecated_pytest_clean_magic,
-            "cell",
-            "run_pytest[clean]",
-        )
+        get_ipython().register_magic_function(ipytest_magic, "cell", "ipytest")
 
     else:
         warnings.warn("IPython does not support de-registering magics.")
-
-
-def _deprecated_pytest_magic(line, cell):
-    print(
-        "%%run_pytest[clean] and %%run_pytest are deprecated in favor of "
-        "%%ipytest. %%ipytest will clean tests, evaluate the cell and then "
-        "run pytest. To disable cleaning, configure ipytest with "
-        "ipytest.config(clean=False).",
-        file=sys.stderr,
-    )
-    import shlex
-
-    from IPython import get_ipython
-
-    from ._impl import run
-
-    try:
-        get_ipython().run_cell(cell)
-
-    except TypeError as e:
-        if "raw_cell" in str(e):
-            raise RuntimeError(
-                "The ipytest magic cannot evaluate the cell. Most likely you "
-                "are running a modified ipython version. Consider using "
-                "`ipytest.run` and `ipytest.clean_tests` directly.",
-            ) from e
-
-        raise e
-
-    run(*shlex.split(line))
-
-
-def _deprecated_pytest_clean_magic(line, cell):
-    print(
-        "%%run_pytest[clean] and %%run_pytest are deprecated in favor of "
-        "%%ipytest. %%ipytest will clean tests, evaluate the cell and then "
-        "run pytest. To disable cleaning, configure ipytest with "
-        "ipytest.config(clean=False).",
-        file=sys.stderr,
-    )
-    import shlex
-
-    from IPython import get_ipython
-
-    from ._impl import clean_tests, run
-
-    if current_config["clean"] is not False:
-        clean_tests(current_config["clean"])
-
-    try:
-        get_ipython().run_cell(cell)
-
-    except TypeError as e:
-        if "raw_cell" in str(e):
-            raise RuntimeError(
-                "The ipytest magic cannot evaluate the cell. Most likely you "
-                "are running a modified ipython version. Consider using "
-                "`ipytest.run` and `ipytest.clean_tests` directly.",
-            ) from e
-
-        raise e
-
-    run(*shlex.split(line))
 
 
 def collect_args():

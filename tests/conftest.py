@@ -47,7 +47,7 @@ def run_cell_magic(mock_ipython):
         mock_ipython.module = module
 
         cell = inspect.cleandoc(cell)
-        ipytest._impl.pytest_magic(line, cell, module=module)
+        ipytest._impl.ipytest_magic(line, cell, module=module)
 
         return ipytest.exit_code
 
