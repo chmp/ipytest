@@ -36,7 +36,7 @@ def test_clean(spec):
     module = types.ModuleType("module")
     vars(module).update(spec)
 
-    ipytest.clean_tests(module=module)
+    ipytest.clean(module=module)
 
     assert set(vars(module)) & set(spec) == expected
 
