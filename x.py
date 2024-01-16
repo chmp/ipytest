@@ -81,7 +81,11 @@ def integration():
         "--nbval-lax",
         "--nbval-current-env",
         "Example.ipynb",
-        *pathlib.Path("tests").glob("Test*.ipynb"),
+        *(
+            p
+            for p in pathlib.Path("tests").glob("**/Test*.ipynb")
+            if ".ipynb_checkpoints" not in p.parts
+        ),
     )
 
 

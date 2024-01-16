@@ -9,6 +9,11 @@ import ipytest._config
 import ipytest._impl
 
 
+@pytest.fixture()
+def value_from_conftest():
+    return 42
+
+
 @pytest.fixture(params=["func", "magic"])
 def ipytest_entry_point(request, run_cell_magic, scoped_config):
     """A unified interface for the main entry points of ipytest"""
