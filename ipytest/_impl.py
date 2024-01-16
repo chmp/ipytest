@@ -97,7 +97,7 @@ class Error(RuntimeError):
         return f"ipytest failed with exit_code {self.args[0]}"
 
 
-def pytest_magic(line, cell, module=None):
+def ipytest_magic(line, cell, module=None):
     """IPython magic to first execute the cell, then execute [`ipytest.run()`][ipytest.run].
 
     **Note:** the magics are only available after running
@@ -164,7 +164,7 @@ def pytest_magic(line, cell, module=None):
 
 # NOTE equivalent to @no_var_expand but does not require an IPython import
 # See also: IPython.core.magic.no_var_expand
-pytest_magic._ipython_magic_no_var_expand = True
+ipytest_magic._ipython_magic_no_var_expand = True
 
 
 def clean(pattern=default, *, module=None):
@@ -200,14 +200,6 @@ def clean(pattern=default, *, module=None):
 
     for key in to_delete:
         del items[key]
-
-
-def clean_tests(pattern=default, *, module=None):
-    print(
-        "ipytest.clean_tests is deprecated in favor of ipytest.clean",
-        file=sys.stderr,
-    )
-    clean(pattern, module=module)
 
 
 def reload(*mods):

@@ -366,9 +366,7 @@ def header_to_link(header: str) -> str:
         header = header.replace(c, "")
 
     header = header.replace(" ", "-")
-    header = header.lower()
-
-    return header
+    return header.lower()
 
 
 def splice_docs(readme: List[str], docs: List[str]) -> Iterable[str]:

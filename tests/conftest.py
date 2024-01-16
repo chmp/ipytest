@@ -9,6 +9,11 @@ import ipytest._config
 import ipytest._impl
 
 
+@pytest.fixture()
+def value_from_conftest():
+    return 42
+
+
 @pytest.fixture(params=["func", "magic"])
 def ipytest_entry_point(request, run_cell_magic, scoped_config):
     """A unified interface for the main entry points of ipytest"""
@@ -47,7 +52,7 @@ def run_cell_magic(mock_ipython):
         mock_ipython.module = module
 
         cell = inspect.cleandoc(cell)
-        ipytest._impl.pytest_magic(line, cell, module=module)
+        ipytest._impl.ipytest_magic(line, cell, module=module)
 
         return ipytest.exit_code
 
