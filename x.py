@@ -77,7 +77,7 @@ def integration():
 
 
 @cmd()
-def compile_requirements():
+def lock():
     _sh(f"{python} -m poetry lock")
     _sh(
         f"{python} -m poetry export --with=dev "
@@ -103,7 +103,7 @@ python = _q(__import__("sys").executable)
 
 if __name__ == "__main__":
     _sps = (_p := __import__("argparse").ArgumentParser()).add_subparsers()
-    for _f in (f for f in list(globals().values()) if hasattr(f, "@cmd")):
+    for _f in (f for _, f in sorted(globals().items()) if hasattr(f, "@cmd")):
         _sp = _sps.add_parser(_f.__name__.replace("_", "-"), **getattr(_f, "@cmd"))
         _sp.set_defaults(_=_f)
         [_sp.add_argument(*a, **kw) for a, kw in reversed(getattr(_f, "@arg", []))]
