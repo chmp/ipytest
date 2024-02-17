@@ -30,7 +30,7 @@ optional = true
 
 [tool.poetry.group.dev.dependencies]
 nbval = "^0.10.0"
-ruff = "^0.1.13"
+ruff = "^0.2.0"
 pytest-asyncio = "^0.23.0"
 build = "^1.0"
 poetry = "^1.7"
@@ -43,10 +43,7 @@ build-backend = "poetry.core.masonry.api"
 [project.urls]
 repository = "https://github.com/chmp/ipytest"
 
-[tool.setuptools]
-packages = ["ipytest"]
-
-[tool.ruff]
+[tool.ruff.lint]
 select = [
     "E",
     "F",
