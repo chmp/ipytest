@@ -4,8 +4,8 @@ Note: development is tracked on the [`develop` branch](https://github.com/chmp/i
 
 ## `0.14.0`
 
-- Removed support for Python 3.7 since reached its end of life
-- Updated the dev-requirements
+- Removed support for Python 3.7 after it reached its end of life
+- Updated the dev-requirements (in particular `pytest==8.0.0`)
 - Remove deprecated API (`ipytest.clean_tests`, `%%pytest`, `%%pytest[clean]`)
 
 ## `0.13.3`
