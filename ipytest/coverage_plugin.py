@@ -15,16 +15,18 @@ def coverage_init(reg, options):
 
 class IPythonPlugin(coverage.plugin.CoveragePlugin):
     def __init__(self):
+        self._filename_pattern = self._build_filename_pattern()
+
+    @classmethod
+    def _build_filename_pattern(self):
         try:
             import ipykernel.compiler
 
         except ImportError:
-            self._active = False
-            self._filename_pattern = None
+            return None
 
         else:
-            self._active = True
-            self._filename_pattern = re.compile(
+            return re.compile(
                 r"^"
                 + re.escape(ipykernel.compiler.get_tmp_directory())
                 + re.escape(os.sep)
@@ -41,7 +43,7 @@ class IPythonPlugin(coverage.plugin.CoveragePlugin):
         return IPythonFileReporter(filename)
 
     def _is_ipython_cell_file(self, filename: str):
-        if not self._active:
+        if self._filename_pattern is None:
             return False
 
         if os.path.exists(filename):
