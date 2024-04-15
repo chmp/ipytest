@@ -1,11 +1,11 @@
 """A plugin to support coverage in IPython notebooks"""
-import coverage.plugin
-import coverage.python
-import coverage.parser
-
 import linecache
 import os.path
 import re
+
+import coverage.parser
+import coverage.plugin
+import coverage.python
 
 
 def coverage_init(reg, options):
@@ -16,8 +16,10 @@ class IPythonPlugin(coverage.plugin.CoveragePlugin):
     ipython_cell_filename_pattern = r"^.*[\\/]ipykernel_\d+[\\/]\d+.py$"
 
     def file_tracer(self, filename):
-        if self._is_ipython_cell_file(filename):
-            return IPythonFileTracer(filename)
+        if not self._is_ipython_cell_file(filename):
+            return None
+
+        return IPythonFileTracer(filename)
 
     def file_reporter(self, filename):
         return IPythonFileReporter(filename)
