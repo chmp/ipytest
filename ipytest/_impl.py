@@ -274,7 +274,7 @@ def _build_full_args(args, filename, *, addopts, defopts):
     if defopts == "auto":
         defopts = eval_defopts_auto(all_args, arg_mapping)
 
-    return [*all_args, *([filename] if defopts else [])]
+    return [*all_args, *(["--", filename] if defopts else [])]
 
 
 class ArgMapping(dict):
