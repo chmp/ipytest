@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "ipytest"
-version = "0.14.0"
+version = "0.14.1"
 
 authors = ["Christopher Prohm <mail@cprohm.de>"]
 
