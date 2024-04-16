@@ -10,7 +10,8 @@ plugins =
     ipytest.cov
 ```
 
-With this config file, the coverage can be collected with
+With this config file, the coverage can be collected using
+[pytest-cov][ipytest-cov-pytest-cov] with
 
 ```pyhton
 %%ipytest --cov
@@ -20,6 +21,7 @@ def test():
 ```
 
 [coverage-py-config-docs]: https://coverage.readthedocs.io/en/latest/config.html
+[ipytest-cov-pytest-cov]: https://pytest-cov.readthedocs.io/en/latest/config.html
 """
 import linecache
 import os
