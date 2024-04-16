@@ -14,8 +14,6 @@ The configuration files need to be located next to the notebook in which
 `ipytest` is executed.
 
 [coverage-py-config-docs]: https://coverage.readthedocs.io/en/latest/config.html
-```
-
 """
 import linecache
 import os
@@ -25,6 +23,9 @@ import re
 import coverage.parser
 import coverage.plugin
 import coverage.python
+
+# prevent the definitions from being documented in the readme
+__all__ = []
 
 
 def coverage_init(reg, options):

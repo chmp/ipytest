@@ -323,27 +323,6 @@ The configuration files need to be located next to the notebook in which
 `ipytest` is executed.
 
 [coverage-py-config-docs]: https://coverage.readthedocs.io/en/latest/config.html
-```
-
-#### `ipytest.cov.coverage_init(reg, options)`
-
-[ipytest.cov.coverage_init]: #ipytestcovcoverage_initreg-options
-
-
-#### `ipytest.cov.IPythonPlugin()`
-
-[ipytest.cov.IPythonPlugin]: #ipytestcovipythonplugin
-
-
-#### `ipytest.cov.IPythonFileTracer(filename)`
-
-[ipytest.cov.IPythonFileTracer]: #ipytestcovipythonfiletracerfilename
-
-
-#### `ipytest.cov.IPythonFileReporter(morf: TMorf, coverage: Optional[Coverage] = None) -> None`
-
-[ipytest.cov.IPythonFileReporter]: #ipytestcovipythonfilereportermorf-tmorf-coverage-optionalcoverage--none---none
-
 
 <!-- minidoc -->
 
