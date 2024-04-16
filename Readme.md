@@ -378,7 +378,7 @@ very much on the plugin. The following plugins are known to not work:
 
 - [pytest-xdist](https://github.com/chmp/ipytest/issues/90)
 
-See [#ipytestcov] on how to use `ipytest` with
+See [`ipytest.cov`](#ipytestcov) on how to use `ipytest` with
 [pytest-cov](https://pytest-cov.readthedocs.io/en/latest/config.html).
 
 Please create an issue, if I missed a packaged or mischaracterized any package.
