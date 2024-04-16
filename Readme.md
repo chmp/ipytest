@@ -309,9 +309,9 @@ Error raised by ipytest on test failure
 
 A coverage.py plugin to support coverage in IPython notebooks
 
-The plugin must be enabled in the `.coveragerc` or the `pyproject.toml` file.
-See the [coverage.py docs][coverage-py-config-docs] for details. In case of a
-`.coveragerc` file, the minimal configuration reads:
+The plugin must be enabled in a `.coveragerc` next to the current notebook or
+the `pyproject.toml` file. See the [coverage.py docs][coverage-py-config-docs]
+for details. In case of a `.coveragerc` file, the minimal configuration reads:
 
 ```ini
 [run]
@@ -319,8 +319,14 @@ plugins =
     ipytest.cov
 ```
 
-The configuration files need to be located next to the notebook in which
-`ipytest` is executed.
+With this config file, the coverage can be collected with
+
+```pyhton
+%%ipytest --cov
+
+def test():
+    ...
+```
 
 [coverage-py-config-docs]: https://coverage.readthedocs.io/en/latest/config.html
 
