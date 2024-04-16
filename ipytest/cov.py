@@ -1,4 +1,5 @@
-"""A plugin to support coverage in IPython notebooks"""
+"""A coverage.py plugin to support coverage in IPython notebooks
+"""
 import linecache
 import os
 import os.path

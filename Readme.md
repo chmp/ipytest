@@ -304,6 +304,33 @@ Error raised by ipytest on test failure
 
 <!-- minidoc -->
 
+<!-- minidoc "module": "ipytest.cov", "header_depth": 3 -->
+### `ipytest.cov`
+
+A coverage.py plugin to support coverage in IPython notebooks
+
+#### `ipytest.cov.coverage_init(reg, options)`
+
+[ipytest.cov.coverage_init]: #ipytestcovcoverage_initreg-options
+
+
+#### `ipytest.cov.IPythonPlugin()`
+
+[ipytest.cov.IPythonPlugin]: #ipytestcovipythonplugin
+
+
+#### `ipytest.cov.IPythonFileTracer(filename)`
+
+[ipytest.cov.IPythonFileTracer]: #ipytestcovipythonfiletracerfilename
+
+
+#### `ipytest.cov.IPythonFileReporter(morf: TMorf, coverage: Optional[Coverage] = None) -> None`
+
+[ipytest.cov.IPythonFileReporter]: #ipytestcovipythonfilereportermorf-tmorf-coverage-optionalcoverage--none---none
+
+
+<!-- minidoc -->
+
 ## Development
 
 Setup a Python 3.10 virtual environment and install the requirements via
