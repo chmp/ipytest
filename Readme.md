@@ -96,6 +96,7 @@ this case, using [`ipytest.run()`][ipytest.run] and
 | [`clean`][ipytest.clean]
 | [`force_reload`][ipytest.force_reload]
 | [`Error`][ipytest.Error]
+| [`ipytest.cov`](#ipytestcov)
 
 <!-- minidoc "function": "ipytest.autoconfig", "header_depth": 3 -->
 ### `ipytest.autoconfig(rewrite_asserts=<default>, magics=<default>, clean=<default>, addopts=<default>, run_in_thread=<default>, defopts=<default>, display_columns=<default>, raise_on_error=<default>)`
@@ -304,6 +305,36 @@ Error raised by ipytest on test failure
 
 <!-- minidoc -->
 
+<!-- minidoc "module": "ipytest.cov", "header_depth": 3 -->
+### `ipytest.cov`
+
+A coverage.py plugin to support coverage in Jupyter notebooks
+
+The plugin must be enabled in a `.coveragerc` next to the current notebook or
+the `pyproject.toml` file. See the [coverage.py docs][coverage-py-config-docs]
+for details. In case of a `.coveragerc` file, the minimal configuration reads:
+
+```ini
+[run]
+plugins =
+    ipytest.cov
+```
+
+With this config file, the coverage can be collected using
+[pytest-cov][ipytest-cov-pytest-cov] with
+
+```pyhton
+%%ipytest --cov
+
+def test():
+    ...
+```
+
+[coverage-py-config-docs]: https://coverage.readthedocs.io/en/latest/config.html
+[ipytest-cov-pytest-cov]: https://pytest-cov.readthedocs.io/en/latest/config.html
+
+<!-- minidoc -->
+
 ## Development
 
 Setup a Python 3.10 virtual environment and install the requirements via
@@ -345,8 +376,10 @@ previous runs. These packages include:
 While PyTest itself is generally supported, support for PyTest plugins depends
 very much on the plugin. The following plugins are known to not work:
 
-- [pytest-cov](https://github.com/chmp/ipytest/issues/88)
 - [pytest-xdist](https://github.com/chmp/ipytest/issues/90)
+
+See [`ipytest.cov`](#ipytestcov) on how to use `ipytest` with
+[pytest-cov](https://pytest-cov.readthedocs.io/en/latest/config.html).
 
 Please create an issue, if I missed a packaged or mischaracterized any package.
 

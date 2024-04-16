@@ -12,5 +12,6 @@ __pycache__/
 .ipynb_checkpoints/
 .pytest_cache/
 .coverage
+coverage.json
 
 /.python-version
