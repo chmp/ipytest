@@ -1,4 +1,4 @@
-"""A coverage.py plugin to support coverage in IPython notebooks
+"""A coverage.py plugin to support coverage in Jupyter notebooks
 
 The plugin must be enabled in a `.coveragerc` next to the current notebook or
 the `pyproject.toml` file. See the [coverage.py docs][coverage-py-config-docs]

@@ -96,6 +96,7 @@ this case, using [`ipytest.run()`][ipytest.run] and
 | [`clean`][ipytest.clean]
 | [`force_reload`][ipytest.force_reload]
 | [`Error`][ipytest.Error]
+| [`ipytest.cov`](#ipytestcov)
 
 <!-- minidoc "function": "ipytest.autoconfig", "header_depth": 3 -->
 ### `ipytest.autoconfig(rewrite_asserts=<default>, magics=<default>, clean=<default>, addopts=<default>, run_in_thread=<default>, defopts=<default>, display_columns=<default>, raise_on_error=<default>)`
@@ -307,7 +308,7 @@ Error raised by ipytest on test failure
 <!-- minidoc "module": "ipytest.cov", "header_depth": 3 -->
 ### `ipytest.cov`
 
-A coverage.py plugin to support coverage in IPython notebooks
+A coverage.py plugin to support coverage in Jupyter notebooks
 
 The plugin must be enabled in a `.coveragerc` next to the current notebook or
 the `pyproject.toml` file. See the [coverage.py docs][coverage-py-config-docs]
