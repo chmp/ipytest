@@ -376,8 +376,10 @@ previous runs. These packages include:
 While PyTest itself is generally supported, support for PyTest plugins depends
 very much on the plugin. The following plugins are known to not work:
 
-- [pytest-cov](https://github.com/chmp/ipytest/issues/88)
 - [pytest-xdist](https://github.com/chmp/ipytest/issues/90)
+
+See [#ipytestcov] on how to use `ipytest` with
+[pytest-cov](https://pytest-cov.readthedocs.io/en/latest/config.html).
 
 Please create an issue, if I missed a packaged or mischaracterized any package.
 
