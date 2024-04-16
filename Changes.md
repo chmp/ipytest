@@ -2,6 +2,12 @@
 
 Note: development is tracked on the [`develop` branch](https://github.com/chmp/ipytest/tree/develop).
 
+## `0.14.1`
+
+- Add a [Coverage.py](https://coverage.readthedocs.io/en/latest/index.html)
+  plugin (`ipytest.cov`) to support collecting coverage information in
+  notebooks. See the Readme for usage notes.
+
 ## `0.14.0`
 
 - Removed support for Python 3.7 after it reached its end of life
