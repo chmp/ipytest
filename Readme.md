@@ -323,7 +323,7 @@ plugins =
 With this config file, the coverage can be collected using
 [pytest-cov][ipytest-cov-pytest-cov] with
 
-```pyhton
+```python
 %%ipytest --cov
 
 def test():
