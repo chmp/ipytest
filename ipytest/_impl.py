@@ -28,6 +28,7 @@ def run(
     addopts=default,
     defopts=default,
     display_columns=default,
+    coverage=default,
 ):
     """Execute all tests in the passed module (defaults to `__main__`) with pytest.
 
@@ -64,6 +65,7 @@ def run(
     addopts = default.unwrap(addopts, current_config["addopts"])
     defopts = default.unwrap(defopts, current_config["defopts"])
     display_columns = default.unwrap(display_columns, current_config["display_columns"])
+    coverage = default.unwrap(coverage, current_config["coverage"])
 
     if module is None:
         import __main__ as module
@@ -77,6 +79,7 @@ def run(
         addopts=addopts,
         defopts=defopts,
         display_columns=display_columns,
+        coverage=coverage,
     )
 
     ipytest.exit_code = exit_code
@@ -250,13 +253,15 @@ def force_reload(*include: str, modules: Optional[Dict[str, ModuleType]] = None)
         modules.pop(name, None)
 
 
-def _run_impl(*args, module, plugins, addopts, defopts, display_columns):
+def _run_impl(*args, module, plugins, addopts, defopts, display_columns, coverage):
     with _prepared_env(module, display_columns=display_columns) as filename:
-        full_args = _build_full_args(args, filename, addopts=addopts, defopts=defopts)
+        full_args = _build_full_args(
+            args, filename, addopts=addopts, defopts=defopts, coverage=coverage
+        )
         return pytest.main(full_args, plugins=[*plugins, FixProgramNamePlugin()])
 
 
-def _build_full_args(args, filename, *, addopts, defopts):
+def _build_full_args(args, filename, *, addopts, defopts, coverage):
     arg_mapping = ArgMapping(
         # use basename to ensure --deselect works
         # (see also: https://github.com/pytest-dev/pytest/issues/6751)
@@ -266,7 +271,16 @@ def _build_full_args(args, filename, *, addopts, defopts):
     def _fmt(arg):
         return arg.format_map(arg_mapping)
 
+    if coverage:
+        import ipytest.cov
+
+        coverage_args = ("--cov", f"--cov-config={ipytest.cov.config_path}")
+
+    else:
+        coverage_args = ()
+
     all_args = [
+        *coverage_args,
         *(_fmt(arg) for arg in addopts),
         *(_fmt(arg) for arg in args),
     ]

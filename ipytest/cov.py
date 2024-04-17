@@ -36,6 +36,9 @@ import coverage.python
 __all__ = []
 
 
+config_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "coveragerc")
+
+
 def coverage_init(reg, options):
     reg.add_file_tracer(IPythonPlugin())
 
