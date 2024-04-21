@@ -19,6 +19,11 @@ With this config file, the coverage can be collected using
 def test():
     ...
 ```
+There are some known issues of `ipytest.cov`
+
+- Each notebook cell is reported as an individual file
+- Marking code to be excluded in branch coverage is currently not supported
+  (incl. coveragepy pragmas)
 
 [coverage-py-config-docs]: https://coverage.readthedocs.io/en/latest/config.html
 [ipytest-cov-pytest-cov]: https://pytest-cov.readthedocs.io/en/latest/config.html
@@ -103,6 +108,11 @@ class IPythonFileTracer(coverage.plugin.FileTracer):
 
 
 class IPythonFileReporter(coverage.python.PythonFileReporter):
+    # TODO: implement fully from scratch to be independent from PythonFileReporter impl
+
+    def __repr__(self) -> str:
+        return f"<IPythonFileReporter {self.filename!r}>"
+
     @property
     def parser(self):
         if self._parser is None:
@@ -113,6 +123,10 @@ class IPythonFileReporter(coverage.python.PythonFileReporter):
 
     def source(self):
         if self.filename not in linecache.cache:
-            raise ValueError()
+            raise RuntimeError(f"Could not lookup source for {self.filename!r}")
 
         return "".join(linecache.cache[self.filename][2])
+
+    def no_branch_lines(self):
+        # TODO: figure out how to implement this (require coverage config)
+        return set()

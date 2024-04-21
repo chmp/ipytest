@@ -335,6 +335,11 @@ With this config file, the coverage can be collected using
 def test():
     ...
 ```
+There are some known issues of `ipytest.cov`
+
+- Each notebook cell is reported as an individual file
+- Marking code to be excluded in branch coverage is currently not supported
+  (incl. coveragepy pragmas)
 
 [coverage-py-config-docs]: https://coverage.readthedocs.io/en/latest/config.html
 [ipytest-cov-pytest-cov]: https://pytest-cov.readthedocs.io/en/latest/config.html
