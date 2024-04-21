@@ -1,6 +1,6 @@
 import pytest
 
-from ipytest.cov import find_coverage_configs
+from ipytest._impl import find_coverage_configs
 
 
 @pytest.mark.parametrize(

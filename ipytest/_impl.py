@@ -4,6 +4,7 @@ import fnmatch
 import importlib
 import os
 import pathlib
+import re
 import shlex
 import sys
 import threading
@@ -258,6 +259,9 @@ def _run_impl(*args, module, plugins, addopts, defopts, display_columns, coverag
         full_args = _build_full_args(
             args, filename, addopts=addopts, defopts=defopts, coverage=coverage
         )
+        if coverage:
+            warn_for_existing_coverage_configs()
+
         return pytest.main(full_args, plugins=[*plugins, FixProgramNamePlugin()])
 
 
@@ -535,3 +539,44 @@ def eval_defopts_auto(args: Sequence[str], arg_mapping: Mapping[str, str]) -> bo
     return all(
         not is_notebook_node_id(prev, arg) for prev, arg in zip([None, *args], args)
     )
+
+
+def warn_for_existing_coverage_configs():
+    if configs := find_coverage_configs("."):
+        print(
+            "Warning: found existing coverage.py configuration in "
+            f"{[p.name for p in configs]}. "
+            "These config files are ignored when using "
+            "`ipytest.autoconfig(coverage=True)`."
+            "Consider adding the `ipytest.cov` plugin directly to the config "
+            "files and adding  `--cov` to the `%%ipytest` invocation.",
+            file=sys.stderr,
+        )
+
+
+def find_coverage_configs(root):
+    root = pathlib.Path(root)
+
+    result = []
+    if (p := root.joinpath(".coveragerc")).exists():
+        result.append(p)
+
+    result += _find_files_with_lines(root, ["setup.cfg", "tox.ini"], r"^\[coverage:.*$")
+    result += _find_files_with_lines(root, ["pyproject.toml"], r"^\[tool\.coverage.*$")
+
+    return result
+
+
+def _find_files_with_lines(root, paths, pat):
+    for path in paths:
+        path = root.joinpath(path)
+        if path.exists():
+            try:
+                with open(path, "rt") as fobj:
+                    for line in fobj:
+                        if re.match(pat, line) is not None:
+                            yield path
+                            break
+
+            except Exception:
+                pass
