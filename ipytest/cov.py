@@ -10,7 +10,7 @@ plugins =
     ipytest.cov
 ```
 
-With this config file, the coverage can be collected using
+With this config file, coverage information can be collected using
 [pytest-cov][ipytest-cov-pytest-cov] with
 
 ```python
@@ -19,6 +19,11 @@ With this config file, the coverage can be collected using
 def test():
     ...
 ```
+
+`ipytest.autoconfig(coverage=True)` automatically adds the `--cov` flag and the
+path of a generated config file to the Pytest invocation. In this case no
+further configuration is required.
+
 There are some known issues of `ipytest.cov`
 
 - Each notebook cell is reported as an individual file
