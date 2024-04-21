@@ -189,9 +189,10 @@ The following settings are supported:
 * `magics` (default: `False`): if set to `True` register the ipytest magics
 * `coverage` (default: `False`): if `True` configure `pytest` to collect
   coverage information. This functionality requires the `pytest-cov` package
-  to be installed. It adds `--cov --cov-config={CONFIG}` to the arguments
-  when invoking `pytest`. **WARNING**: this option will hide existing
-  coverage configuration files
+  to be installed. It adds `--cov --cov-config={GENERATED_CONFIG}` to the
+  arguments when invoking `pytest`. **WARNING**: this option will hide
+  existing coverage configuration files. See [`ipytest.cov`](#ipytestcov)
+  for details
 * `clean` (default: `[Tt]est*`): the pattern used to clean variables
 * `addopts` (default: `()`): pytest command line arguments to prepend to
   every pytest invocation. For example setting
