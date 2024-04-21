@@ -37,6 +37,7 @@ import linecache
 import os
 import os.path
 import re
+from pathlib import Path
 
 import coverage.parser
 import coverage.plugin
@@ -49,13 +50,32 @@ __all__ = []
 config_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "coveragerc")
 
 
-def find_coverage_configs():
-    _cands = [".coveragerc", "setup.cfg", "tox.ini", "pyproject.toml"]
+def find_coverage_configs(root):
+    root = Path(root)
 
-    # setup.cfg, tox.ini: [coverage:
-    # pyproject.toml: [tool.coverage
+    result = []
+    if (p := root.joinpath(".coveragerc")).exists():
+        result.append(p)
 
-    pass
+    result += _find_files_with_lines(root, ["setup.cfg", "tox.ini"], r"^\[coverage:.*$")
+    result += _find_files_with_lines(root, ["pyproject.toml"], r"^\[tool\.coverage.*$")
+
+    return result
+
+
+def _find_files_with_lines(root, paths, pat):
+    for path in paths:
+        path = root.joinpath(path)
+        if path.exists():
+            try:
+                with open(path, "rt") as fobj:
+                    for line in fobj:
+                        if re.match(pat, line) is not None:
+                            yield path
+                            break
+
+            except Exception:
+                pass
 
 
 def coverage_init(reg, options):

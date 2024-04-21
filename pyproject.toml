@@ -60,10 +60,12 @@ select = [
 ]
 
 ignore = [
-    "E501", 
+    "E501",
     "SIM117",
     # poetry uses a non-standard pyproject.toml format
     "RUF200",
     # trailing comma rule may conflict with the formatter
     "COM812",
+    # wrong types in pytest.mark.parametrize
+    "PT006",
 ]
