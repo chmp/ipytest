@@ -39,6 +39,15 @@ __all__ = []
 config_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "coveragerc")
 
 
+def find_coverage_configs():
+    cands = [".coveragerc", "setup.cfg", "tox.ini", "pyproject.toml"]
+
+    # setup.cfg, tox.ini: [coverage:
+    # pyproject.toml: [tool.coverage
+
+    pass
+
+
 def coverage_init(reg, options):
     reg.add_file_tracer(IPythonPlugin())
 
