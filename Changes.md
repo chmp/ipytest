@@ -2,6 +2,14 @@
 
 Note: development is tracked on the [`develop` branch](https://github.com/chmp/ipytest/tree/develop).
 
+## `0.14.2`
+
+- Support collecting branch coverage in notebooks (e.g., via `--cov--branch`)
+- Add `ipytest.autoconfig(coverage=True)` to simplify using `pytest-cov` inside
+  notebooks
+- Add experimental `ipytest.cov.translate_cell_filenames()` to simplify
+  interpretation of collected coverage information
+
 ## `0.14.1`
 
 - Add a [Coverage.py](https://coverage.readthedocs.io/en/latest/index.html)

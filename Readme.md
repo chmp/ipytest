@@ -99,22 +99,23 @@ this case, using [`ipytest.run()`][ipytest.run] and
 | [`ipytest.cov`](#ipytestcov)
 
 <!-- minidoc "function": "ipytest.autoconfig", "header_depth": 3 -->
-### `ipytest.autoconfig(rewrite_asserts=<default>, magics=<default>, clean=<default>, addopts=<default>, run_in_thread=<default>, defopts=<default>, display_columns=<default>, raise_on_error=<default>)`
+### `ipytest.autoconfig(rewrite_asserts=<default>, magics=<default>, clean=<default>, addopts=<default>, run_in_thread=<default>, defopts=<default>, display_columns=<default>, raise_on_error=<default>, coverage=<default>)`
 
-[ipytest.autoconfig]: #ipytestautoconfigrewrite_assertsdefault-magicsdefault-cleandefault-addoptsdefault-run_in_threaddefault-defoptsdefault-display_columnsdefault-raise_on_errordefault
+[ipytest.autoconfig]: #ipytestautoconfigrewrite_assertsdefault-magicsdefault-cleandefault-addoptsdefault-run_in_threaddefault-defoptsdefault-display_columnsdefault-raise_on_errordefault-coveragedefault
 
 Configure `ipytest` with reasonable defaults.
 
 Specifically, it sets:
 
-* `rewrite_asserts`: `True`
-* `magics`: `True`
-* `clean`: `'[Tt]est*'`
 * `addopts`: `('-q', '--color=yes')`
-* `run_in_thread`: `False`
+* `clean`: `'[Tt]est*'`
+* `coverage`: `False`
 * `defopts`: `'auto'`
 * `display_columns`: `100`
+* `magics`: `True`
 * `raise_on_error`: `False`
+* `rewrite_asserts`: `True`
+* `run_in_thread`: `False`
 
 See [`ipytest.config`][ipytest.config] for details.
 
@@ -169,9 +170,9 @@ inside a CI/CD context, use `ipytest.autoconfig(raise_on_error=True)`.
 <!-- minidoc -->
 
 <!-- minidoc "function": "ipytest.config", "header_depth": 3 -->
-### `ipytest.config(rewrite_asserts=<keep>, magics=<keep>, clean=<keep>, addopts=<keep>, run_in_thread=<keep>, defopts=<keep>, display_columns=<keep>, raise_on_error=<keep>)`
+### `ipytest.config(rewrite_asserts=<keep>, magics=<keep>, clean=<keep>, addopts=<keep>, run_in_thread=<keep>, defopts=<keep>, display_columns=<keep>, raise_on_error=<keep>, coverage=<default>)`
 
-[ipytest.config]: #ipytestconfigrewrite_assertskeep-magicskeep-cleankeep-addoptskeep-run_in_threadkeep-defoptskeep-display_columnskeep-raise_on_errorkeep
+[ipytest.config]: #ipytestconfigrewrite_assertskeep-magicskeep-cleankeep-addoptskeep-run_in_threadkeep-defoptskeep-display_columnskeep-raise_on_errorkeep-coveragedefault
 
 Configure `ipytest`
 
@@ -186,6 +187,12 @@ The following settings are supported:
 * `rewrite_asserts` (default: `False`): enable ipython AST transforms
   globally to rewrite asserts
 * `magics` (default: `False`): if set to `True` register the ipytest magics
+* `coverage` (default: `False`): if `True` configure `pytest` to collect
+  coverage information. This functionality requires the `pytest-cov` package
+  to be installed. It adds `--cov --cov-config={GENERATED_CONFIG}` to the
+  arguments when invoking `pytest`. **WARNING**: this option will hide
+  existing coverage configuration files. See [`ipytest.cov`](#ipytestcov)
+  for details
 * `clean` (default: `[Tt]est*`): the pattern used to clean variables
 * `addopts` (default: `()`): pytest command line arguments to prepend to
   every pytest invocation. For example setting
@@ -217,9 +224,9 @@ The following settings are supported:
 The return code of the last pytest invocation.
 
 <!-- minidoc "function": "ipytest.run", "header_depth": 3 -->
-### `ipytest.run(*args, module=None, plugins=(), run_in_thread=<default>, raise_on_error=<default>, addopts=<default>, defopts=<default>, display_columns=<default>)`
+### `ipytest.run(*args, module=None, plugins=(), run_in_thread=<default>, raise_on_error=<default>, addopts=<default>, defopts=<default>, display_columns=<default>, coverage=<default>)`
 
-[ipytest.run]: #ipytestrunargs-modulenone-plugins-run_in_threaddefault-raise_on_errordefault-addoptsdefault-defoptsdefault-display_columnsdefault
+[ipytest.run]: #ipytestrunargs-modulenone-plugins-run_in_threaddefault-raise_on_errordefault-addoptsdefault-defoptsdefault-display_columnsdefault-coveragedefault
 
 Execute all tests in the passed module (defaults to `__main__`) with pytest.
 
@@ -320,7 +327,7 @@ plugins =
     ipytest.cov
 ```
 
-With this config file, the coverage can be collected using
+With this config file, coverage information can be collected using
 [pytest-cov][ipytest-cov-pytest-cov] with
 
 ```python
@@ -330,8 +337,34 @@ def test():
     ...
 ```
 
+`ipytest.autoconfig(coverage=True)` automatically adds the `--cov` flag and the
+path of a generated config file to the Pytest invocation. In this case no
+further configuration is required.
+
+There are some known issues of `ipytest.cov`
+
+- Each notebook cell is reported as an individual file
+- Lines that are executed at import time may not be encountered in tracing and
+  may be reported as not-covered (One example is the line of a function
+  definition)
+- Marking code to be excluded in branch coverage is currently not supported
+  (incl. coveragepy pragmas)
+
 [coverage-py-config-docs]: https://coverage.readthedocs.io/en/latest/config.html
 [ipytest-cov-pytest-cov]: https://pytest-cov.readthedocs.io/en/latest/config.html
+
+#### `ipytest.cov.translate_cell_filenames(enabled=True)`
+
+[ipytest.cov.translate_cell_filenames]: #ipytestcovtranslate_cell_filenamesenabledtrue
+
+Translate the filenames of notebook cells in coverage information.
+
+If enabled, `ipytest.cov` will translate the temporary file names generated
+by ipykernel (e.g, `ipykernel_24768/3920661193.py`) to their cell names
+(e.g., `In[6]`).
+
+**Warning**: this is an experimental feature and not subject to any
+stability guarantees.
 
 <!-- minidoc -->
 

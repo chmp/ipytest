@@ -4,6 +4,7 @@ import fnmatch
 import importlib
 import os
 import pathlib
+import re
 import shlex
 import sys
 import threading
@@ -28,6 +29,7 @@ def run(
     addopts=default,
     defopts=default,
     display_columns=default,
+    coverage=default,
 ):
     """Execute all tests in the passed module (defaults to `__main__`) with pytest.
 
@@ -64,6 +66,7 @@ def run(
     addopts = default.unwrap(addopts, current_config["addopts"])
     defopts = default.unwrap(defopts, current_config["defopts"])
     display_columns = default.unwrap(display_columns, current_config["display_columns"])
+    coverage = default.unwrap(coverage, current_config["coverage"])
 
     if module is None:
         import __main__ as module
@@ -77,6 +80,7 @@ def run(
         addopts=addopts,
         defopts=defopts,
         display_columns=display_columns,
+        coverage=coverage,
     )
 
     ipytest.exit_code = exit_code
@@ -250,13 +254,18 @@ def force_reload(*include: str, modules: Optional[Dict[str, ModuleType]] = None)
         modules.pop(name, None)
 
 
-def _run_impl(*args, module, plugins, addopts, defopts, display_columns):
+def _run_impl(*args, module, plugins, addopts, defopts, display_columns, coverage):
     with _prepared_env(module, display_columns=display_columns) as filename:
-        full_args = _build_full_args(args, filename, addopts=addopts, defopts=defopts)
+        full_args = _build_full_args(
+            args, filename, addopts=addopts, defopts=defopts, coverage=coverage
+        )
+        if coverage:
+            warn_for_existing_coverage_configs()
+
         return pytest.main(full_args, plugins=[*plugins, FixProgramNamePlugin()])
 
 
-def _build_full_args(args, filename, *, addopts, defopts):
+def _build_full_args(args, filename, *, addopts, defopts, coverage):
     arg_mapping = ArgMapping(
         # use basename to ensure --deselect works
         # (see also: https://github.com/pytest-dev/pytest/issues/6751)
@@ -266,7 +275,16 @@ def _build_full_args(args, filename, *, addopts, defopts):
     def _fmt(arg):
         return arg.format_map(arg_mapping)
 
+    if coverage:
+        import ipytest.cov
+
+        coverage_args = ("--cov", f"--cov-config={ipytest.cov.config_path}")
+
+    else:
+        coverage_args = ()
+
     all_args = [
+        *coverage_args,
         *(_fmt(arg) for arg in addopts),
         *(_fmt(arg) for arg in args),
     ]
@@ -521,3 +539,44 @@ def eval_defopts_auto(args: Sequence[str], arg_mapping: Mapping[str, str]) -> bo
     return all(
         not is_notebook_node_id(prev, arg) for prev, arg in zip([None, *args], args)
     )
+
+
+def warn_for_existing_coverage_configs():
+    if configs := find_coverage_configs("."):
+        print(
+            "Warning: found existing coverage.py configuration in "
+            f"{[p.name for p in configs]}. "
+            "These config files are ignored when using "
+            "`ipytest.autoconfig(coverage=True)`."
+            "Consider adding the `ipytest.cov` plugin directly to the config "
+            "files and adding  `--cov` to the `%%ipytest` invocation.",
+            file=sys.stderr,
+        )
+
+
+def find_coverage_configs(root):
+    root = pathlib.Path(root)
+
+    result = []
+    if (p := root.joinpath(".coveragerc")).exists():
+        result.append(p)
+
+    result += _find_files_with_lines(root, ["setup.cfg", "tox.ini"], r"^\[coverage:.*$")
+    result += _find_files_with_lines(root, ["pyproject.toml"], r"^\[tool\.coverage.*$")
+
+    return result
+
+
+def _find_files_with_lines(root, paths, pat):
+    for path in paths:
+        path = root.joinpath(path)
+        if path.exists():
+            try:
+                with open(path, "rt") as fobj:
+                    for line in fobj:
+                        if re.match(pat, line) is not None:
+                            yield path
+                            break
+
+            except Exception:
+                pass
