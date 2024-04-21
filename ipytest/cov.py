@@ -45,7 +45,7 @@ config_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "coverage
 
 
 def find_coverage_configs():
-    cands = [".coveragerc", "setup.cfg", "tox.ini", "pyproject.toml"]
+    _cands = [".coveragerc", "setup.cfg", "tox.ini", "pyproject.toml"]
 
     # setup.cfg, tox.ini: [coverage:
     # pyproject.toml: [tool.coverage
