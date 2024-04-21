@@ -344,11 +344,27 @@ further configuration is required.
 There are some known issues of `ipytest.cov`
 
 - Each notebook cell is reported as an individual file
+- Lines that are executed at import time may not be encountered in tracing and
+  may be reported as not-covered (One example is the line of a function
+  definition)
 - Marking code to be excluded in branch coverage is currently not supported
   (incl. coveragepy pragmas)
 
 [coverage-py-config-docs]: https://coverage.readthedocs.io/en/latest/config.html
 [ipytest-cov-pytest-cov]: https://pytest-cov.readthedocs.io/en/latest/config.html
+
+#### `ipytest.cov.translate_cell_filenames(enabled=True)`
+
+[ipytest.cov.translate_cell_filenames]: #ipytestcovtranslate_cell_filenamesenabledtrue
+
+Translate the filenames of notebook cells in coverage information.
+
+If enabled, `ipytest.cov` will translate the temporary file names generated
+by ipykernel (e.g, `ipykernel_24768/3920661193.py`) to their cell names
+(e.g., `In[6]`).
+
+**Warning**: this is an experimental feature and not subject to any
+stability guarantees.
 
 <!-- minidoc -->
 
