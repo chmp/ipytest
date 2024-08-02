@@ -99,9 +99,9 @@ this case, using [`ipytest.run()`][ipytest.run] and
 | [`ipytest.cov`](#ipytestcov)
 
 <!-- minidoc "function": "ipytest.autoconfig", "header_depth": 3 -->
-### `ipytest.autoconfig(rewrite_asserts=<default>, magics=<default>, clean=<default>, addopts=<default>, run_in_thread=<default>, defopts=<default>, display_columns=<default>, raise_on_error=<default>, coverage=<default>)`
+### `ipytest.autoconfig(rewrite_asserts=<default>, magics=<default>, clean=<default>, addopts=<default>, run_in_thread=<default>, defopts=<default>, display_columns=<default>, raise_on_error=<default>, coverage=<default>, force_reload=<default>)`
 
-[ipytest.autoconfig]: #ipytestautoconfigrewrite_assertsdefault-magicsdefault-cleandefault-addoptsdefault-run_in_threaddefault-defoptsdefault-display_columnsdefault-raise_on_errordefault-coveragedefault
+[ipytest.autoconfig]: #ipytestautoconfigrewrite_assertsdefault-magicsdefault-cleandefault-addoptsdefault-run_in_threaddefault-defoptsdefault-display_columnsdefault-raise_on_errordefault-coveragedefault-force_reloaddefault
 
 Configure `ipytest` with reasonable defaults.
 
@@ -116,6 +116,7 @@ Specifically, it sets:
 * `raise_on_error`: `False`
 * `rewrite_asserts`: `True`
 * `run_in_thread`: `False`
+* `force_reload`: `()`
 
 See [`ipytest.config`][ipytest.config] for details.
 
@@ -170,9 +171,9 @@ inside a CI/CD context, use `ipytest.autoconfig(raise_on_error=True)`.
 <!-- minidoc -->
 
 <!-- minidoc "function": "ipytest.config", "header_depth": 3 -->
-### `ipytest.config(rewrite_asserts=<keep>, magics=<keep>, clean=<keep>, addopts=<keep>, run_in_thread=<keep>, defopts=<keep>, display_columns=<keep>, raise_on_error=<keep>, coverage=<default>)`
+### `ipytest.config(rewrite_asserts=<keep>, magics=<keep>, clean=<keep>, addopts=<keep>, run_in_thread=<keep>, defopts=<keep>, display_columns=<keep>, raise_on_error=<keep>, coverage=<keep>, force_reload=<keep>)`
 
-[ipytest.config]: #ipytestconfigrewrite_assertskeep-magicskeep-cleankeep-addoptskeep-run_in_threadkeep-defoptskeep-display_columnskeep-raise_on_errorkeep-coveragedefault
+[ipytest.config]: #ipytestconfigrewrite_assertskeep-magicskeep-cleankeep-addoptskeep-run_in_threadkeep-defoptskeep-display_columnskeep-raise_on_errorkeep-coveragekeep-force_reloadkeep
 
 Configure `ipytest`
 
@@ -211,9 +212,12 @@ The following settings are supported:
 * `display_columns` (default: `100`): if not `False`, configure pytest to
   use the given number of columns for its output. This option will
   temporarily override the `COLUMNS` environment variable.
-* `raise_on_error` (default `False` ): if `True`,
+* `raise_on_error` (default `False`): if `True`,
   [`ipytest.run`][ipytest.run] and [`%%ipytest`][ipytest.ipytest] will raise
   an `ipytest.Error` if pytest fails.
+* `force_reload` (default `()`): a sequence of modules to remove from the
+  global module cache before executing tests. The listed modules are passed
+  to [`ipytest.force_reload`][ipytest.force_reload].
 
 <!-- minidoc -->
 
@@ -224,9 +228,9 @@ The following settings are supported:
 The return code of the last pytest invocation.
 
 <!-- minidoc "function": "ipytest.run", "header_depth": 3 -->
-### `ipytest.run(*args, module=None, plugins=(), run_in_thread=<default>, raise_on_error=<default>, addopts=<default>, defopts=<default>, display_columns=<default>, coverage=<default>)`
+### `ipytest.run(*args, module=None, plugins=(), run_in_thread=<default>, raise_on_error=<default>, addopts=<default>, defopts=<default>, display_columns=<default>, coverage=<default>, force_reload=<default>)`
 
-[ipytest.run]: #ipytestrunargs-modulenone-plugins-run_in_threaddefault-raise_on_errordefault-addoptsdefault-defoptsdefault-display_columnsdefault-coveragedefault
+[ipytest.run]: #ipytestrunargs-modulenone-plugins-run_in_threaddefault-raise_on_errordefault-addoptsdefault-defoptsdefault-display_columnsdefault-coveragedefault-force_reloaddefault
 
 Execute all tests in the passed module (defaults to `__main__`) with pytest.
 

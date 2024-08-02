@@ -30,6 +30,7 @@ def run(
     defopts=default,
     display_columns=default,
     coverage=default,
+    force_reload=default,
 ):
     """Execute all tests in the passed module (defaults to `__main__`) with pytest.
 
@@ -67,6 +68,7 @@ def run(
     defopts = default.unwrap(defopts, current_config["defopts"])
     display_columns = default.unwrap(display_columns, current_config["display_columns"])
     coverage = default.unwrap(coverage, current_config["coverage"])
+    force_reload = default.unwrap(force_reload, current_config["force_reload"])
 
     if module is None:
         import __main__ as module
@@ -81,6 +83,7 @@ def run(
         defopts=defopts,
         display_columns=display_columns,
         coverage=coverage,
+        force_reload_=force_reload,
     )
 
     ipytest.exit_code = exit_code
@@ -273,7 +276,15 @@ def reload_pattern_match(reload_pattern: str, module_name: str) -> bool:
     )
 
 
-def _run_impl(*args, module, plugins, addopts, defopts, display_columns, coverage):
+def _run_impl(
+    *args, module, plugins, addopts, defopts, display_columns, coverage, force_reload_
+):
+    if isinstance(force_reload_, str):
+        force_reload(force_reload_)
+
+    elif force_reload_:
+        force_reload(*force_reload_)
+
     with _prepared_env(module, display_columns=display_columns) as filename:
         full_args = _build_full_args(
             args, filename, addopts=addopts, defopts=defopts, coverage=coverage

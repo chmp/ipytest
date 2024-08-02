@@ -6,6 +6,8 @@ Note: development is tracked on the [`develop` branch](https://github.com/chmp/i
 
 - Support glob patterns in `ipytest.force_reload`. E.g.,
   `ipytest.force_reload("test_*")`
+- Add `ipytest.autoconfig(force_reload=["test_*"])` to clear test modules on
+  each `ipytest` invocation
 
 ## `0.14.2`
 

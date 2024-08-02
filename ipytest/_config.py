@@ -14,6 +14,7 @@ defaults = {
     "raise_on_error": False,
     "rewrite_asserts": True,
     "run_in_thread": False,
+    "force_reload": (),
 }
 
 current_config = {
@@ -26,6 +27,7 @@ current_config = {
     "raise_on_error": False,
     "rewrite_asserts": False,
     "run_in_thread": False,
+    "force_reload": (),
 }
 
 _rewrite_transformer = None
@@ -70,6 +72,7 @@ def autoconfig(
     display_columns=default,
     raise_on_error=default,
     coverage=default,
+    force_reload=default,
 ):
     """Configure `ipytest` with reasonable defaults.
 
@@ -94,7 +97,8 @@ def config(
     defopts=keep,
     display_columns=keep,
     raise_on_error=keep,
-    coverage=default,
+    coverage=keep,
+    force_reload=keep,
 ):
     """Configure `ipytest`
 
@@ -133,9 +137,12 @@ def config(
     * `display_columns` (default: `100`): if not `False`, configure pytest to
       use the given number of columns for its output. This option will
       temporarily override the `COLUMNS` environment variable.
-    * `raise_on_error` (default `False` ): if `True`,
+    * `raise_on_error` (default `False`): if `True`,
       [`ipytest.run`][ipytest.run] and [`%%ipytest`][ipytest.ipytest] will raise
       an `ipytest.Error` if pytest fails.
+    * `force_reload` (default `()`): a sequence of modules to remove from the
+      global module cache before executing tests. The listed modules are passed
+      to [`ipytest.force_reload`][ipytest.force_reload].
     """
     args = collect_args()
     new_config = {
