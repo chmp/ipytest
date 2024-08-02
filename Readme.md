@@ -58,10 +58,19 @@ There are multiple sources of global state when using pytest inside the notebook
    [`ipytest.force_reload()`][ipytest.force_reload] function. The `autoreload`
    extension of IPython may also help here. To test local packages, it is
    advisable to install them as development packages, e.g., `pip install -e .`.
+
+   Note that local test files are [imported by pytest][pytest-import-docs] and
+   fall under the same restriction as other modules. To test the most recent
+   version of the tests the corresponding modules need to be reloaded as well.
+   For example by configuring `ipytest` with
+   `ipytest.autoconfig(force_reload="test_*")`, when not using packages, or
+   `ipytest.autoconfig(force_reload="tests")`, when using packages.
 3. For async code, IPython will create an event loop in the current thread. This
    setup may interfere with async tests. To support these use cases, ipytest
    supports running tests in a separate thread. Simply setup ipytest via
    `ipytest.autoconfig(run_in_thread=True)`.
+
+[pytest-import-docs]: https://docs.pytest.org/en/latest/explanation/pythonpath.html
 
 ## How does it work?
 
