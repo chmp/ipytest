@@ -4,14 +4,14 @@ import ipytest
 
 
 @pytest.mark.parametrize(
-    ("include", "expected"),
+    ("include", "removed"),
     [
-        ("foo", ()),
-        ("foo.bar", ("foo", "foo.baz")),
-        ("f", ("foo", "foo.bar", "foo.baz")),
+        ("foo", ("foo", "foo.bar", "foo.baz")),
+        ("foo.bar", ("foo.bar",)),
+        ("f", ()),
     ],
 )
-def test_force_reload_example(include, expected):
+def test_force_reload_example(include, removed):
     modules = {
         "foo": None,
         "foo.bar": None,
@@ -19,7 +19,7 @@ def test_force_reload_example(include, expected):
     }
 
     ipytest.force_reload(include, modules=modules)
-    assert set(modules) == set(expected)
+    assert set(modules) == (set(modules) - set(removed))
 
 
 def test_forc_reload():
