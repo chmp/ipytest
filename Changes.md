@@ -2,6 +2,11 @@
 
 Note: development is tracked on the [`develop` branch](https://github.com/chmp/ipytest/tree/develop).
 
+## `development`
+
+- Support glob patterns in `ipytest.force_reload`. E.g.,
+  `ipytest.force_reload("test_*")`
+
 ## `0.14.2`
 
 - Support collecting branch coverage in notebooks (e.g., via `--cov--branch`)

@@ -290,16 +290,25 @@ as expected.
 Ensure following imports of the listed modules reload the code from disk
 
 The given modules and their submodules are removed from `sys.modules`.
-Next time the modules are imported, they are loaded from disk.
+Next time the modules are imported, they are loaded from disk. The module
+names can use glob patterns, e.g., `test_*` to delete all test modules.
 
-If given, the parameter `modules` should be a dictionary of modules to use
-instead of `sys.modules`.
+If given, the parameter `modules` should be a dictionary of modules to work
+on instead of `sys.modules`.
 
 Usage:
 
 ```python
 ipytest.force_reload("my_package")
 from my_package.submodule import my_function
+```
+
+This function can be used to ensure that the most recent version of test
+files is used inside notebook via:
+
+```python
+ipytest.force_reload("test_*")
+ipytest.run(".")
 ```
 
 <!-- minidoc -->

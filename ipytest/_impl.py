@@ -226,10 +226,11 @@ def force_reload(*include: str, modules: Optional[Dict[str, ModuleType]] = None)
     """Ensure following imports of the listed modules reload the code from disk
 
     The given modules and their submodules are removed from `sys.modules`.
-    Next time the modules are imported, they are loaded from disk.
+    Next time the modules are imported, they are loaded from disk. The module
+    names can use glob patterns, e.g., `test_*` to delete all test modules.
 
-    If given, the parameter `modules` should be a dictionary of modules to use
-    instead of `sys.modules`.
+    If given, the parameter `modules` should be a dictionary of modules to work
+    on instead of `sys.modules`.
 
     Usage:
 
@@ -237,21 +238,39 @@ def force_reload(*include: str, modules: Optional[Dict[str, ModuleType]] = None)
     ipytest.force_reload("my_package")
     from my_package.submodule import my_function
     ```
+
+    This function can be used to ensure that the most recent version of test
+    files is used inside notebook via:
+
+    ```python
+    ipytest.force_reload("test_*")
+    ipytest.run(".")
+    ```
     """
     if modules is None:
         modules = sys.modules
 
-    include_exact = set(include)
-    include_prefixes = tuple(name + "." for name in include)
-
     to_delete = [
         name
         for name in modules
-        if (name in include_exact or name.startswith(include_prefixes))
+        if any(reload_pattern_match(pattern, name) for pattern in include)
     ]
 
     for name in to_delete:
         modules.pop(name, None)
+
+
+def reload_pattern_match(reload_pattern: str, module_name: str) -> bool:
+    pattern_parts = reload_pattern.split(".")
+    name_parts = module_name.split(".")
+
+    if len(name_parts) < len(pattern_parts):
+        return False
+
+    return all(
+        fnmatch.fnmatchcase(name, pattern)
+        for pattern, name in zip(pattern_parts, name_parts)
+    )
 
 
 def _run_impl(*args, module, plugins, addopts, defopts, display_columns, coverage):
