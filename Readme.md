@@ -1,4 +1,4 @@
-# ipytest - Pytest in Jupyter notebooks
+# ipytest - pytest in Jupyter notebooks
 
 [PyPI](https://pypi.org/project/ipytest)
 | [Usage](#usage)
@@ -10,7 +10,7 @@
 | [Related packages](#related-packages)
 | [License](#license)
 
-`ipytest` allows you to run [Pytest](https://pytest.org) in Jupyter notebooks.
+`ipytest` allows you to run [pytest](https://pytest.org) in Jupyter notebooks.
 `ipytest` aims to give access to the full `pytest` experience and to make it
 easy to transfer tests out of notebooks into separate test files.
 
@@ -44,31 +44,30 @@ and then run pytest. For further details on how to use `ipytest` see the
 
 ## Global state
 
-There are multiple sources of global state when using pytest inside the notebook:
+There are multiple sources of global state when using `pytest` inside the notebook:
 
-1. pytest will find any test function ever defined. This behavior can lead to
-   unexpected results when test functions are renamed, as their previous
-   definition is still available inside the kernel. Running
-   [`%%ipytest`][ipytest.ipytest] per default deletes any previously defined
-   tests. As an alternative the [`ipytest.clean()`][ipytest.clean]
-   function allows to delete previously defined tests.
-2. Python's module system caches imports and therefore acts as a global state.
-   To test the most recent version of any module, the module needs to be
-   reloaded. `ipytest` offers the
-   [`ipytest.force_reload()`][ipytest.force_reload] function. The `autoreload`
-   extension of IPython may also help here. To test local packages, it is
-   advisable to install them as development packages, e.g., `pip install -e .`.
+1. `pytest` will find any test function ever defined. This behavior can lead to unexpected results
+   when test functions are renamed, as their previous definition is still available inside the
+   kernel. Running [`%%ipytest`][ipytest.ipytest] per default deletes any previously defined tests.
+   The [`ipytest.clean()`][ipytest.clean] function allows to delete previously defined tests, as
+   well.
+2. Python's module system caches imports and therefore acts as a global state. To test the most
+   recent version of any module, the module needs to be reloaded. `ipytest` offers the
+   [`ipytest.force_reload()`][ipytest.force_reload] function. The `autoreload` extension of IPython
+   may also help here. To test local packages, it is advisable to install them as development
+   packages, e.g., `pip install -e .`.
 
-   Note that local test files are [imported by pytest][pytest-import-docs] and
-   fall under the same restriction as other modules. To test the most recent
-   version of the tests, the corresponding modules need to be reloaded as well.
-   For example by configuring `ipytest` with
-   `ipytest.autoconfig(force_reload="test_*")`, when not using packages, or
-   `ipytest.autoconfig(force_reload="tests")`, when using packages.
-3. For async code, IPython will create an event loop in the current thread. This
-   setup may interfere with async tests. To support these use cases, ipytest
-   supports running tests in a separate thread. Simply setup ipytest via
-   `ipytest.autoconfig(run_in_thread=True)`.
+   Note that local test files are imported by `pytest` and fall under the same restriction as other
+   modules. To test the most recent version of the tests, the corresponding modules need to be
+   reloaded. The [import behavior][pytest-import-docs] depends on both whether the tests are
+   organized as packages (are `__init__.py` files present?) and the `pytest` configuration. For the
+   default `pytest` configuration, `ipytest` can be configured with
+   `ipytest.autoconfig(force_reload="test_*")`, assuming test modules prefixed with `test_` not
+   organized into packages, or `ipytest.autoconfig(force_reload="tests")`, assuming tests grouped in
+   a `tests` package.
+3. For async code, IPython will create an event loop in the current thread. This setup may interfere
+   with async tests. To support these use cases, ipytest supports running tests in a separate
+   thread. Simply setup ipytest via `ipytest.autoconfig(run_in_thread=True)`.
 
 [pytest-import-docs]: https://docs.pytest.org/en/latest/explanation/pythonpath.html
 
@@ -77,15 +76,15 @@ There are multiple sources of global state when using pytest inside the notebook
 In its default configuration (via `autoconfig()`), `ipytest` performs the
 following steps:
 
-1. Register pytest's assertion rewriter with the IPython kernel. The rewriter
+1. Register `pytest`'s assertion rewriter with the IPython kernel. The rewriter
    will rewrite any assert statements entered into the notebook to give better
    error messages. This change will affect also non test based code, but should
    generally improve the development experience.
 2. Ensure the notebook can be mapped to a file. `ipytest` will create a
    temporary file in the current directory and remove if afterwards.
 3. Register the notebook scope temporarily as a module. This step is necessary
-   to allow pytest's doctest plugin to import the notebook.
-4. Call pytest with the name of the temporary module
+   to allow `pytest`'s doctest plugin to import the notebook.
+4. Call `pytest` with the name of the temporary module
 
 **NOTE:** Some notebook implementations modify the core IPython package and
 magics may not work correctly (see [here][issue-47] or [here][issue-50]). In
@@ -147,7 +146,7 @@ current cell are executed. To disable this behavior, use
 [`ipytest.config(clean=False)`][ipytest.config].
 
 Any arguments passed on the magic line are interpreted as command line
-arguments to to pytest. For example calling the magic as
+arguments to to `pytest`. For example calling the magic as
 
 ```python
 %%ipytest -qq

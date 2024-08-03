@@ -112,7 +112,7 @@ def ipytest_magic(line, cell, module=None):
     [`ipytest.config(clean=False)`][ipytest.config].
 
     Any arguments passed on the magic line are interpreted as command line
-    arguments to to pytest. For example calling the magic as
+    arguments to to `pytest`. For example calling the magic as
 
     ```python
     %%ipytest -qq
