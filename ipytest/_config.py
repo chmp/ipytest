@@ -142,7 +142,9 @@ def config(
       an `ipytest.Error` if pytest fails.
     * `force_reload` (default `()`): a sequence of modules to remove from the
       global module cache before executing tests. The listed modules are passed
-      to [`ipytest.force_reload`][ipytest.force_reload].
+      to [`ipytest.force_reload`][ipytest.force_reload]. For simplicity, a
+      single module can also be specified as a string. Glob-style wildcards are
+      supported.
     """
     args = collect_args()
     new_config = {

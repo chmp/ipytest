@@ -50,13 +50,9 @@ def run(
 
     The following parameters override the config options set with
     [`ipytest.config()`][ipytest.config] or
-    [`ipytest.autoconfig()`][ipytest.autoconfig].
-
-    - `run_in_thread`: if given, override the config option "run_in_thread".
-    - `raise_on_error`: if given, override the config option "raise_on_error".
-    - `addopts`: if given, override the config option "addopts".
-    - `defopts`: if given, override the config option "defopts".
-    - `display_columns`: if given, override the config option "display_columns".
+    [`ipytest.autoconfig()`][ipytest.autoconfig]: `run_in_thread`,
+    `raise_on_error`, `addopts`, `defopts`, `display_columns`, `coverage`,
+    `force_reload`.
 
     **Returns**: the exit code of `pytest.main`.
     """

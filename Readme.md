@@ -61,7 +61,7 @@ There are multiple sources of global state when using pytest inside the notebook
 
    Note that local test files are [imported by pytest][pytest-import-docs] and
    fall under the same restriction as other modules. To test the most recent
-   version of the tests the corresponding modules need to be reloaded as well.
+   version of the tests, the corresponding modules need to be reloaded as well.
    For example by configuring `ipytest` with
    `ipytest.autoconfig(force_reload="test_*")`, when not using packages, or
    `ipytest.autoconfig(force_reload="tests")`, when using packages.
@@ -226,7 +226,9 @@ The following settings are supported:
   an `ipytest.Error` if pytest fails.
 * `force_reload` (default `()`): a sequence of modules to remove from the
   global module cache before executing tests. The listed modules are passed
-  to [`ipytest.force_reload`][ipytest.force_reload].
+  to [`ipytest.force_reload`][ipytest.force_reload]. For simplicity, a
+  single module can also be specified as a string. Glob-style wildcards are
+  supported.
 
 <!-- minidoc -->
 
@@ -259,13 +261,9 @@ inside a CI/CD context, use `ipytest.autoconfig(raise_on_error=True)`.
 
 The following parameters override the config options set with
 [`ipytest.config()`][ipytest.config] or
-[`ipytest.autoconfig()`][ipytest.autoconfig].
-
-- `run_in_thread`: if given, override the config option "run_in_thread".
-- `raise_on_error`: if given, override the config option "raise_on_error".
-- `addopts`: if given, override the config option "addopts".
-- `defopts`: if given, override the config option "defopts".
-- `display_columns`: if given, override the config option "display_columns".
+[`ipytest.autoconfig()`][ipytest.autoconfig]: `run_in_thread`,
+`raise_on_error`, `addopts`, `defopts`, `display_columns`, `coverage`,
+`force_reload`.
 
 **Returns**: the exit code of `pytest.main`.
 
