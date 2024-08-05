@@ -5,25 +5,29 @@ import warnings
 default_clean = "[Tt]est*"
 
 defaults = {
-    "rewrite_asserts": True,
-    "magics": True,
-    "clean": default_clean,
     "addopts": ("-q", "--color=yes"),
-    "run_in_thread": False,
+    "clean": default_clean,
+    "coverage": False,
     "defopts": "auto",
     "display_columns": 100,
+    "magics": True,
     "raise_on_error": False,
+    "rewrite_asserts": True,
+    "run_in_thread": False,
+    "force_reload": (),
 }
 
 current_config = {
-    "rewrite_asserts": False,
-    "magics": False,
-    "clean": default_clean,
     "addopts": (),
-    "run_in_thread": False,
+    "clean": default_clean,
+    "coverage": False,
     "defopts": "auto",
     "display_columns": 100,
+    "magics": False,
     "raise_on_error": False,
+    "rewrite_asserts": False,
+    "run_in_thread": False,
+    "force_reload": (),
 }
 
 _rewrite_transformer = None
@@ -67,6 +71,8 @@ def autoconfig(
     defopts=default,
     display_columns=default,
     raise_on_error=default,
+    coverage=default,
+    force_reload=default,
 ):
     """Configure `ipytest` with reasonable defaults.
 
@@ -91,6 +97,8 @@ def config(
     defopts=keep,
     display_columns=keep,
     raise_on_error=keep,
+    coverage=keep,
+    force_reload=keep,
 ):
     """Configure `ipytest`
 
@@ -105,6 +113,12 @@ def config(
     * `rewrite_asserts` (default: `False`): enable ipython AST transforms
       globally to rewrite asserts
     * `magics` (default: `False`): if set to `True` register the ipytest magics
+    * `coverage` (default: `False`): if `True` configure `pytest` to collect
+      coverage information. This functionality requires the `pytest-cov` package
+      to be installed. It adds `--cov --cov-config={GENERATED_CONFIG}` to the
+      arguments when invoking `pytest`. **WARNING**: this option will hide
+      existing coverage configuration files. See [`ipytest.cov`](#ipytestcov)
+      for details
     * `clean` (default: `[Tt]est*`): the pattern used to clean variables
     * `addopts` (default: `()`): pytest command line arguments to prepend to
       every pytest invocation. For example setting
@@ -123,9 +137,14 @@ def config(
     * `display_columns` (default: `100`): if not `False`, configure pytest to
       use the given number of columns for its output. This option will
       temporarily override the `COLUMNS` environment variable.
-    * `raise_on_error` (default `False` ): if `True`,
+    * `raise_on_error` (default `False`): if `True`,
       [`ipytest.run`][ipytest.run] and [`%%ipytest`][ipytest.ipytest] will raise
       an `ipytest.Error` if pytest fails.
+    * `force_reload` (default `()`): a sequence of modules to remove from the
+      global module cache before executing tests. The listed modules are passed
+      to [`ipytest.force_reload`][ipytest.force_reload]. For simplicity, a
+      single module can also be specified as a string. Glob-style wildcards are
+      supported.
     """
     args = collect_args()
     new_config = {

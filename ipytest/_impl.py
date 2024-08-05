@@ -4,6 +4,7 @@ import fnmatch
 import importlib
 import os
 import pathlib
+import re
 import shlex
 import sys
 import threading
@@ -28,6 +29,8 @@ def run(
     addopts=default,
     defopts=default,
     display_columns=default,
+    coverage=default,
+    force_reload=default,
 ):
     """Execute all tests in the passed module (defaults to `__main__`) with pytest.
 
@@ -47,13 +50,9 @@ def run(
 
     The following parameters override the config options set with
     [`ipytest.config()`][ipytest.config] or
-    [`ipytest.autoconfig()`][ipytest.autoconfig].
-
-    - `run_in_thread`: if given, override the config option "run_in_thread".
-    - `raise_on_error`: if given, override the config option "raise_on_error".
-    - `addopts`: if given, override the config option "addopts".
-    - `defopts`: if given, override the config option "defopts".
-    - `display_columns`: if given, override the config option "display_columns".
+    [`ipytest.autoconfig()`][ipytest.autoconfig]: `run_in_thread`,
+    `raise_on_error`, `addopts`, `defopts`, `display_columns`, `coverage`,
+    `force_reload`.
 
     **Returns**: the exit code of `pytest.main`.
     """
@@ -64,6 +63,8 @@ def run(
     addopts = default.unwrap(addopts, current_config["addopts"])
     defopts = default.unwrap(defopts, current_config["defopts"])
     display_columns = default.unwrap(display_columns, current_config["display_columns"])
+    coverage = default.unwrap(coverage, current_config["coverage"])
+    force_reload = default.unwrap(force_reload, current_config["force_reload"])
 
     if module is None:
         import __main__ as module
@@ -77,6 +78,8 @@ def run(
         addopts=addopts,
         defopts=defopts,
         display_columns=display_columns,
+        coverage=coverage,
+        force_reload_=force_reload,
     )
 
     ipytest.exit_code = exit_code
@@ -109,7 +112,7 @@ def ipytest_magic(line, cell, module=None):
     [`ipytest.config(clean=False)`][ipytest.config].
 
     Any arguments passed on the magic line are interpreted as command line
-    arguments to to pytest. For example calling the magic as
+    arguments to to `pytest`. For example calling the magic as
 
     ```python
     %%ipytest -qq
@@ -222,10 +225,11 @@ def force_reload(*include: str, modules: Optional[Dict[str, ModuleType]] = None)
     """Ensure following imports of the listed modules reload the code from disk
 
     The given modules and their submodules are removed from `sys.modules`.
-    Next time the modules are imported, they are loaded from disk.
+    Next time the modules are imported, they are loaded from disk. The module
+    names can use glob patterns, e.g., `test_*` to delete all test modules.
 
-    If given, the parameter `modules` should be a dictionary of modules to use
-    instead of `sys.modules`.
+    If given, the parameter `modules` should be a dictionary of modules to work
+    on instead of `sys.modules`.
 
     Usage:
 
@@ -233,30 +237,61 @@ def force_reload(*include: str, modules: Optional[Dict[str, ModuleType]] = None)
     ipytest.force_reload("my_package")
     from my_package.submodule import my_function
     ```
+
+    This function can be used to ensure that the most recent version of test
+    files is used inside notebook via:
+
+    ```python
+    ipytest.force_reload("test_*")
+    ipytest.run(".")
+    ```
     """
     if modules is None:
         modules = sys.modules
 
-    include_exact = set(include)
-    include_prefixes = tuple(name + "." for name in include)
-
     to_delete = [
         name
         for name in modules
-        if (name in include_exact or name.startswith(include_prefixes))
+        if any(reload_pattern_match(pattern, name) for pattern in include)
     ]
 
     for name in to_delete:
         modules.pop(name, None)
 
 
-def _run_impl(*args, module, plugins, addopts, defopts, display_columns):
+def reload_pattern_match(reload_pattern: str, module_name: str) -> bool:
+    pattern_parts = reload_pattern.split(".")
+    name_parts = module_name.split(".")
+
+    if len(name_parts) < len(pattern_parts):
+        return False
+
+    return all(
+        fnmatch.fnmatchcase(name, pattern)
+        for pattern, name in zip(pattern_parts, name_parts)
+    )
+
+
+def _run_impl(
+    *args, module, plugins, addopts, defopts, display_columns, coverage, force_reload_
+):
+    if isinstance(force_reload_, str):
+        force_reload(force_reload_)
+
+    elif force_reload_:
+        force_reload(*force_reload_)
+
     with _prepared_env(module, display_columns=display_columns) as filename:
-        full_args = _build_full_args(args, filename, addopts=addopts, defopts=defopts)
+        full_args = _build_full_args(
+            args, filename, addopts=addopts, defopts=defopts, coverage=coverage
+        )
+        if coverage:
+            warn_for_existing_coverage_configs()
+
         return pytest.main(full_args, plugins=[*plugins, FixProgramNamePlugin()])
 
 
-def _build_full_args(args, filename, *, addopts, defopts):
+def _build_full_args(args, filename, *, addopts, defopts, coverage):
     arg_mapping = ArgMapping(
         # use basename to ensure --deselect works
         # (see also: https://github.com/pytest-dev/pytest/issues/6751)
@@ -266,7 +301,16 @@ def _build_full_args(args, filename, *, addopts, defopts):
     def _fmt(arg):
         return arg.format_map(arg_mapping)
 
+    if coverage:
+        import ipytest.cov
+
+        coverage_args = ("--cov", f"--cov-config={ipytest.cov.config_path}")
+
+    else:
+        coverage_args = ()
+
     all_args = [
+        *coverage_args,
         *(_fmt(arg) for arg in addopts),
         *(_fmt(arg) for arg in args),
     ]
@@ -521,3 +565,44 @@ def eval_defopts_auto(args: Sequence[str], arg_mapping: Mapping[str, str]) -> bo
     return all(
         not is_notebook_node_id(prev, arg) for prev, arg in zip([None, *args], args)
     )
+
+
+def warn_for_existing_coverage_configs():
+    if configs := find_coverage_configs("."):
+        print(
+            "Warning: found existing coverage.py configuration in "
+            f"{[p.name for p in configs]}. "
+            "These config files are ignored when using "
+            "`ipytest.autoconfig(coverage=True)`."
+            "Consider adding the `ipytest.cov` plugin directly to the config "
+            "files and adding  `--cov` to the `%%ipytest` invocation.",
+            file=sys.stderr,
+        )
+
+
+def find_coverage_configs(root):
+    root = pathlib.Path(root)
+
+    result = []
+    if (p := root.joinpath(".coveragerc")).exists():
+        result.append(p)
+
+    result += _find_files_with_lines(root, ["setup.cfg", "tox.ini"], r"^\[coverage:.*$")
+    result += _find_files_with_lines(root, ["pyproject.toml"], r"^\[tool\.coverage.*$")
+
+    return result
+
+
+def _find_files_with_lines(root, paths, pat):
+    for path in paths:
+        path = root.joinpath(path)
+        if path.exists():
+            try:
+                with open(path, "rt") as fobj:
+                    for line in fobj:
+                        if re.match(pat, line) is not None:
+                            yield path
+                            break
+
+            except Exception:
+                pass
