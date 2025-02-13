@@ -62,13 +62,12 @@ More likely, you will not want to raise on error during local development. To wo
 1. create a *second copy* of this directory for CI usage and adjust the startup script accordingly
     > Note: you cannot create two [ipython profiles](https://ipython.readthedocs.io/en/stable/config/intro.html#profiles) as there is no way to change the default profile selection [see ipython/ipython#11862](https://github.com/ipython/ipython/issues/11862):
 
-Then your CI workflow simply needs steps to:
+1. Then your CI workflow simply needs steps to:
+    1. set the `IPYTHONDIR` environment variable to the correct (CI) directory
+    1. [install nbval](https://github.com/computationalmodelling/nbval#installation)
+    1. call `nbval --nbval-lax`
 
-1. set the `IPYTHONDIR` environment variable to the correct (CI) directory
-1. [install nbval](https://github.com/computationalmodelling/nbval#installation)
-1. call `nbval --nbval-lax`
-
-As an alternative, you could also attempt to identify whether running in CI in a single startup script, or at the top of every notebook(!). In both cases this leaves `os` imported in all your notebooks. See [cibuildwheel.ci.detect_ci_provider](https://github.com/pypa/cibuildwheel/blob/c93d51ec540da7537ae66107a32c60dccd705102/cibuildwheel/ci.py#L21) for a listing of the relevant variables. For github actions this would look like:
+As an alternative, you could also attempt to identify whether running in CI in a single startup script, or at the top of every notebook(!). In both cases this leaves `os` imported in all your notebooks. For github actions this would look like:
 
 ```python
 import ipytest
@@ -80,6 +79,8 @@ if "GITHUB_ACTIONS" in os.environ:
     ipytest_options["raise_on_error"] = True
 ipytest.autoconfig(**ipytest_options)
 ```
+
+See [cibuildwheel.ci.detect_ci_provider](https://github.com/pypa/cibuildwheel/blob/c93d51ec540da7537ae66107a32c60dccd705102/cibuildwheel/ci.py#L21) for a listing of the relevant variables.
 
 ## Global state
 
