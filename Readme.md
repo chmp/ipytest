@@ -77,7 +77,7 @@ import os
 ipytest_options = dict()
 
 if "GITHUB_ACTIONS" in os.environ:
-    ipytest_options[raise_on_error] = True
+    ipytest_options["raise_on_error"] = True
 ipytest.autoconfig(**ipytest_options)
 ```
 
