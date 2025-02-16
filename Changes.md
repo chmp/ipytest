@@ -2,6 +2,11 @@
 
 Note: development is tracked on the [`develop` branch](https://github.com/chmp/ipytest/tree/develop).
 
+## `develop`
+
+- Add a description how to use `IPytest` in CI context. Thanks
+  [MusicalNinjaDad](https://github.com/MusicalNinjaDad) for the contribution
+
 ## `0.14.2`
 
 - Support collecting branch coverage in notebooks (e.g., via `--cov--branch`)
