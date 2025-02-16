@@ -6,11 +6,11 @@ exit_code = None
 
 
 __all__ = [
+    "Error",
     "autoconfig",
-    "run",
-    "config",
     "clean",
+    "config",
     "force_reload",
     "reload",
-    "Error",
+    "run",
 ]

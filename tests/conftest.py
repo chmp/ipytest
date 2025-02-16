@@ -9,7 +9,7 @@ import ipytest._config
 import ipytest._impl
 
 
-@pytest.fixture()
+@pytest.fixture
 def value_from_conftest():
     return 42
 
@@ -44,7 +44,7 @@ def ipytest_entry_point(request, run_cell_magic, scoped_config):
     raise ValueError(f"Unknown entry point mode {request.param}")
 
 
-@pytest.fixture()
+@pytest.fixture
 def run_cell_magic(mock_ipython):
     """A wrapper around ipytest to simplify executing the cell magic"""
 
@@ -60,7 +60,7 @@ def run_cell_magic(mock_ipython):
 
 
 # NOTE: do not set autouse=True to not interfere with notebook tests
-@pytest.fixture()
+@pytest.fixture
 def scoped_config():
     """A fixture to reset the config at the end of the test"""
     original_config = ipytest._config.current_config.copy()
@@ -74,7 +74,7 @@ def scoped_config():
 
 
 # NOTE: do not set autouse=True to not interfere with notebook tests
-@pytest.fixture()
+@pytest.fixture
 def mock_ipython():
     """Register a fake IPython implementation during the test"""
     ipython = MockIPython()

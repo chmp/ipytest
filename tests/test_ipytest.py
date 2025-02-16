@@ -56,7 +56,7 @@ def fake_module(__name__, **items):
 
 
 def test_fixtures():
-    @pytest.fixture()
+    @pytest.fixture
     def my_fixture():
         return 42
 

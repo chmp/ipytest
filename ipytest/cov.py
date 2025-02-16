@@ -36,6 +36,7 @@ There are some known issues of `ipytest.cov`
 [coverage-py-config-docs]: https://coverage.readthedocs.io/en/latest/config.html
 [ipytest-cov-pytest-cov]: https://pytest-cov.readthedocs.io/en/latest/config.html
 """
+
 import linecache
 import os
 import os.path
@@ -206,9 +207,9 @@ class CellFilenamesTracker:
         )
         if execution_count in self._execution_count_counts:
             self._execution_count_counts[execution_count] += 1
-            self._info[
-                filename
-            ] = f"In[{execution_count}/{self._execution_count_counts[execution_count]}]"
+            self._info[filename] = (
+                f"In[{execution_count}/{self._execution_count_counts[execution_count]}]"
+            )
 
         else:
             self._execution_count_counts[execution_count] = 0
