@@ -44,54 +44,35 @@ and then run pytest. For further details on how to use `ipytest` see the
 
 ### Running in CI
 
-If you wish to also run your tests in a CI workflow then you can leverage
-[`nbval --nbval-lax`](https://github.com/computationalmodelling/nbval) combined
-with `raise_on_error=True`.
+To run notebook tests in a CI workflow, you may want to
 
-Assuming that you do not want to prefix all of your notebooks with:
+1. Set `raise_on_error=True` to ensure any `pytest` errors raise exceptions visible to the CI
+   system. For example via
 
-```python
-import ipytest
-ipytest.autoconfig(raise_on_error=True)
-```
+    ```python
+    import ipytest
+    ipytest.autoconfig(raise_on_error=True)
+    ```
 
-Then you can create an [ipython startup script](https://ipython.readthedocs.io/en/stable/interactive/tutorial.html#startup-files)
-with the above contents.
+2. Execute the notebooks with [`nbval`](https://github.com/computationalmodelling/nbval). The
+   `--nbval-lax` flag allows to only check for errors, not the exact notebook output which is likely
+   to chage between `pytest` runs
 
-More likely, you will not want to raise on error during local development.
-To work around this:
-
-1. set your [ipython directory](https://ipython.readthedocs.io/en/stable/config/intro.html#the-ipython-directory)
-to be within your project so that it is commited to git along with your notebooks
-1. create a suitable configuration for local development
-1. create a *second copy* of this directory for CI usage and adjust the startup
-script accordingly
-    > Note: you cannot create two [ipython profiles](https://ipython.readthedocs.io/en/stable/config/intro.html#profiles)
-    as there is no way to change the default profile selection
-    [see ipython/ipython#11862](https://github.com/ipython/ipython/issues/11862):
-
-1. Then your CI workflow simply needs steps to:
-    1. set the `IPYTHONDIR` environment variable to the correct (CI) directory
-    1. [install nbval](https://github.com/computationalmodelling/nbval#installation)
-    1. call `nbval --nbval-lax`
-
-As an alternative, you could also attempt to identify whether running in CI in a
-single startup script, or at the top of every notebook(!). In both cases this
-leaves `os` imported in all your notebooks. For github actions this would look like:
+To only set `raise_on_error=True` in CI systems you can check for common environment variables. See
+[cibuildwheel.ci.detect_ci_provider][ci-detect_ci_provider] for a listing. For example
 
 ```python
 import ipytest
 import os
 
-ipytest_options = dict()
-
-if "GITHUB_ACTIONS" in os.environ:
-    ipytest_options["raise_on_error"] = True
-ipytest.autoconfig(**ipytest_options)
+ipytest.autoconfig(raise_on_error="GITHUB_ACTIONS" in os.environ)
 ```
 
-See [cibuildwheel.ci.detect_ci_provider](https://github.com/pypa/cibuildwheel/blob/c93d51ec540da7537ae66107a32c60dccd705102/cibuildwheel/ci.py#L21)
-for a listing of the relevant variables.
+[IPython startup scripts][ci-ipy-startup-scripts] allow to customize the interpreter. Their
+location can be configured via the `IPYTHONDIR` environment variable.
+
+[ci-ipy-startup-scripts]: https://ipython.readthedocs.io/en/stable/interactive/tutorial.html#startup-files
+[ci-detect_ci_provider]: https://github.com/pypa/cibuildwheel/blob/c93d51ec540da7537ae66107a32c60dccd705102/cibuildwheel/ci.py#L21
 
 ## Global state
 
