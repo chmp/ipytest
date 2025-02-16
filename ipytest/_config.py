@@ -1,4 +1,5 @@
 """Add syntatic sugar for configuration"""
+
 import inspect
 import warnings
 

@@ -46,17 +46,18 @@ def docs():
 
 @cmd()
 def format():
-    _sh(f"{python} -m ruff format ipytest tests Example.ipynb x.py minidoc.py")
+    _sh("uv run --group dev ruff format ipytest tests Example.ipynb x.py minidoc.py")
 
 
 @cmd()
-def lint():
-    _sh(f"{python} -m ruff check {_q(self_path)}")
+@arg("--fix", action="store_true")
+def lint(fix=False):
+    _sh(f"uv run --group dev ruff check {_q(self_path)}", "--fix" if fix else "")
 
 
 @cmd()
 def test():
-    _sh(f"{python} -m pytest tests")
+    _sh("uv run --group dev  -m pytest tests")
 
 
 @cmd()
@@ -71,17 +72,8 @@ def integration():
     ]
 
     _sh(
-        f"{python} -m pytest --nbval-lax --nbval-current-env "
-        f"{' '.join(_q(p) for p in notebooks)}"
-    )
-
-
-@cmd()
-def lock():
-    _sh(f"{python} -m poetry lock")
-    _sh(
-        f"{python} -m poetry export --with=dev "
-        "-f requirements.txt --output requirements-dev.txt"
+        "uv run --group dev pytest --nbval-lax --nbval-current-env "
+        * (_q(p) for p in notebooks),
     )
 
 
@@ -94,8 +86,11 @@ def parse_file_version(p, suffix):
     return version.parse(version_part)
 
 
-_sh = lambda c, **kw: __import__("subprocess").run(
-    [args := __import__("shlex").split(c.replace("\n", " ")), print("::", *args)][0],
+_sh = lambda *c, **kw: __import__("subprocess").run(
+    [
+        args := __import__("shlex").split(" ".join(c).replace("\n", " ")),
+        print("::", *args),
+    ][0],
     **{"check": True, "cwd": self_path, "encoding": "utf-8", **kw},
 )
 _q = lambda arg: __import__("shlex").quote(str(arg))

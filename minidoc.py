@@ -15,7 +15,7 @@ To use `minidoc`, follow these steps:
 
 `minidoc` will replace the content between the comments with the documentation
 of the module. It preserves the comments itself. Therefore, it is safe to run
-`minidoc` repeatedly on the same document. 
+`minidoc` repeatedly on the same document.
 
 Per default minidoc will render a header for the module. To disable this
 behavior add `"header": false` to the initial comment, as in:
@@ -24,6 +24,7 @@ behavior add `"header": false` to the initial comment, as in:
 <!-- minidoc "module": "my_module", "header": false -->
 ```
 """
+
 #
 # Copyright: Christopher Prohm, 2022
 # Copied from https://github.com/chmp/libchmp/blob/main/src/chmp/minidoc.py
