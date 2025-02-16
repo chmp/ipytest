@@ -42,6 +42,14 @@ This command will first delete any previously defined tests, execute the cell
 and then run pytest. For further details on how to use `ipytest` see the
 [**example notebook**](./Example.ipynb) or the [reference](#reference) below.
 
+### Enabling by default for all notebooks
+
+[IPython startup scripts][ci-ipy-startup-scripts] allow to customize the interpreter,
+for example to import and configure ipytest by default.Their location can be configured
+via the `IPYTHONDIR` environment variable.
+
+[ci-ipy-startup-scripts]: https://ipython.readthedocs.io/en/stable/interactive/tutorial.html#startup-files
+
 ### Running in CI
 
 To run notebook tests in a CI workflow, you may want to
@@ -68,10 +76,6 @@ import os
 ipytest.autoconfig(raise_on_error="GITHUB_ACTIONS" in os.environ)
 ```
 
-[IPython startup scripts][ci-ipy-startup-scripts] allow to customize the interpreter. Their
-location can be configured via the `IPYTHONDIR` environment variable.
-
-[ci-ipy-startup-scripts]: https://ipython.readthedocs.io/en/stable/interactive/tutorial.html#startup-files
 [ci-detect_ci_provider]: https://github.com/pypa/cibuildwheel/blob/c93d51ec540da7537ae66107a32c60dccd705102/cibuildwheel/ci.py#L21
 
 ## Global state
