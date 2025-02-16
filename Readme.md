@@ -56,7 +56,7 @@ To run notebook tests in a CI workflow, you may want to
 
 2. Execute the notebooks with [`nbval`](https://github.com/computationalmodelling/nbval). The
    `--nbval-lax` flag allows to only check for errors, not the exact notebook output which is likely
-   to chage between `pytest` runs
+   to change between `pytest` runs
 
 To only set `raise_on_error=True` in CI systems you can check for common environment variables. See
 [cibuildwheel.ci.detect_ci_provider][ci-detect_ci_provider] for a listing. For example
